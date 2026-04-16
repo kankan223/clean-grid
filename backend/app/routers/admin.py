@@ -67,16 +67,22 @@ async def get_admin_stats(
 async def get_incidents(
     current_user: User = Depends(require_admin),
     db: AsyncSession = Depends(get_db),
-    limit: int = Query(10, ge=10, le=100),
+    limit: int = Query(20, ge=10, le=100),
     offset: int = Query(0, ge=0),
     status: Optional[str] = Query(None),
-    severity: Optional[str] = Query(None)
+    severity: Optional[str] = Query(None),
+    sort: str = Query("created_at", regex="^(created_at|priority_score|severity)$"),
+    order: str = Query("desc", regex="^(asc|desc)$"),
+    assigned_to: Optional[str] = Query(None)
 ):
-    """Get paginated list of incidents for admin dashboard"""
+    """Get paginated list of incidents for admin dashboard with advanced filtering and sorting"""
     
     try:
-        # Build base query
-        query = select(Incident)
+        # Build base query with joins for user info
+        query = select(
+            Incident,
+            User.display_name.label("reporter_name")
+        ).outerjoin(User, Incident.reporter_id == User.id)
         
         # Apply filters
         if status:
@@ -84,13 +90,31 @@ async def get_incidents(
         
         if severity:
             query = query.where(Incident.severity == severity)
+            
+        if assigned_to:
+            query = query.where(Incident.assigned_to == assigned_to)
+        
+        # Apply sorting
+        if sort == "created_at":
+            order_column = Incident.created_at
+        elif sort == "priority_score":
+            order_column = Incident.priority_score
+        elif sort == "severity":
+            order_column = Incident.severity
+        else:
+            order_column = Incident.created_at
+            
+        if order == "desc":
+            query = query.order_by(order_column.desc())
+        else:
+            query = query.order_by(order_column.asc())
         
         # Apply pagination
         query = query.offset(offset).limit(limit)
         
         # Execute query
         result = await db.execute(query)
-        incidents = result.scalars().all()
+        rows = result.all()
         
         # Get total count for pagination
         count_query = select(func.count(Incident.id))
@@ -98,30 +122,55 @@ async def get_incidents(
             count_query = count_query.where(Incident.status == status)
         if severity:
             count_query = count_query.where(Incident.severity == severity)
+        if assigned_to:
+            count_query = count_query.where(Incident.assigned_to == assigned_to)
         
         total_count = await db.scalar(count_query)
         
+        # Format response
+        incidents = []
+        for incident, reporter_name in rows:
+            # Calculate age in human readable format
+            now = datetime.utcnow()
+            age = now - incident.created_at
+            if age.days > 0:
+                age_str = f"{age.days}d ago"
+            elif age.seconds > 3600:
+                age_str = f"{age.seconds // 3600}h ago"
+            elif age.seconds > 60:
+                age_str = f"{age.seconds // 60}m ago"
+            else:
+                age_str = "just now"
+            
+            incidents.append({
+                "id": str(incident.id),
+                "status": incident.status,
+                "severity": incident.severity,
+                "priority_score": incident.priority_score,
+                "location": {
+                    "lat": float(incident.latitude),
+                    "lng": float(incident.longitude)
+                },
+                "created_at": incident.created_at.isoformat(),
+                "age": age_str,
+                "reporter_name": reporter_name or "Anonymous",
+                "assigned_to": incident.assigned_to,
+                "image_url": incident.image_url,
+                "ai_confidence": incident.ai_confidence,
+                "note": incident.note
+            })
+        
         return {
-            "incidents": [
-                {
-                    "id": str(incident.id),
-                    "status": incident.status,
-                    "severity": incident.severity,
-                    "location": {
-                        "lat": float(incident.latitude),
-                        "lng": float(incident.longitude)
-                    },
-                    "created_at": incident.created_at.isoformat(),
-                    "assigned_to": incident.assigned_to
-                }
-                for incident in incidents
-            ],
+            "incidents": incidents,
             "total": total_count or 0,
             "offset": offset,
             "limit": limit,
             "filters": {
                 "status": status,
-                "severity": severity
+                "severity": severity,
+                "assigned_to": assigned_to,
+                "sort": sort,
+                "order": order
             }
         }
         
@@ -131,6 +180,121 @@ async def get_incidents(
             status_code=500,
             detail="Failed to fetch incidents"
         )
+
+@router.get("/users")
+async def get_crew_members(
+    current_user: User = Depends(require_admin),
+    db: AsyncSession = Depends(get_db),
+    role: str = Query("crew", regex="^(crew|admin)$")
+):
+    """Get list of users by role for assignment dropdown"""
+    
+    try:
+        # Query users by role
+        query = select(User).where(User.role == role)
+        result = await db.execute(query)
+        users = result.scalars().all()
+        
+        # Get current workload for each crew member
+        crew_list = []
+        for user in users:
+            # Count currently assigned incidents
+            workload_query = select(func.count(Incident.id)).where(
+                Incident.assigned_to == str(user.id),
+                Incident.status.in_(["Assigned", "In Progress"])
+            )
+            workload = await db.scalar(workload_query)
+            
+            crew_list.append({
+                "id": str(user.id),
+                "name": user.display_name or user.email,
+                "email": user.email,
+                "role": user.role,
+                "current_workload": workload or 0
+            })
+        
+        return {
+            "crew": crew_list,
+            "total": len(crew_list)
+        }
+        
+    except Exception as e:
+        logger.error(f"Error fetching crew members: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail="Failed to fetch crew members"
+        )
+
+
+@router.patch("/incidents/{incident_id}/assign")
+async def assign_incident(
+    incident_id: str,
+    assignment: dict,
+    current_user: User = Depends(require_admin),
+    db: AsyncSession = Depends(get_db)
+):
+    """Assign incident to crew member"""
+    
+    try:
+        # Validate incident exists
+        incident_query = select(Incident).where(Incident.id == incident_id)
+        incident_result = await db.execute(incident_query)
+        incident = incident_result.scalar_one_or_none()
+        
+        if not incident:
+            raise HTTPException(
+                status_code=404,
+                detail="Incident not found"
+            )
+        
+        # Validate crew member exists
+        crew_id = assignment.get("assigned_to")
+        if crew_id:
+            crew_query = select(User).where(User.id == crew_id, User.role == "crew")
+            crew_result = await db.execute(crew_query)
+            crew_member = crew_result.scalar_one_or_none()
+            
+            if not crew_member:
+                raise HTTPException(
+                    status_code=404,
+                    detail="Crew member not found"
+                )
+        
+        # Update incident assignment
+        incident.assigned_to = crew_id
+        if crew_id:
+            incident.status = "Assigned"
+        incident.updated_at = datetime.utcnow()
+        
+        await db.commit()
+        await db.refresh(incident)
+        
+        # Get crew member info for response
+        crew_info = None
+        if crew_id:
+            crew_info = {
+                "id": str(crew_member.id),
+                "name": crew_member.display_name or crew_member.email,
+                "email": crew_member.email
+            }
+        
+        return {
+            "id": str(incident.id),
+            "status": incident.status,
+            "assigned_to": crew_info,
+            "updated_at": incident.updated_at.isoformat()
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error assigning incident {incident_id}: {e}")
+        await db.rollback()
+        raise HTTPException(
+            status_code=500,
+            detail="Failed to assign incident"
+        )
+
 
 @router.get("/health")
 async def health():

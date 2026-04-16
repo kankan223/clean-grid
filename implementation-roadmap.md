@@ -94,18 +94,18 @@
 - [x] Master documentation (README.md)
 
 ### Admin Dashboard UI
-- [ ] Build IncidentTable with sorting/filtering
-- [ ] Create DetailDrawer for incident details
-- [ ] Implement BulkActionBar for selection
+- [x] Build IncidentTable with sorting/filtering
+- [x] Create DetailDrawer for incident details
+- [x] Implement BulkActionBar for selection
 - [ ] Add synchronized AdminMapPanel
 - [ ] Create status override controls
 
 ### Task Assignment Backend
-- [ ] GET /api/incidents with filters/pagination
-- [ ] PATCH /api/incidents/:id/assign
-- [ ] GET /api/incidents/stats for dashboard KPIs
+- [x] GET /api/incidents with filters/pagination
+- [x] PATCH /api/incidents/:id/assign
+- [x] GET /api/incidents/stats for dashboard KPIs
 - [ ] Implement SSE endpoint for real-time updates
-- [ ] Add crew management endpoints
+- [x] Add crew management endpoints
 
 ### Frontend Admin Features
 - [ ] Connect table to API with TanStack Query

@@ -201,11 +201,12 @@ class InferenceResponse(BaseModel):
 - `/implementation-roadmap.md` - Detailed implementation plan
 
 ### Current Task
-Ready for Phase 2: Sprint 2 - Admin Dashboard UI & Triage
-Build IncidentTable with sorting/filtering and DetailDrawer for incident triage.
+Ready for Phase 3: Route Optimization
+Implement OpenRouteService integration, route generation, and route visualization.
 
 ### Last Completed
-Phase 2: Operational Polish - Backend stability, unified startup, master documentation
+Phase 2: Sprint 2 - Admin Dashboard UI & Triage
+Built IncidentTable with sorting/filtering, DetailDrawer for incident triage, and assignment functionality.
 
 ### Documentation Entry Point
 **Primary documentation is now `README.md`** - serves as master entry point for entire repository.
