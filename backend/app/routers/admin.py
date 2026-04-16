@@ -71,8 +71,8 @@ async def get_incidents(
     offset: int = Query(0, ge=0),
     status: Optional[str] = Query(None),
     severity: Optional[str] = Query(None),
-    sort: str = Query("created_at", regex="^(created_at|priority_score|severity)$"),
-    order: str = Query("desc", regex="^(asc|desc)$"),
+    sort: str = Query("created_at", pattern="^(created_at|priority_score|severity)$"),
+    order: str = Query("desc", pattern="^(asc|desc)$"),
     assigned_to: Optional[str] = Query(None)
 ):
     """Get paginated list of incidents for admin dashboard with advanced filtering and sorting"""
@@ -185,7 +185,7 @@ async def get_incidents(
 async def get_crew_members(
     current_user: User = Depends(require_admin),
     db: AsyncSession = Depends(get_db),
-    role: str = Query("crew", regex="^(crew|admin)$")
+    role: str = Query("crew", pattern="^(crew|admin)$")
 ):
     """Get list of users by role for assignment dropdown"""
     

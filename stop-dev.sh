@@ -71,8 +71,8 @@ fi
 # Also try to kill processes on specific ports (fallback)
 print_status "Checking for remaining processes on ports..."
 
-# Kill processes on ports 8001, 8000, 3000
-for port in 8001 8000 3000; do
+# Kill processes on ports 8001, 8004, 3000
+for port in 8001 8004 3000; do
     PID=$(lsof -ti:$port 2>/dev/null || echo "")
     if [ ! -z "$PID" ]; then
         print_status "Killing process on port $port (PID: $PID)..."

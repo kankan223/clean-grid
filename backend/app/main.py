@@ -77,8 +77,9 @@ async def lifespan(app: FastAPI):
     logger.info("Database connections closed")
     
     # Close Redis connection
-    await redis_client.close()
-    logger.info("Redis connection closed")
+    if redis_client:
+        await redis_client.close()
+        logger.info("Redis connection closed")
 
 
 # Create FastAPI application

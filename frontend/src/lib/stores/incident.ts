@@ -75,7 +75,7 @@ export interface IncidentState {
 }
 
 // API Functions
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8004';
 
 async function fetchIncidents(
   filters: IncidentFilters,

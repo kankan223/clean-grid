@@ -38,7 +38,7 @@ export default function AdminDashboard() {
 
   const fetchAdminStats = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/stats`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8004'}/api/admin/stats`, {
         credentials: 'include',
       });
       

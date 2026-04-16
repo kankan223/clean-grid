@@ -121,14 +121,14 @@ for i in {1..15}; do
     sleep 1
 done
 
-# Step 4: Start Backend (port 8000)
-print_status "Starting Backend on port 8000..."
+# Step 4: Start Backend (port 8004)
+print_status "Starting Backend on port 8004..."
 cd backend
 source venv/bin/activate
 export PYTHONPATH=.
 
 # Start Backend in background
-python -c "import uvicorn; uvicorn.run('app.main:app', host='0.0.0.0', port=8000, reload=True)" > ../logs/backend.log 2>&1 &
+python -c "import uvicorn; uvicorn.run('app.main:app', host='0.0.0.0', port=8004, reload=True)" > ../logs/backend.log 2>&1 &
 BACKEND_PID=$!
 echo $BACKEND_PID > ../logs/backend.pid
 cd ..
@@ -136,7 +136,7 @@ cd ..
 # Wait for Backend to be ready
 print_status "Waiting for Backend to be ready..."
 for i in {1..15}; do
-    if curl -s http://localhost:8000/health > /dev/null 2>&1; then
+    if curl -s http://localhost:8004/health > /dev/null 2>&1; then
         print_success "Backend is ready!"
         break
     fi
@@ -189,9 +189,9 @@ echo "=================================="
 echo "Database:  http://localhost:5432 (PostgreSQL + PostGIS)"
 echo "Redis:     http://localhost:6379"
 echo "AI Service: http://localhost:8001"
-echo "Backend:    http://localhost:8000"
+echo "Backend:    http://localhost:8004"
 echo "Frontend:   http://localhost:3000"
-echo "API Docs:   http://localhost:8000/docs"
+echo "API Docs:   http://localhost:8004/docs"
 echo ""
 echo "=================================="
 echo "SERVICE LOGS"
@@ -209,9 +209,9 @@ echo ""
 echo "=================================="
 echo "USEFUL COMMANDS"
 echo "=================================="
-echo "Check status: curl http://localhost:8000/health"
-echo "API tests:   curl http://localhost:8000/api/auth/auth/health"
-echo "Database:    docker compose exec postgres psql -U cleangrid cleangrid"
+echo "Check status: curl http://localhost:8004/health"
+echo "API tests:   curl http://localhost:8004/api/admin/admin/health"
+echo "Database:    docker compose exec db psql -U cleangrid cleangrid"
 echo ""
 
 # Show live logs from all services
