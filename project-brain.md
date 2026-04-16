@@ -201,7 +201,12 @@ class InferenceResponse(BaseModel):
 - `/implementation-roadmap.md` - Detailed implementation plan
 
 ### Current Task
-Initialize project tracking system with `project-brain.md` and `implementation-roadmap.md` before writing any application code.
+Phase 2: Sprint 2 - Admin Dashboard UI
+Build IncidentTable with sorting/filtering and DetailDrawer for incident triage.
+
+### Documentation Entry Point
+**Primary documentation is now `README.md`** - serves as master entry point for entire repository.
+`project-brain.md` remains as working memory and guardrails reference.
 
 ---
 
