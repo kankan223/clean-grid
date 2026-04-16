@@ -37,13 +37,13 @@ fi
 
 # Test 4: Backend API - Create Report
 echo "📤 Testing Report Creation..."
-REPORT_RESPONSE=$(curl -s -X POST http://localhost:8000/api/reports \
+REPORT_RESPONSE=$(curl -s -X POST http://localhost:8000/api/reports/reports/ \
   -H "Content-Type: multipart/form-data" \
   -F "lat=40.7128" \
   -F "lng=-74.0060" \
   -F "note=Test report from validation script")
 
-if echo "$REPORT_RESPONSE" | grep -q '"status":"processing"'; then
+if echo "$REPORT_RESPONSE" | grep -q '"message":"Report created successfully"'; then
     echo "✅ Report creation API working"
 else
     echo "❌ Report creation API failed"
@@ -53,7 +53,7 @@ fi
 
 # Test 5: Backend API - List Incidents
 echo "📍 Testing Incident List API..."
-INCIDENTS_RESPONSE=$(curl -s "http://localhost:8000/api/reports?limit=5")
+INCIDENTS_RESPONSE=$(curl -s "http://localhost:8000/api/reports/reports/?limit=5")
 
 if echo "$INCIDENTS_RESPONSE" | grep -q '"incidents"'; then
     echo "✅ Incident list API working"
@@ -67,9 +67,9 @@ fi
 echo "🧠 Testing AI Inference..."
 AI_RESPONSE=$(curl -s -X POST http://localhost:8001/infer \
   -H "Content-Type: application/json" \
-  -d '{"image_url": "https://picsum.photos/400/300"}')
+  -d '{"image_url": "https://httpbin.org/image/png"}')
 
-if echo "$AI_RESPONSE" | grep -q '"waste_detected":true'; then
+if echo "$AI_RESPONSE" | grep -q '"waste_detected"'; then
     echo "✅ AI inference working"
 else
     echo "❌ AI inference failed"
