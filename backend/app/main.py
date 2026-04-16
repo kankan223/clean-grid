@@ -14,7 +14,8 @@ import uvicorn
 from app.core.config import settings
 from app.core.database import init_db, close_db
 from app.core.redis import init_redis, redis_client
-from app.routers import auth, reports, routes, admin, leaderboard, events
+from app.routers import auth, admin, leaderboard, events
+from app.routers.reports_new import router as reports
 
 # Configure structured logging
 structlog.configure(
@@ -173,29 +174,6 @@ app.include_router(
     tags=["Reports"]
 )
 
-app.include_router(
-    routes.router,
-    prefix="/api/routes",
-    tags=["Routes"]
-)
-
-app.include_router(
-    admin.router,
-    prefix="/api/admin",
-    tags=["Admin"]
-)
-
-app.include_router(
-    leaderboard.router,
-    prefix="/api/leaderboard",
-    tags=["Leaderboard"]
-)
-
-app.include_router(
-    events.router,
-    prefix="/api/events",
-    tags=["Events"]
-)
 
 
 # Development server configuration

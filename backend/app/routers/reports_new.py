@@ -1,5 +1,5 @@
 """
-Test reports router - CleanGrid Phase 1
+New reports router - CleanGrid Phase 1
 """
 
 from fastapi import APIRouter
