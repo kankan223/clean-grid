@@ -69,3 +69,26 @@ async def call_ai_service(image_url: str) -> Dict[str, Any]:
             "severity": "None",
             "detections": []
         }
+
+
+class AIClient:
+    """AI Service Client for image analysis"""
+    
+    def __init__(self):
+        self.base_url = settings.AI_SERVICE_URL
+    
+    async def analyze_image(self, image_url: str) -> Dict[str, Any]:
+        """
+        Analyze image using AI service
+        
+        Args:
+            image_url: URL of image to analyze
+            
+        Returns:
+            AI inference results dictionary
+        """
+        return await call_ai_service(image_url)
+
+
+# Create singleton instance
+ai_client = AIClient()

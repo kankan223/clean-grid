@@ -81,11 +81,11 @@
 ## Phase 2: Admin Dashboard & Task Assignment
 
 ### Authentication System
-- [ ] Implement JWT login endpoint
-- [ ] Create refresh token rotation
-- [ ] Add HttpOnly cookie handling
-- [ ] Build role-based access control
-- [ ] Create admin guard middleware
+- [x] Implement JWT login endpoint
+- [x] Create refresh token rotation
+- [x] Add HttpOnly cookie handling
+- [x] Build role-based access control
+- [x] Create admin guard middleware
 
 ### Admin Dashboard UI
 - [ ] Build IncidentTable with sorting/filtering

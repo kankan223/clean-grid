@@ -29,42 +29,71 @@ export interface AuthState {
   setLoading: (loading: boolean) => void;
 }
 
-// Mock API functions - these will be replaced with actual API calls
-const mockLogin = async (email: string, _password: string): Promise<{
+// API functions
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
+interface LoginResponse {
   user: User;
   accessToken: string;
   refreshToken: string;
-}> => {
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  
-  // Mock user data
-  const mockUser: User = {
-    id: 'user-123',
-    email,
-    role: email.includes('admin') ? 'admin' : email.includes('crew') ? 'crew' : 'citizen',
-    points: 0,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  };
+  tokenType: string;
+  expiresIn: number;
+}
 
-  return {
-    user: mockUser,
-    accessToken: `mock-access-token-${Date.now()}`,
-    refreshToken: `mock-refresh-token-${Date.now()}`,
-  };
-};
-
-const mockRefreshToken = async (_refreshToken: string): Promise<{
+interface RefreshResponse {
   accessToken: string;
   refreshToken: string;
-}> => {
-  await new Promise(resolve => setTimeout(resolve, 500));
-  
-  return {
-    accessToken: `mock-access-token-${Date.now()}`,
-    refreshToken: `mock-refresh-token-${Date.now()}`,
-  };
+  tokenType: string;
+  expiresIn: number;
+}
+
+const apiLogin = async (email: string, password: string): Promise<LoginResponse> => {
+  const response = await fetch(`${API_BASE}/api/auth/login`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      email,
+      password,
+      remember_me: false,
+    }),
+    credentials: 'include', // Important for cookies
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(error || 'Login failed');
+  }
+
+  return response.json();
+};
+
+const apiRefreshToken = async (refreshToken: string): Promise<RefreshResponse> => {
+  const response = await fetch(`${API_BASE}/api/auth/refresh`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      refresh_token: refreshToken,
+    }),
+    credentials: 'include', // Important for cookies
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(error || 'Token refresh failed');
+  }
+
+  return response.json();
+};
+
+const apiLogout = async (): Promise<void> => {
+  await fetch(`${API_BASE}/api/auth/logout`, {
+    method: 'POST',
+    credentials: 'include', // Important for cookies
+  });
 };
 
 export const useAuthStore = create<AuthState>()(
@@ -83,7 +112,7 @@ export const useAuthStore = create<AuthState>()(
         set({ isLoading: true, error: null });
         
         try {
-          const response = await mockLogin(email, password);
+          const response = await apiLogin(email, password);
           
           set({
             user: response.user,
@@ -93,11 +122,7 @@ export const useAuthStore = create<AuthState>()(
             isLoading: false,
             error: null,
           });
-
-          // Store tokens in HttpOnly cookies (handled by API)
-          // For now, we'll store them in memory and persist middleware
-          document.cookie = `access_token=${response.accessToken}; path=/; max-age=900; secure; samesite=strict`;
-          document.cookie = `refresh_token=${response.refreshToken}; path=/; max-age=604800; secure; samesite=strict`;
+          // Tokens are stored as HttpOnly cookies by the backend
           
         } catch (err) {
           set({
@@ -111,19 +136,21 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      logout: () => {
-        // Clear cookies
-        document.cookie = 'access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-        document.cookie = 'refresh_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-        
-        set({
-          user: null,
-          accessToken: null,
-          refreshToken: null,
-          isAuthenticated: false,
-          isLoading: false,
-          error: null,
-        });
+      logout: async () => {
+        try {
+          await apiLogout();
+          
+          set({
+            user: null,
+            accessToken: null,
+            refreshToken: null,
+            isAuthenticated: false,
+            isLoading: false,
+            error: null,
+          });
+        } catch (error) {
+          console.error('Logout error:', error);
+        }
       },
 
       refreshAccessToken: async () => {
@@ -133,19 +160,16 @@ export const useAuthStore = create<AuthState>()(
           get().logout();
           return;
         }
-
+        
         try {
-          const response = await mockRefreshToken(refreshToken);
+          const response = await apiRefreshToken(refreshToken);
           
           set({
             accessToken: response.accessToken,
             refreshToken: response.refreshToken,
             error: null,
           });
-
-          // Update cookies
-          document.cookie = `access_token=${response.accessToken}; path=/; max-age=900; secure; samesite=strict`;
-          document.cookie = `refresh_token=${response.refreshToken}; path=/; max-age=604800; secure; samesite=strict`;
+          // Tokens are updated as HttpOnly cookies by the backend
           
         } catch (error) {
           // Refresh failed, logout user

@@ -5,7 +5,7 @@ JWT tokens, password hashing, and role-based access control
 
 from datetime import datetime, timedelta
 from typing import Optional, Union
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import JWTError, jwt
 from passlib.context import CryptContext
@@ -106,11 +106,11 @@ def verify_token(token: str) -> dict:
 
 
 async def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
+    request: Request,
     db: AsyncSession = Depends(get_db)
 ) -> User:
     """
-    Get current authenticated user from JWT token
+    Get current authenticated user from JWT token (Authorization header or cookies)
     """
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -119,27 +119,40 @@ async def get_current_user(
     )
     
     try:
-        payload = verify_token(credentials.credentials)
+        # Try to get token from Authorization header first
+        authorization = request.headers.get("Authorization")
+        token = None
+        
+        if authorization and authorization.startswith("Bearer "):
+            token = authorization.split(" ")[1]
+        else:
+            # Fall back to cookie
+            token = request.cookies.get("access_token")
+        
+        if not token:
+            raise credentials_exception
+            
+        payload = verify_token(token)
         user_id: str = payload.get("sub")
         token_type: str = payload.get("type")
         
         if user_id is None or token_type != "access":
             raise credentials_exception
             
+        # Get user from database
+        from sqlalchemy import select
+        
+        stmt = select(User).where(User.id == user_id)
+        result = await db.execute(stmt)
+        user = result.scalar_one_or_none()
+        
+        if user is None:
+            raise credentials_exception
+            
+        return user
+        
     except JWTError:
         raise credentials_exception
-    
-    # Get user from database
-    from sqlalchemy import select
-    
-    stmt = select(User).where(User.id == user_id)
-    result = await db.execute(stmt)
-    user = result.scalar_one_or_none()
-    
-    if user is None:
-        raise credentials_exception
-    
-    return user
 
 
 async def get_current_active_user(
@@ -154,6 +167,47 @@ async def get_current_active_user(
             detail="Inactive user"
         )
     return current_user
+
+
+async def get_current_user_optional(
+    request: Request,
+    db: AsyncSession = Depends(get_db)
+) -> Optional[User]:
+    """
+    Get current user from JWT token (optional - returns None if not authenticated)
+    """
+    try:
+        # Try to get token from Authorization header first
+        authorization = request.headers.get("Authorization")
+        token = None
+        
+        if authorization and authorization.startswith("Bearer "):
+            token = authorization.split(" ")[1]
+        else:
+            # Fall back to cookie
+            token = request.cookies.get("access_token")
+        
+        if not token:
+            return None
+            
+        payload = verify_token(token)
+        user_id: str = payload.get("sub")
+        token_type: str = payload.get("type")
+        
+        if user_id is None or token_type != "access":
+            return None
+            
+        # Get user from database
+        from sqlalchemy import select
+        
+        stmt = select(User).where(User.id == user_id)
+        result = await db.execute(stmt)
+        user = result.scalar_one_or_none()
+        
+        return user
+        
+    except (JWTError, Exception):
+        return None
 
 
 def require_role(required_role: Union[str, list[str]]):

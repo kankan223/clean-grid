@@ -151,9 +151,9 @@ class InferenceResponse(BaseModel):
 ## Active Context & Working Memory
 
 **Current Phase**: Phase 2: Authentication & Admin Command Center
-**Current Task**: Phase 2 Sprint 1 - Authentication System
-**Last Completed**: Phase 1: Core Reporting Loop - FULLY VALIDATED
-**Next Task**: Implement JWT login endpoint and refresh token rotation
+**Current Task**: Phase 2 Sprint 2 - Admin Dashboard UI
+**Last Completed**: Phase 2 Sprint 1 - Authentication System
+**Next Task**: Build IncidentTable with sorting/filtering and DetailDrawer
 
 **Recent Decisions**:
 - React 18 for leaflet compatibility (avoid v19 conflicts)

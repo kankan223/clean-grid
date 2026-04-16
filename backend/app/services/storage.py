@@ -77,3 +77,28 @@ async def save_upload_file(file) -> str:
 def get_upload_dir() -> str:
     """Get upload directory path"""
     return UPLOAD_DIR
+
+
+class StorageService:
+    """Storage service for file operations"""
+    
+    def __init__(self):
+        self.upload_dir = UPLOAD_DIR
+        self.allowed_extensions = ALLOWED_EXTENSIONS
+        self.max_file_size = MAX_FILE_SIZE
+    
+    async def save_image(self, file) -> str:
+        """
+        Save uploaded image file
+        
+        Args:
+            file: Uploaded file object
+            
+        Returns:
+            URL path for saved file
+        """
+        return await save_upload_file(file)
+
+
+# Create singleton instance
+storage_service = StorageService()

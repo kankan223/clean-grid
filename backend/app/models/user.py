@@ -1,5 +1,10 @@
 """
-User model - Phase 0 placeholder
+User model import - CleanGrid Phase 2
+Import User from points module to avoid duplication
 """
 
-# Phase 0 placeholder - user model will be implemented in Phase 1
+# Import User model from points module
+from app.models.points import User
+
+# Re-export for convenience
+__all__ = ["User"]

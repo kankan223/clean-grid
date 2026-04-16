@@ -9,6 +9,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.pool import NullPool
 
 from app.core.config import settings
+from app.core.redis import redis_client
 
 # Create async engine
 engine = create_async_engine(

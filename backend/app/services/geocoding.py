@@ -68,3 +68,27 @@ async def reverse_geocode(lat: float, lng: float) -> Optional[str]:
     except Exception as e:
         logger.error("Reverse geocoding failed", lat=lat, lng=lng, error=str(e))
         return None
+
+
+class GeocodingService:
+    """Geocoding service for address lookup"""
+    
+    def __init__(self):
+        self.base_url = "https://nominatim.openstreetmap.org/reverse"
+    
+    async def reverse_geocode(self, lat: float, lng: float) -> Optional[str]:
+        """
+        Perform reverse geocoding to get address from coordinates
+        
+        Args:
+            lat: Latitude
+            lng: Longitude
+            
+        Returns:
+            Address string or None if failed
+        """
+        return await reverse_geocode(lat, lng)
+
+
+# Create singleton instance
+geocoding_service = GeocodingService()
