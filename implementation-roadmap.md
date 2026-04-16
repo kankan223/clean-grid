@@ -87,6 +87,12 @@
 - [x] Build role-based access control
 - [x] Create admin guard middleware
 
+### Operational Polish
+- [x] Backend stability patch and import fixes
+- [x] Unified startup automation (start-dev.sh)
+- [x] Service health checks and logging
+- [x] Master documentation (README.md)
+
 ### Admin Dashboard UI
 - [ ] Build IncidentTable with sorting/filtering
 - [ ] Create DetailDrawer for incident details

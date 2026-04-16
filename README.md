@@ -96,14 +96,30 @@ cp frontend/.env.example frontend/.env
 ```
 
 ### 3. Start Development Stack
-```bash
-# Start all services (backend, frontend, database, redis, ai-service)
-docker compose up --build
 
-# Or start services individually:
-docker compose up -d postgres redis ai-service  # Infrastructure
-cd backend && ./run_server.sh                    # Backend (port 8003)
-cd frontend && npm run dev                     # Frontend (port 3000)
+**Option 1: Unified Startup Script (Recommended)**
+```bash
+# Start all services automatically in correct order
+./start-dev.sh
+
+# Stop all services
+./stop-dev.sh
+```
+
+**Option 2: Manual Startup**
+```bash
+# Start infrastructure
+docker compose up -d postgres redis ai-service
+
+# Run migrations and start backend
+cd backend
+source venv/bin/activate
+PYTHONPATH=. alembic upgrade head
+PYTHONPATH=. python app/main.py
+
+# Start frontend (in separate terminal)
+cd frontend
+npm run dev
 ```
 
 ### 4. Database Setup
