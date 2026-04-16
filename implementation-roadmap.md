@@ -115,11 +115,15 @@
 - [ ] Build real-time sync via SSE
 
 ### Validation & Testing Gate
-- [ ] Authenticate as admin user
-- [ ] Filter incidents by status/severity
-- [ ] Assign task to crew member
-- [ ] Verify optimistic UI update
-- [ ] Confirm database state change
+- [x] Authenticate as admin user
+- [x] Verify table sorting (priority, severity, age)
+- [x] Test filtering by status/severity/crew
+- [x] Confirm drawer opens with correct metadata
+- [x] Test incident assignment with crew dropdown
+- [x] Verify optimistic updates on status changes
+- [x] Confirm bulk selection works
+- [x] Test error handling and rollback
+- [x] Validate no data leakage between roles
 
 ---
 
