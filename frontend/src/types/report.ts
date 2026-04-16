@@ -27,6 +27,12 @@ export interface Location {
   lng: number;
 }
 
+export interface Detection {
+  bbox?: [number, number, number, number]; // [x, y, width, height]
+  class?: string;
+  confidence?: number;
+}
+
 export interface AIAnalysisResult {
   status: string;
   message?: string;
@@ -35,4 +41,7 @@ export interface AIAnalysisResult {
   severity?: string;
   confidence?: number;
   error?: string;
+  detections?: Detection[];
+  image_width?: number;
+  image_height?: number;
 }

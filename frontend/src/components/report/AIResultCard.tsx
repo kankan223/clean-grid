@@ -5,16 +5,18 @@
 
 'use client';
 
-import { AIAnalysisResult } from '@/types/report';
+import { AIAnalysisResult, Detection } from '@/types/report';
 
 interface AIResultCardProps {
   result: AIAnalysisResult;
+  uploadedImage?: string;
   onViewOnMap: () => void;
   onReportAnother: () => void;
 }
 
 const AIResultCard: React.FC<AIResultCardProps> = ({ 
   result, 
+  uploadedImage,
   onViewOnMap, 
   onReportAnother 
 }) => {
@@ -84,6 +86,46 @@ const AIResultCard: React.FC<AIResultCardProps> = ({
           </div>
         </div>
 
+        {/* Annotated Image with Bounding Boxes */}
+        {uploadedImage && (
+          <div className="mb-4 relative">
+            <div className="text-sm text-gray-600 mb-2">
+              Detection Results
+            </div>
+            <div className="relative inline-block">
+              <img 
+                src={uploadedImage} 
+                alt="Uploaded waste image" 
+                className="max-w-full h-auto rounded-lg border border-gray-200"
+                style={{ maxHeight: '300px' }}
+              />
+              {/* Bounding Boxes Overlay */}
+              {result.detections && result.detections.length > 0 && (
+                <svg 
+                  className="absolute top-0 left-0 w-full h-full pointer-events-none"
+                  viewBox={`0 0 ${result.image_width || 400} ${result.image_height || 300}`}
+                  preserveAspectRatio="none"
+                >
+                  {result.detections.map((detection: Detection, index: number) => (
+                    <rect
+                      key={index}
+                      x={detection.bbox?.[0] || 0}
+                      y={detection.bbox?.[1] || 0}
+                      width={detection.bbox?.[2] || 0}
+                      height={detection.bbox?.[3] || 0}
+                      fill="none"
+                      stroke={getSeverityColor(result.severity).includes('red') ? '#ef4444' : 
+                              getSeverityColor(result.severity).includes('orange') ? '#f97316' : '#22c55e'}
+                      strokeWidth="2"
+                      rx="2"
+                    />
+                  ))}
+                </svg>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Confidence Score */}
         {result.confidence && (
           <div className="mb-4">
@@ -100,11 +142,15 @@ const AIResultCard: React.FC<AIResultCardProps> = ({
         {result.waste_detected && (
           <div className="mb-4">
             <div className="flex items-center text-green-600">
-              <div className="text-2xl mr-2">+10</div>
-              <div className="text-lg font-medium">points added!</div>
+              <div className="text-2xl mr-2">
+                +{result.severity === 'High' ? '15' : result.severity === 'Medium' ? '10' : '5'}
+              </div>
+              <div className="text-lg font-medium">points earned!</div>
             </div>
             <div className="text-sm text-gray-600">
-              (if logged in)
+              {result.severity === 'High' ? 'High severity bonus' : 
+               result.severity === 'Medium' ? 'Medium severity' : 'Low severity'} 
+              {' '} (if logged in)
             </div>
           </div>
         )}

@@ -67,14 +67,14 @@
 - [x] Create SeverityMarker component (color-coded pins)
 - [x] Implement ReportWaste form with image upload
 - [x] Add LocationPicker with GPS + manual pin
-- [ ] Create AIResultCard for analysis feedback
+- [x] Create AIResultCard for analysis feedback
 
 ### Validation & Testing Gate
-- [ ] Upload test image via frontend
-- [ ] Verify AI JSON response (severity, confidence)
-- [ ] Check PostGIS insert with spatial data
-- [ ] Confirm map marker renders correctly
-- [ ] Test complete report flow end-to-end
+- [x] Upload test image via frontend
+- [x] Verify AI JSON response (severity, confidence)
+- [x] Check PostGIS insert with spatial data
+- [x] Confirm map marker renders correctly
+- [x] Test complete report flow end-to-end
 
 ---
 
