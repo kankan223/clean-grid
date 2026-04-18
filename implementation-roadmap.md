@@ -4,7 +4,7 @@
 
 ### Setup Docker Compose
 - [x] Create docker-compose.yml with 5 services: frontend, backend, ai-service, db, redis
-- [x] Configure PostgreSQL 15 + PostGIS 3.3 container
+- [x] Configure PostgreSQL 15 + PostGIS 3.3 cont## Phase 4: Route Optimization (Next)iner
 - [x] Set up Redis 7 container
 - [x] Create .env.example files for all services
 - [x] Add health checks and proper dependencies
@@ -128,7 +128,91 @@
 
 ---
 
-## Phase 3: Citizen Portal & Gamification (Auth UI, Profile, Leaderboard)
+## Phase 2: Admin Dashboard & Task Assignment ✅ COMPLETE
+
+### Authentication System
+- [x] Implement JWT login endpoint
+- [x] Create refresh token rotation
+- [x] Add HttpOnly cookie handling
+- [x] Build role-based access control
+- [x] Create admin guard middleware
+
+### Operational Polish
+- [x] Backend stability patch and import fixes
+- [x] Unified startup automation (start-dev.sh)
+- [x] Service health checks and logging
+- [x] Master documentation (README.md)
+- [x] Database migration fixes (PostGIS, routes table schema)
+- [x] Frontend startup error detection improvement
+- [x] Duplicate router cleanup (reports_broken/debug/new/complex)
+
+### Admin Dashboard UI
+- [x] Build IncidentTable with sorting/filtering
+- [x] Create DetailDrawer for incident details
+- [x] Implement BulkActionBar for selection
+- [x] Add synchronized AdminMapPanel
+- [x] Create status override controls
+
+### Task Assignment Backend
+- [x] GET /api/incidents with filters/pagination
+- [x] PATCH /api/incidents/:id/assign
+- [x] GET /api/incidents/stats for dashboard KPIs
+- [x] Implement SSE endpoint for real-time updates
+- [x] Add crew management endpoints
+
+### Frontend Admin Features
+- [x] Connect table to API with TanStack Query
+- [x] Implement QueryClientProvider for global query management
+- [x] Implement optimistic updates for status changes
+- [x] Add filter bar with status/severity/date filters
+- [x] Create assign dropdown with crew workload
+- [x] Build real-time sync via SSE
+
+### Validation & Testing Gate
+- [x] Authenticate as admin user
+- [x] Verify table sorting (priority, severity, age)
+- [x] Test filtering by status/severity/crew
+- [x] Confirm drawer opens with correct metadata
+- [x] Test incident assignment with crew dropdown
+- [x] Verify optimistic updates on status changes
+- [x] Confirm bulk selection works
+- [x] Test error handling and rollback
+- [x] Validate no data leakage between roles
+
+---
+
+## Phase 2.5: Security Hardening (Co-Developer Tasks) 🔄 IN PROGRESS
+
+### Rate Limiting & Abuse Prevention
+- [ ] Implement `slowapi` middleware for rate limiting
+- [ ] Add 10 reports/IP/hour on POST /api/reports
+- [ ] Add 5 login attempts/IP/15min on POST /auth/login
+- [ ] Add `X-RateLimit-*` response headers
+- [ ] Create `/api/admin/status` health endpoint
+
+### JWT Refresh Token Rotation
+- [ ] Implement token rotation logic on refresh
+- [ ] Add refresh token invalidation (Redis blacklist)
+- [ ] Implement `token_version` in JWT payload
+- [ ] Create POST /auth/logout endpoint
+- [ ] Add replay attack prevention
+
+### CORS & Production Origin
+- [ ] Make CORS restrictive in production
+- [ ] Whitelist Vercel domain only in prod
+- [ ] Keep localhost/* for development
+- [ ] Add `ALLOWED_ORIGINS` to .env
+
+### Frontend Hydration & UX Polish
+- [ ] Audit Leaflet dynamic imports (ssr: false)
+- [ ] Fix Next.js hydration warnings
+- [ ] Add loading skeletons to report page
+- [ ] Add empty states to admin page
+- [ ] Implement toast error notifications
+
+---
+
+## Phase 3: Citizen Portal & Gamification ✅ COMPLETE
 
 ### Authentication UI
 - [x] Create QueryClientProvider for global TanStack Query support
@@ -169,7 +253,7 @@
 
 ---
 
-## Phase 3: Route Optimization
+## Phase 4: Route Optimization
 
 ### OpenRouteService Integration
 - [ ] Create ORS client with API key handling
