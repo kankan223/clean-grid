@@ -18,6 +18,7 @@ class Settings(BaseSettings):
     APP_NAME: str = "CleanGrid Backend"
     APP_VERSION: str = "1.0.0"
     DEBUG: bool = Field(default=False, env="DEBUG")
+    ENVIRONMENT: str = Field(default="development", env="ENVIRONMENT")
     
     # Database
     DATABASE_URL: str = Field(
@@ -39,6 +40,16 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 15
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
+    
+    # Default Admin Credentials
+    DEFAULT_ADMIN_EMAIL: str = Field(
+        default="admin@cleangrid.io",
+        env="DEFAULT_ADMIN_EMAIL"
+    )
+    DEFAULT_ADMIN_PASSWORD: str = Field(
+        default="CleanGrid@2024",
+        env="DEFAULT_ADMIN_PASSWORD"
+    )
     
     # CORS
     CORS_ORIGINS: str = Field(

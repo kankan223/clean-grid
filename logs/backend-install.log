@@ -1,0 +1,34 @@
+Requirement already satisfied: pip in ./venv/lib/python3.14/site-packages (26.0.1)
+Collecting setuptools
+  Using cached setuptools-82.0.1-py3-none-any.whl.metadata (6.5 kB)
+Collecting wheel
+  Using cached wheel-0.46.3-py3-none-any.whl.metadata (2.4 kB)
+Collecting packaging>=24.0 (from wheel)
+  Using cached packaging-26.1-py3-none-any.whl.metadata (3.5 kB)
+Using cached setuptools-82.0.1-py3-none-any.whl (1.0 MB)
+Using cached wheel-0.46.3-py3-none-any.whl (30 kB)
+Using cached packaging-26.1-py3-none-any.whl (95 kB)
+Installing collected packages: setuptools, packaging, wheel
+
+Successfully installed packaging-26.1 setuptools-82.0.1 wheel-0.46.3
+Requirement already satisfied: setuptools in ./venv/lib/python3.14/site-packages (82.0.1)
+Collecting shapely
+  Using cached shapely-2.1.2-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (6.8 kB)
+Collecting numpy>=1.21 (from shapely)
+  Using cached numpy-2.4.4-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (6.6 kB)
+Using cached shapely-2.1.2-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (3.1 MB)
+Using cached numpy-2.4.4-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (16.6 MB)
+Installing collected packages: numpy, shapely
+
+Successfully installed numpy-2.4.4 shapely-2.1.2
+Collecting fastapi==0.104.1 (from -r requirements.txt (line 6))
+  Using cached fastapi-0.104.1-py3-none-any.whl.metadata (24 kB)
+Collecting uvicorn==0.24.0 (from uvicorn[standard]==0.24.0->-r requirements.txt (line 7))
+  Using cached uvicorn-0.24.0-py3-none-any.whl.metadata (6.4 kB)
+Collecting sqlalchemy==2.0.23 (from -r requirements.txt (line 10))
+  Using cached SQLAlchemy-2.0.23-py3-none-any.whl.metadata (9.6 kB)
+Collecting asyncpg==0.29.0 (from -r requirements.txt (line 11))
+  Using cached asyncpg-0.29.0.tar.gz (820 kB)
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started

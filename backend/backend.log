@@ -1,0 +1,2012 @@
+INFO:     Will watch for changes in these directories: ['/home/ken/Projects/Waste_detection_bot/backend']
+INFO:     Uvicorn running on http://0.0.0.0:8004 (Press CTRL+C to quit)
+INFO:     Started reloader process [1401484] using StatReload
+INFO:     Started server process [1401646]
+INFO:     Waiting for application startup.
+2026-04-17 15:55:23,175 INFO sqlalchemy.engine.Engine select pg_catalog.version()
+2026-04-17 15:55:23,175 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-04-17 15:55:23,185 INFO sqlalchemy.engine.Engine select current_schema()
+2026-04-17 15:55:23,186 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-04-17 15:55:23,191 INFO sqlalchemy.engine.Engine show standard_conforming_strings
+2026-04-17 15:55:23,191 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-04-17 15:55:23,194 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 15:55:23,205 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2026-04-17 15:55:23,205 INFO sqlalchemy.engine.Engine [generated in 0.00076s] ('incidents', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2026-04-17 15:55:23,212 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2026-04-17 15:55:23,212 INFO sqlalchemy.engine.Engine [cached since 0.00768s ago] ('users', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2026-04-17 15:55:23,213 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2026-04-17 15:55:23,213 INFO sqlalchemy.engine.Engine [cached since 0.009074s ago] ('point_transactions', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2026-04-17 15:55:23,217 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = $1::VARCHAR AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != $2::VARCHAR
+2026-04-17 15:55:23,217 INFO sqlalchemy.engine.Engine [generated in 0.00041s] ('userrole', 'pg_catalog')
+2026-04-17 15:55:23,224 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = $1::VARCHAR AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != $2::VARCHAR
+2026-04-17 15:55:23,224 INFO sqlalchemy.engine.Engine [cached since 0.007695s ago] ('badgetier', 'pg_catalog')
+2026-04-17 15:55:23,227 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = $1::VARCHAR AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != $2::VARCHAR
+2026-04-17 15:55:23,227 INFO sqlalchemy.engine.Engine [cached since 0.01051s ago] ('pointreason', 'pg_catalog')
+2026-04-17 15:55:23,230 INFO sqlalchemy.engine.Engine COMMIT
+INFO:     Application startup complete.
+INFO:     127.0.0.1:56380 - "GET /api/reports/health HTTP/1.1" 200 OK
+2026-04-17 15:55:39,033 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 15:55:39,098 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents
+2026-04-17 15:55:39,098 INFO sqlalchemy.engine.Engine [generated in 0.00054s] ()
+2026-04-17 15:55:39,109 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:55:39,110 INFO sqlalchemy.engine.Engine [generated in 0.00065s] ('Pending',)
+2026-04-17 15:55:39,116 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:55:39,117 INFO sqlalchemy.engine.Engine [cached since 0.007955s ago] ('Assigned',)
+2026-04-17 15:55:39,122 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:55:39,123 INFO sqlalchemy.engine.Engine [cached since 0.01387s ago] ('InProgress',)
+2026-04-17 15:55:39,128 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:55:39,128 INFO sqlalchemy.engine.Engine [cached since 0.01917s ago] ('Cleaned',)
+2026-04-17 15:55:39,131 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:55:39,132 INFO sqlalchemy.engine.Engine [cached since 0.02252s ago] ('Verified',)
+2026-04-17 15:55:39,136 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:55:39,136 INFO sqlalchemy.engine.Engine [cached since 0.02705s ago] ('NeedsReview',)
+2026-04-17 15:55:39,142 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 15:55:39,142 INFO sqlalchemy.engine.Engine [generated in 0.00076s] ('High',)
+2026-04-17 15:55:39,146 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 15:55:39,146 INFO sqlalchemy.engine.Engine [cached since 0.004633s ago] ('Medium',)
+2026-04-17 15:55:39,154 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 15:55:39,155 INFO sqlalchemy.engine.Engine [cached since 0.01337s ago] ('Low',)
+2026-04-17 15:55:39,158 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 15:55:39,159 INFO sqlalchemy.engine.Engine [cached since 0.01721s ago] ('None',)
+INFO:     127.0.0.1:46994 - "GET /api/incidents/stats HTTP/1.1" 200 OK
+2026-04-17 15:55:39,173 INFO sqlalchemy.engine.Engine COMMIT
+2026-04-17 15:55:41,196 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 15:55:41,196 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents
+2026-04-17 15:55:41,196 INFO sqlalchemy.engine.Engine [cached since 2.099s ago] ()
+2026-04-17 15:55:41,202 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 15:55:41,209 INFO sqlalchemy.engine.Engine SELECT incidents.id, incidents.reporter_id, incidents.assigned_to, incidents.image_url, incidents.after_image_url, ST_AsBinary(incidents.location) AS location, incidents.address_text, incidents.note, incidents.waste_detected, incidents.confidence, incidents.severity, incidents.bounding_boxes, incidents.status, incidents.priority_score, incidents.is_hotspot, incidents.created_at, incidents.updated_at 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR 
+ LIMIT $2::INTEGER
+2026-04-17 15:55:41,209 INFO sqlalchemy.engine.Engine [generated in 0.00047s] ('active', 100)
+2026-04-17 15:55:41,211 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:55:41,211 INFO sqlalchemy.engine.Engine [cached since 2.102s ago] ('Pending',)
+2026-04-17 15:55:41,216 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:55:41,216 INFO sqlalchemy.engine.Engine [cached since 2.107s ago] ('Assigned',)
+2026-04-17 15:55:41,219 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:55:41,219 INFO sqlalchemy.engine.Engine [cached since 2.11s ago] ('InProgress',)
+2026-04-17 15:55:41,224 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:55:41,224 INFO sqlalchemy.engine.Engine [cached since 2.115s ago] ('Cleaned',)
+2026-04-17 15:55:41,226 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:55:41,227 INFO sqlalchemy.engine.Engine [cached since 2.117s ago] ('Verified',)
+2026-04-17 15:55:41,229 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:55:41,229 INFO sqlalchemy.engine.Engine [cached since 2.12s ago] ('NeedsReview',)
+2026-04-17 15:55:41,231 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 15:55:41,231 INFO sqlalchemy.engine.Engine [cached since 2.09s ago] ('High',)
+2026-04-17 15:55:41,235 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 15:55:41,235 INFO sqlalchemy.engine.Engine [cached since 2.094s ago] ('Medium',)
+2026-04-17 15:55:41,237 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 15:55:41,238 INFO sqlalchemy.engine.Engine [cached since 2.096s ago] ('Low',)
+2026-04-17 15:55:41,240 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 15:55:41,240 INFO sqlalchemy.engine.Engine [cached since 2.099s ago] ('None',)
+INFO:     127.0.0.1:47004 - "GET /api/incidents/stats HTTP/1.1" 200 OK
+2026-04-17 15:55:41,244 INFO sqlalchemy.engine.Engine COMMIT
+INFO:     127.0.0.1:47014 - "GET /api/incidents?status=active&limit=100 HTTP/1.1" 200 OK
+2026-04-17 15:55:41,315 INFO sqlalchemy.engine.Engine COMMIT
+2026-04-17 15:56:10,572 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 15:56:10,573 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents
+2026-04-17 15:56:10,573 INFO sqlalchemy.engine.Engine [cached since 31.48s ago] ()
+2026-04-17 15:56:10,580 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 15:56:10,581 INFO sqlalchemy.engine.Engine SELECT incidents.id, incidents.reporter_id, incidents.assigned_to, incidents.image_url, incidents.after_image_url, ST_AsBinary(incidents.location) AS location, incidents.address_text, incidents.note, incidents.waste_detected, incidents.confidence, incidents.severity, incidents.bounding_boxes, incidents.status, incidents.priority_score, incidents.is_hotspot, incidents.created_at, incidents.updated_at 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR 
+ LIMIT $2::INTEGER
+2026-04-17 15:56:10,581 INFO sqlalchemy.engine.Engine [cached since 29.37s ago] ('active', 100)
+2026-04-17 15:56:10,584 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:56:10,585 INFO sqlalchemy.engine.Engine [cached since 31.48s ago] ('Pending',)
+2026-04-17 15:56:10,589 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:56:10,589 INFO sqlalchemy.engine.Engine [cached since 31.48s ago] ('Assigned',)
+2026-04-17 15:56:10,591 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:56:10,591 INFO sqlalchemy.engine.Engine [cached since 31.48s ago] ('InProgress',)
+2026-04-17 15:56:10,594 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:56:10,595 INFO sqlalchemy.engine.Engine [cached since 31.49s ago] ('Cleaned',)
+2026-04-17 15:56:10,598 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:56:10,599 INFO sqlalchemy.engine.Engine [cached since 31.49s ago] ('Verified',)
+2026-04-17 15:56:10,601 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:56:10,601 INFO sqlalchemy.engine.Engine [cached since 31.49s ago] ('NeedsReview',)
+2026-04-17 15:56:10,603 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 15:56:10,603 INFO sqlalchemy.engine.Engine [cached since 31.46s ago] ('High',)
+2026-04-17 15:56:10,605 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 15:56:10,606 INFO sqlalchemy.engine.Engine [cached since 31.46s ago] ('Medium',)
+2026-04-17 15:56:10,608 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 15:56:10,608 INFO sqlalchemy.engine.Engine [cached since 31.47s ago] ('Low',)
+2026-04-17 15:56:10,611 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 15:56:10,612 INFO sqlalchemy.engine.Engine [cached since 31.47s ago] ('None',)
+INFO:     127.0.0.1:44090 - "GET /api/incidents/stats HTTP/1.1" 200 OK
+2026-04-17 15:56:10,615 INFO sqlalchemy.engine.Engine COMMIT
+INFO:     127.0.0.1:44084 - "GET /api/incidents?status=active&limit=100 HTTP/1.1" 200 OK
+2026-04-17 15:56:10,633 INFO sqlalchemy.engine.Engine COMMIT
+2026-04-17 15:56:40,652 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 15:56:40,653 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents
+2026-04-17 15:56:40,653 INFO sqlalchemy.engine.Engine [cached since 61.56s ago] ()
+2026-04-17 15:56:40,654 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 15:56:40,655 INFO sqlalchemy.engine.Engine SELECT incidents.id, incidents.reporter_id, incidents.assigned_to, incidents.image_url, incidents.after_image_url, ST_AsBinary(incidents.location) AS location, incidents.address_text, incidents.note, incidents.waste_detected, incidents.confidence, incidents.severity, incidents.bounding_boxes, incidents.status, incidents.priority_score, incidents.is_hotspot, incidents.created_at, incidents.updated_at 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR 
+ LIMIT $2::INTEGER
+2026-04-17 15:56:40,656 INFO sqlalchemy.engine.Engine [cached since 59.45s ago] ('active', 100)
+2026-04-17 15:56:40,664 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:56:40,665 INFO sqlalchemy.engine.Engine [cached since 61.56s ago] ('Pending',)
+2026-04-17 15:56:40,671 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:56:40,671 INFO sqlalchemy.engine.Engine [cached since 61.56s ago] ('Assigned',)
+2026-04-17 15:56:40,674 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:56:40,674 INFO sqlalchemy.engine.Engine [cached since 61.57s ago] ('InProgress',)
+2026-04-17 15:56:40,677 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:56:40,678 INFO sqlalchemy.engine.Engine [cached since 61.57s ago] ('Cleaned',)
+2026-04-17 15:56:40,682 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:56:40,682 INFO sqlalchemy.engine.Engine [cached since 61.57s ago] ('Verified',)
+2026-04-17 15:56:40,685 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:56:40,685 INFO sqlalchemy.engine.Engine [cached since 61.58s ago] ('NeedsReview',)
+2026-04-17 15:56:40,688 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 15:56:40,689 INFO sqlalchemy.engine.Engine [cached since 61.55s ago] ('High',)
+2026-04-17 15:56:40,692 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 15:56:40,693 INFO sqlalchemy.engine.Engine [cached since 61.55s ago] ('Medium',)
+2026-04-17 15:56:40,695 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 15:56:40,695 INFO sqlalchemy.engine.Engine [cached since 61.55s ago] ('Low',)
+2026-04-17 15:56:40,697 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 15:56:40,697 INFO sqlalchemy.engine.Engine [cached since 61.56s ago] ('None',)
+INFO:     127.0.0.1:44260 - "GET /api/incidents/stats HTTP/1.1" 200 OK
+2026-04-17 15:56:40,700 INFO sqlalchemy.engine.Engine COMMIT
+INFO:     127.0.0.1:44250 - "GET /api/incidents?status=active&limit=100 HTTP/1.1" 200 OK
+2026-04-17 15:56:40,719 INFO sqlalchemy.engine.Engine COMMIT
+INFO:     127.0.0.1:34196 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34202 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:59768 - "GET /api/auth/me HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:59774 - "GET /api/auth/me HTTP/1.1" 404 Not Found
+2026-04-17 15:59:40,340 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 15:59:40,341 INFO sqlalchemy.engine.Engine SELECT incidents.id, incidents.reporter_id, incidents.assigned_to, incidents.image_url, incidents.after_image_url, ST_AsBinary(incidents.location) AS location, incidents.address_text, incidents.note, incidents.waste_detected, incidents.confidence, incidents.severity, incidents.bounding_boxes, incidents.status, incidents.priority_score, incidents.is_hotspot, incidents.created_at, incidents.updated_at 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR 
+ LIMIT $2::INTEGER
+2026-04-17 15:59:40,341 INFO sqlalchemy.engine.Engine [cached since 239.1s ago] ('active', 100)
+2026-04-17 15:59:40,354 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 15:59:40,354 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents
+2026-04-17 15:59:40,354 INFO sqlalchemy.engine.Engine [cached since 241.3s ago] ()
+2026-04-17 15:59:40,383 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:59:40,384 INFO sqlalchemy.engine.Engine [cached since 241.3s ago] ('Pending',)
+2026-04-17 15:59:40,398 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:59:40,398 INFO sqlalchemy.engine.Engine [cached since 241.3s ago] ('Assigned',)
+2026-04-17 15:59:40,409 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:59:40,410 INFO sqlalchemy.engine.Engine [cached since 241.3s ago] ('InProgress',)
+2026-04-17 15:59:40,420 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:59:40,433 INFO sqlalchemy.engine.Engine [cached since 241.3s ago] ('Cleaned',)
+INFO:     127.0.0.1:59740 - "GET /api/incidents?status=active&limit=100 HTTP/1.1" 200 OK
+2026-04-17 15:59:40,439 INFO sqlalchemy.engine.Engine COMMIT
+2026-04-17 15:59:40,441 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:59:40,441 INFO sqlalchemy.engine.Engine [cached since 241.3s ago] ('Verified',)
+2026-04-17 15:59:40,459 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:59:40,466 INFO sqlalchemy.engine.Engine [cached since 241.4s ago] ('NeedsReview',)
+2026-04-17 15:59:40,511 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 15:59:40,512 INFO sqlalchemy.engine.Engine [cached since 241.4s ago] ('High',)
+2026-04-17 15:59:40,557 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 15:59:40,558 INFO sqlalchemy.engine.Engine [cached since 241.4s ago] ('Medium',)
+2026-04-17 15:59:40,570 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 15:59:40,571 INFO sqlalchemy.engine.Engine [cached since 241.4s ago] ('Low',)
+2026-04-17 15:59:40,593 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 15:59:40,593 INFO sqlalchemy.engine.Engine [cached since 241.5s ago] ('None',)
+INFO:     127.0.0.1:59756 - "GET /api/incidents/stats HTTP/1.1" 200 OK
+2026-04-17 15:59:40,601 INFO sqlalchemy.engine.Engine COMMIT
+2026-04-17 15:59:40,927 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 15:59:40,927 INFO sqlalchemy.engine.Engine SELECT incidents.id, incidents.reporter_id, incidents.assigned_to, incidents.image_url, incidents.after_image_url, ST_AsBinary(incidents.location) AS location, incidents.address_text, incidents.note, incidents.waste_detected, incidents.confidence, incidents.severity, incidents.bounding_boxes, incidents.status, incidents.priority_score, incidents.is_hotspot, incidents.created_at, incidents.updated_at 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR 
+ LIMIT $2::INTEGER
+2026-04-17 15:59:40,927 INFO sqlalchemy.engine.Engine [cached since 239.7s ago] ('active', 100)
+INFO:     127.0.0.1:59740 - "GET /api/incidents?status=active&limit=100 HTTP/1.1" 200 OK
+2026-04-17 15:59:40,990 INFO sqlalchemy.engine.Engine COMMIT
+2026-04-17 15:59:41,917 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 15:59:41,918 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents
+2026-04-17 15:59:41,918 INFO sqlalchemy.engine.Engine [cached since 242.8s ago] ()
+2026-04-17 15:59:41,925 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:59:41,925 INFO sqlalchemy.engine.Engine [cached since 242.8s ago] ('Pending',)
+2026-04-17 15:59:41,938 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:59:41,939 INFO sqlalchemy.engine.Engine [cached since 242.8s ago] ('Assigned',)
+2026-04-17 15:59:41,943 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:59:41,943 INFO sqlalchemy.engine.Engine [cached since 242.8s ago] ('InProgress',)
+2026-04-17 15:59:41,948 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:59:41,949 INFO sqlalchemy.engine.Engine [cached since 242.8s ago] ('Cleaned',)
+2026-04-17 15:59:41,952 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:59:41,952 INFO sqlalchemy.engine.Engine [cached since 242.8s ago] ('Verified',)
+2026-04-17 15:59:41,955 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:59:41,955 INFO sqlalchemy.engine.Engine [cached since 242.8s ago] ('NeedsReview',)
+2026-04-17 15:59:41,957 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 15:59:41,958 INFO sqlalchemy.engine.Engine [cached since 242.8s ago] ('High',)
+2026-04-17 15:59:41,962 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 15:59:41,962 INFO sqlalchemy.engine.Engine [cached since 242.8s ago] ('Medium',)
+2026-04-17 15:59:41,965 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 15:59:41,965 INFO sqlalchemy.engine.Engine [cached since 242.8s ago] ('Low',)
+2026-04-17 15:59:41,970 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 15:59:41,970 INFO sqlalchemy.engine.Engine [cached since 242.8s ago] ('None',)
+INFO:     127.0.0.1:59756 - "GET /api/incidents/stats HTTP/1.1" 200 OK
+2026-04-17 15:59:41,973 INFO sqlalchemy.engine.Engine COMMIT
+2026-04-17 15:59:50,672 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 15:59:50,693 INFO sqlalchemy.engine.Engine SELECT incidents.id, incidents.reporter_id, incidents.assigned_to, incidents.image_url, incidents.after_image_url, ST_AsBinary(incidents.location) AS location, incidents.address_text, incidents.note, incidents.waste_detected, incidents.confidence, incidents.severity, incidents.bounding_boxes, incidents.status, incidents.priority_score, incidents.is_hotspot, incidents.created_at, incidents.updated_at 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR 
+ LIMIT $2::INTEGER
+2026-04-17 15:59:50,694 INFO sqlalchemy.engine.Engine [cached since 249.5s ago] ('active', 100)
+2026-04-17 15:59:50,695 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 15:59:50,696 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents
+2026-04-17 15:59:50,696 INFO sqlalchemy.engine.Engine [cached since 251.6s ago] ()
+2026-04-17 15:59:50,713 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:59:50,714 INFO sqlalchemy.engine.Engine [cached since 251.6s ago] ('Pending',)
+2026-04-17 15:59:50,724 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:59:50,724 INFO sqlalchemy.engine.Engine [cached since 251.6s ago] ('Assigned',)
+2026-04-17 15:59:50,727 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:59:50,728 INFO sqlalchemy.engine.Engine [cached since 251.6s ago] ('InProgress',)
+2026-04-17 15:59:50,733 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:59:50,733 INFO sqlalchemy.engine.Engine [cached since 251.6s ago] ('Cleaned',)
+2026-04-17 15:59:50,735 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:59:50,736 INFO sqlalchemy.engine.Engine [cached since 251.6s ago] ('Verified',)
+2026-04-17 15:59:50,738 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:59:50,738 INFO sqlalchemy.engine.Engine [cached since 251.6s ago] ('NeedsReview',)
+2026-04-17 15:59:50,747 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 15:59:50,748 INFO sqlalchemy.engine.Engine [cached since 251.6s ago] ('High',)
+2026-04-17 15:59:50,755 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 15:59:50,756 INFO sqlalchemy.engine.Engine [cached since 251.6s ago] ('Medium',)
+2026-04-17 15:59:50,759 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 15:59:50,759 INFO sqlalchemy.engine.Engine [cached since 251.6s ago] ('Low',)
+2026-04-17 15:59:50,786 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 15:59:50,788 INFO sqlalchemy.engine.Engine [cached since 251.6s ago] ('None',)
+INFO:     127.0.0.1:60704 - "GET /api/incidents/stats HTTP/1.1" 200 OK
+2026-04-17 15:59:50,794 INFO sqlalchemy.engine.Engine COMMIT
+INFO:     127.0.0.1:60702 - "GET /api/incidents?status=active&limit=100 HTTP/1.1" 200 OK
+2026-04-17 15:59:50,830 INFO sqlalchemy.engine.Engine COMMIT
+2026-04-17 15:59:51,009 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 15:59:51,009 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents
+2026-04-17 15:59:51,010 INFO sqlalchemy.engine.Engine [cached since 251.9s ago] ()
+2026-04-17 15:59:51,200 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 15:59:51,203 INFO sqlalchemy.engine.Engine SELECT incidents.id, incidents.reporter_id, incidents.assigned_to, incidents.image_url, incidents.after_image_url, ST_AsBinary(incidents.location) AS location, incidents.address_text, incidents.note, incidents.waste_detected, incidents.confidence, incidents.severity, incidents.bounding_boxes, incidents.status, incidents.priority_score, incidents.is_hotspot, incidents.created_at, incidents.updated_at 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR 
+ LIMIT $2::INTEGER
+2026-04-17 15:59:51,204 INFO sqlalchemy.engine.Engine [cached since 250s ago] ('active', 100)
+2026-04-17 15:59:51,209 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:59:51,210 INFO sqlalchemy.engine.Engine [cached since 252.1s ago] ('Pending',)
+2026-04-17 15:59:51,214 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:59:51,216 INFO sqlalchemy.engine.Engine [cached since 252.1s ago] ('Assigned',)
+2026-04-17 15:59:51,228 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:59:51,228 INFO sqlalchemy.engine.Engine [cached since 252.1s ago] ('InProgress',)
+2026-04-17 15:59:51,233 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:59:51,233 INFO sqlalchemy.engine.Engine [cached since 252.1s ago] ('Cleaned',)
+2026-04-17 15:59:51,235 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:59:51,235 INFO sqlalchemy.engine.Engine [cached since 252.1s ago] ('Verified',)
+2026-04-17 15:59:51,237 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 15:59:51,238 INFO sqlalchemy.engine.Engine [cached since 252.1s ago] ('NeedsReview',)
+2026-04-17 15:59:51,240 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 15:59:51,240 INFO sqlalchemy.engine.Engine [cached since 252.1s ago] ('High',)
+2026-04-17 15:59:51,245 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 15:59:51,245 INFO sqlalchemy.engine.Engine [cached since 252.1s ago] ('Medium',)
+2026-04-17 15:59:51,251 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 15:59:51,251 INFO sqlalchemy.engine.Engine [cached since 252.1s ago] ('Low',)
+INFO:     127.0.0.1:60702 - "GET /api/incidents?status=active&limit=100 HTTP/1.1" 200 OK
+2026-04-17 15:59:51,253 INFO sqlalchemy.engine.Engine COMMIT
+2026-04-17 15:59:51,259 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 15:59:51,260 INFO sqlalchemy.engine.Engine [cached since 252.1s ago] ('None',)
+INFO:     127.0.0.1:60704 - "GET /api/incidents/stats HTTP/1.1" 200 OK
+2026-04-17 15:59:51,285 INFO sqlalchemy.engine.Engine COMMIT
+INFO:     127.0.0.1:40540 - "POST /api/reports HTTP/1.1" 307 Temporary Redirect
+{"path": "/api/reports/", "method": "POST", "error": "'NoneType' object has no attribute 'pipeline'", "event": "Unhandled exception", "logger": "app.main", "level": "error", "timestamp": "2026-04-17T10:30:18.947984Z", "exception": "Traceback (most recent call last):\n  File \"/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/starlette/middleware/errors.py\", line 164, in __call__\n    await self.app(scope, receive, _send)\n  File \"/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/starlette/middleware/trustedhost.py\", line 51, in __call__\n    await self.app(scope, receive, send)\n  File \"/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/starlette/middleware/cors.py\", line 96, in __call__\n    await self.simple_response(scope, receive, send, request_headers=headers)\n  File \"/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/starlette/middleware/cors.py\", line 154, in simple_response\n    await self.app(scope, receive, send)\n  File \"/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/starlette/middleware/exceptions.py\", line 63, in __call__\n    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)\n  File \"/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/starlette/_exception_handler.py\", line 53, in wrapped_app\n    raise exc\n  File \"/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/starlette/_exception_handler.py\", line 42, in wrapped_app\n    await app(scope, receive, sender)\n  File \"/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/fastapi/middleware/asyncexitstack.py\", line 18, in __call__\n    await self.app(scope, receive, send)\n  File \"/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/starlette/routing.py\", line 660, in __call__\n    await self.middleware_stack(scope, receive, send)\n  File \"/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/starlette/routing.py\", line 680, in app\n    await route.handle(scope, receive, send)\n  File \"/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/starlette/routing.py\", line 276, in handle\n    await self.app(scope, receive, send)\n  File \"/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/fastapi/routing.py\", line 134, in app\n    await wrap_app_handling_exceptions(app, request)(scope, receive, send)\n  File \"/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/starlette/_exception_handler.py\", line 53, in wrapped_app\n    raise exc\n  File \"/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/starlette/_exception_handler.py\", line 42, in wrapped_app\n    await app(scope, receive, sender)\n  File \"/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/fastapi/routing.py\", line 120, in app\n    response = await f(request)\n               ^^^^^^^^^^^^^^^^\n  File \"/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/fastapi/routing.py\", line 674, in app\n    raw_response = await run_endpoint_function(\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<3 lines>...\n    )\n    ^\n  File \"/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/fastapi/routing.py\", line 328, in run_endpoint_function\n    return await dependant.call(**values)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/ken/Projects/Waste_detection_bot/backend/app/routers/reports.py\", line 141, in create_report\n    if not await check_rate_limit(request):\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/ken/Projects/Waste_detection_bot/backend/app/routers/reports.py\", line 38, in check_rate_limit\n    pipeline = redis_client.pipeline()\n               ^^^^^^^^^^^^^^^^^^^^^\nAttributeError: 'NoneType' object has no attribute 'pipeline'"}
+INFO:     127.0.0.1:40540 - "POST /api/reports/ HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/protocols/http/h11_impl.py", line 415, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.scope, self.receive, self.send
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/fastapi/applications.py", line 1159, in __call__
+    await super().__call__(scope, receive, send)
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/starlette/applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/starlette/middleware/trustedhost.py", line 51, in __call__
+    await self.app(scope, receive, send)
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/starlette/middleware/cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/starlette/middleware/cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/starlette/routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/starlette/routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/starlette/routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/fastapi/routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/fastapi/routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/fastapi/routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/fastapi/routing.py", line 328, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/app/routers/reports.py", line 141, in create_report
+    if not await check_rate_limit(request):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/app/routers/reports.py", line 38, in check_rate_limit
+    pipeline = redis_client.pipeline()
+               ^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'pipeline'
+WARNING:  StatReload detected changes in 'app/main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [1401646]
+Process SpawnProcess-2:
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/multiprocessing/process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/usr/lib/python3.14/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+    ~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "/usr/lib/python3.14/asyncio/runners.py", line 204, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "/usr/lib/python3.14/asyncio/runners.py", line 127, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib/python3.14/asyncio/base_events.py", line 719, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/server.py", line 79, in serve
+    await self._serve(sockets)
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/server.py", line 86, in _serve
+    config.load()
+    ~~~~~~~~~~~^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/config.py", line 441, in load
+    self.loaded_app = import_from_string(self.app)
+                      ~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "/usr/lib/python3.14/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1406, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/home/ken/Projects/Waste_detection_bot/backend/app/main.py", line 14, in <module>
+    from app.core.config import settings
+  File "/home/ken/Projects/Waste_detection_bot/backend/app/core/config.py", line 105, in <module>
+    settings = Settings()
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/pydantic_settings/main.py", line 242, in __init__
+    super().__init__(**__pydantic_self__.__class__._settings_build_values(sources, init_kwargs))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/pydantic/main.py", line 263, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+pydantic_core._pydantic_core.ValidationError: 2 validation errors for Settings
+DEFAULT_ADMIN_EMAIL
+  Extra inputs are not permitted [type=extra_forbidden, input_value='admin@cleangrid.io', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/extra_forbidden
+DEFAULT_ADMIN_PASSWORD
+  Extra inputs are not permitted [type=extra_forbidden, input_value='CleanGrid@2024', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/extra_forbidden
+WARNING:  StatReload detected changes in 'app/core/config.py'. Reloading...
+INFO:     Started server process [1429474]
+INFO:     Waiting for application startup.
+2026-04-17 16:16:43,406 INFO sqlalchemy.engine.Engine select pg_catalog.version()
+2026-04-17 16:16:43,407 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-04-17 16:16:43,432 INFO sqlalchemy.engine.Engine select current_schema()
+2026-04-17 16:16:43,433 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-04-17 16:16:43,443 INFO sqlalchemy.engine.Engine show standard_conforming_strings
+2026-04-17 16:16:43,444 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-04-17 16:16:43,452 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 16:16:43,482 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2026-04-17 16:16:43,482 INFO sqlalchemy.engine.Engine [generated in 0.00054s] ('incidents', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2026-04-17 16:16:43,505 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2026-04-17 16:16:43,506 INFO sqlalchemy.engine.Engine [cached since 0.02374s ago] ('users', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2026-04-17 16:16:43,533 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2026-04-17 16:16:43,546 INFO sqlalchemy.engine.Engine [cached since 0.05142s ago] ('point_transactions', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2026-04-17 16:16:43,596 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = $1::VARCHAR AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != $2::VARCHAR
+2026-04-17 16:16:43,597 INFO sqlalchemy.engine.Engine [generated in 0.00040s] ('userrole', 'pg_catalog')
+2026-04-17 16:16:43,627 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = $1::VARCHAR AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != $2::VARCHAR
+2026-04-17 16:16:43,627 INFO sqlalchemy.engine.Engine [cached since 0.03114s ago] ('badgetier', 'pg_catalog')
+2026-04-17 16:16:43,646 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = $1::VARCHAR AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != $2::VARCHAR
+2026-04-17 16:16:43,647 INFO sqlalchemy.engine.Engine [cached since 0.05088s ago] ('pointreason', 'pg_catalog')
+2026-04-17 16:16:43,649 INFO sqlalchemy.engine.Engine COMMIT
+WARNING:  StatReload detected changes in 'seed/seed.py'. Reloading...
+INFO:     Application startup complete.
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [1429474]
+WARNING:  StatReload detected changes in 'seed/seed.py'. Reloading...
+INFO:     Started server process [1429626]
+INFO:     Waiting for application startup.
+2026-04-17 16:16:59,924 INFO sqlalchemy.engine.Engine select pg_catalog.version()
+2026-04-17 16:16:59,925 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-04-17 16:16:59,936 INFO sqlalchemy.engine.Engine select current_schema()
+2026-04-17 16:16:59,951 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-04-17 16:16:59,985 INFO sqlalchemy.engine.Engine show standard_conforming_strings
+2026-04-17 16:16:59,985 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-04-17 16:17:00,000 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 16:17:00,051 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2026-04-17 16:17:00,051 INFO sqlalchemy.engine.Engine [generated in 0.00079s] ('incidents', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2026-04-17 16:17:00,064 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2026-04-17 16:17:00,065 INFO sqlalchemy.engine.Engine [cached since 0.01521s ago] ('users', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2026-04-17 16:17:00,068 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2026-04-17 16:17:00,068 INFO sqlalchemy.engine.Engine [cached since 0.01775s ago] ('point_transactions', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2026-04-17 16:17:00,076 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = $1::VARCHAR AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != $2::VARCHAR
+2026-04-17 16:17:00,077 INFO sqlalchemy.engine.Engine [generated in 0.00067s] ('userrole', 'pg_catalog')
+2026-04-17 16:17:00,090 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = $1::VARCHAR AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != $2::VARCHAR
+2026-04-17 16:17:00,090 INFO sqlalchemy.engine.Engine [cached since 0.01429s ago] ('badgetier', 'pg_catalog')
+2026-04-17 16:17:00,103 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = $1::VARCHAR AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != $2::VARCHAR
+2026-04-17 16:17:00,106 INFO sqlalchemy.engine.Engine [cached since 0.03s ago] ('pointreason', 'pg_catalog')
+2026-04-17 16:17:00,113 INFO sqlalchemy.engine.Engine COMMIT
+INFO:     Application startup complete.
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [1429626]
+INFO:     Started server process [1430061]
+INFO:     Waiting for application startup.
+2026-04-17 16:17:14,045 INFO sqlalchemy.engine.Engine select pg_catalog.version()
+2026-04-17 16:17:14,046 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-04-17 16:17:14,066 INFO sqlalchemy.engine.Engine select current_schema()
+2026-04-17 16:17:14,066 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-04-17 16:17:14,073 INFO sqlalchemy.engine.Engine show standard_conforming_strings
+2026-04-17 16:17:14,076 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-04-17 16:17:14,087 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 16:17:14,284 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2026-04-17 16:17:14,284 INFO sqlalchemy.engine.Engine [generated in 0.00210s] ('incidents', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2026-04-17 16:17:14,320 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2026-04-17 16:17:14,355 INFO sqlalchemy.engine.Engine [cached since 0.07242s ago] ('users', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2026-04-17 16:17:14,377 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2026-04-17 16:17:14,394 INFO sqlalchemy.engine.Engine [cached since 0.112s ago] ('point_transactions', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2026-04-17 16:17:14,461 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = $1::VARCHAR AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != $2::VARCHAR
+2026-04-17 16:17:14,462 INFO sqlalchemy.engine.Engine [generated in 0.00072s] ('userrole', 'pg_catalog')
+2026-04-17 16:17:14,479 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = $1::VARCHAR AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != $2::VARCHAR
+2026-04-17 16:17:14,479 INFO sqlalchemy.engine.Engine [cached since 0.0181s ago] ('badgetier', 'pg_catalog')
+2026-04-17 16:17:14,494 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = $1::VARCHAR AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != $2::VARCHAR
+2026-04-17 16:17:14,495 INFO sqlalchemy.engine.Engine [cached since 0.03366s ago] ('pointreason', 'pg_catalog')
+2026-04-17 16:17:14,497 INFO sqlalchemy.engine.Engine COMMIT
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'seed/seed.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [1430061]
+INFO:     Started server process [1430898]
+INFO:     Waiting for application startup.
+2026-04-17 16:17:46,351 INFO sqlalchemy.engine.Engine select pg_catalog.version()
+2026-04-17 16:17:46,352 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-04-17 16:17:46,358 INFO sqlalchemy.engine.Engine select current_schema()
+2026-04-17 16:17:46,358 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-04-17 16:17:46,363 INFO sqlalchemy.engine.Engine show standard_conforming_strings
+2026-04-17 16:17:46,364 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-04-17 16:17:46,368 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 16:17:46,656 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2026-04-17 16:17:46,657 INFO sqlalchemy.engine.Engine [generated in 0.00058s] ('incidents', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2026-04-17 16:17:46,665 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2026-04-17 16:17:46,665 INFO sqlalchemy.engine.Engine [cached since 0.009007s ago] ('users', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2026-04-17 16:17:46,668 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2026-04-17 16:17:46,668 INFO sqlalchemy.engine.Engine [cached since 0.01189s ago] ('point_transactions', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2026-04-17 16:17:46,676 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = $1::VARCHAR AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != $2::VARCHAR
+2026-04-17 16:17:46,676 INFO sqlalchemy.engine.Engine [generated in 0.00040s] ('userrole', 'pg_catalog')
+2026-04-17 16:17:46,686 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = $1::VARCHAR AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != $2::VARCHAR
+2026-04-17 16:17:46,687 INFO sqlalchemy.engine.Engine [cached since 0.01115s ago] ('badgetier', 'pg_catalog')
+2026-04-17 16:17:46,711 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = $1::VARCHAR AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != $2::VARCHAR
+2026-04-17 16:17:46,711 INFO sqlalchemy.engine.Engine [cached since 0.03539s ago] ('pointreason', 'pg_catalog')
+2026-04-17 16:17:46,743 INFO sqlalchemy.engine.Engine COMMIT
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'seed/seed.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [1430898]
+INFO:     Started server process [1432381]
+INFO:     Waiting for application startup.
+2026-04-17 16:18:54,752 INFO sqlalchemy.engine.Engine select pg_catalog.version()
+2026-04-17 16:18:54,752 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-04-17 16:18:54,760 INFO sqlalchemy.engine.Engine select current_schema()
+2026-04-17 16:18:54,761 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-04-17 16:18:54,765 INFO sqlalchemy.engine.Engine show standard_conforming_strings
+2026-04-17 16:18:54,766 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-04-17 16:18:54,770 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 16:18:54,798 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2026-04-17 16:18:54,799 INFO sqlalchemy.engine.Engine [generated in 0.00110s] ('incidents', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2026-04-17 16:18:54,817 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2026-04-17 16:18:54,820 INFO sqlalchemy.engine.Engine [cached since 0.02166s ago] ('users', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2026-04-17 16:18:54,823 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2026-04-17 16:18:54,826 INFO sqlalchemy.engine.Engine [cached since 0.02837s ago] ('point_transactions', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2026-04-17 16:18:54,845 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = $1::VARCHAR AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != $2::VARCHAR
+2026-04-17 16:18:54,845 INFO sqlalchemy.engine.Engine [generated in 0.00060s] ('userrole', 'pg_catalog')
+2026-04-17 16:18:54,860 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = $1::VARCHAR AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != $2::VARCHAR
+2026-04-17 16:18:54,860 INFO sqlalchemy.engine.Engine [cached since 0.01601s ago] ('badgetier', 'pg_catalog')
+2026-04-17 16:18:54,870 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = $1::VARCHAR AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != $2::VARCHAR
+2026-04-17 16:18:54,871 INFO sqlalchemy.engine.Engine [cached since 0.02632s ago] ('pointreason', 'pg_catalog')
+2026-04-17 16:18:54,873 INFO sqlalchemy.engine.Engine COMMIT
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'seed/seed.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [1432381]
+INFO:     Started server process [1433287]
+INFO:     Waiting for application startup.
+2026-04-17 16:19:28,505 INFO sqlalchemy.engine.Engine select pg_catalog.version()
+2026-04-17 16:19:28,505 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-04-17 16:19:28,520 INFO sqlalchemy.engine.Engine select current_schema()
+2026-04-17 16:19:28,520 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-04-17 16:19:28,542 INFO sqlalchemy.engine.Engine show standard_conforming_strings
+2026-04-17 16:19:28,550 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-04-17 16:19:28,571 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 16:19:28,635 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2026-04-17 16:19:28,635 INFO sqlalchemy.engine.Engine [generated in 0.00057s] ('incidents', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2026-04-17 16:19:28,646 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2026-04-17 16:19:28,647 INFO sqlalchemy.engine.Engine [cached since 0.01211s ago] ('users', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2026-04-17 16:19:28,652 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2026-04-17 16:19:28,655 INFO sqlalchemy.engine.Engine [cached since 0.02046s ago] ('point_transactions', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2026-04-17 16:19:28,680 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = $1::VARCHAR AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != $2::VARCHAR
+2026-04-17 16:19:28,680 INFO sqlalchemy.engine.Engine [generated in 0.00039s] ('userrole', 'pg_catalog')
+2026-04-17 16:19:28,688 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = $1::VARCHAR AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != $2::VARCHAR
+2026-04-17 16:19:28,688 INFO sqlalchemy.engine.Engine [cached since 0.008275s ago] ('badgetier', 'pg_catalog')
+2026-04-17 16:19:28,701 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = $1::VARCHAR AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != $2::VARCHAR
+2026-04-17 16:19:28,701 INFO sqlalchemy.engine.Engine [cached since 0.02072s ago] ('pointreason', 'pg_catalog')
+2026-04-17 16:19:28,717 INFO sqlalchemy.engine.Engine COMMIT
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'seed/seed.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [1433287]
+INFO:     Started server process [1434008]
+INFO:     Waiting for application startup.
+2026-04-17 16:20:08,720 INFO sqlalchemy.engine.Engine select pg_catalog.version()
+2026-04-17 16:20:08,720 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-04-17 16:20:08,729 INFO sqlalchemy.engine.Engine select current_schema()
+2026-04-17 16:20:08,729 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-04-17 16:20:08,738 INFO sqlalchemy.engine.Engine show standard_conforming_strings
+2026-04-17 16:20:08,738 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-04-17 16:20:08,742 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 16:20:08,903 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2026-04-17 16:20:08,903 INFO sqlalchemy.engine.Engine [generated in 0.00473s] ('incidents', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2026-04-17 16:20:08,924 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2026-04-17 16:20:08,924 INFO sqlalchemy.engine.Engine [cached since 0.02524s ago] ('users', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2026-04-17 16:20:08,926 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2026-04-17 16:20:08,926 INFO sqlalchemy.engine.Engine [cached since 0.02758s ago] ('point_transactions', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2026-04-17 16:20:08,935 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = $1::VARCHAR AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != $2::VARCHAR
+2026-04-17 16:20:08,936 INFO sqlalchemy.engine.Engine [generated in 0.00141s] ('userrole', 'pg_catalog')
+2026-04-17 16:20:08,950 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = $1::VARCHAR AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != $2::VARCHAR
+2026-04-17 16:20:08,955 INFO sqlalchemy.engine.Engine [cached since 0.01994s ago] ('badgetier', 'pg_catalog')
+2026-04-17 16:20:08,964 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = $1::VARCHAR AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != $2::VARCHAR
+2026-04-17 16:20:08,964 INFO sqlalchemy.engine.Engine [cached since 0.02924s ago] ('pointreason', 'pg_catalog')
+2026-04-17 16:20:08,966 INFO sqlalchemy.engine.Engine COMMIT
+INFO:     Application startup complete.
+INFO:     127.0.0.1:33294 - "GET /api/auth/me HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:33304 - "GET /api/auth/me HTTP/1.1" 404 Not Found
+2026-04-17 16:24:33,967 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 16:24:34,010 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents
+2026-04-17 16:24:34,010 INFO sqlalchemy.engine.Engine [generated in 0.00034s] ()
+2026-04-17 16:24:34,012 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 16:24:34,021 INFO sqlalchemy.engine.Engine SELECT incidents.id, incidents.reporter_id, incidents.assigned_to, incidents.image_url, incidents.after_image_url, ST_AsBinary(incidents.location) AS location, incidents.address_text, incidents.note, incidents.waste_detected, incidents.confidence, incidents.severity, incidents.bounding_boxes, incidents.status, incidents.priority_score, incidents.is_hotspot, incidents.created_at, incidents.updated_at 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR 
+ LIMIT $2::INTEGER
+2026-04-17 16:24:34,021 INFO sqlalchemy.engine.Engine [generated in 0.00060s] ('active', 100)
+2026-04-17 16:24:34,030 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:24:34,030 INFO sqlalchemy.engine.Engine [generated in 0.00030s] ('Pending',)
+2026-04-17 16:24:34,034 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:24:34,034 INFO sqlalchemy.engine.Engine [cached since 0.004149s ago] ('Assigned',)
+2026-04-17 16:24:34,039 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:24:34,039 INFO sqlalchemy.engine.Engine [cached since 0.008809s ago] ('InProgress',)
+2026-04-17 16:24:34,042 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:24:34,042 INFO sqlalchemy.engine.Engine [cached since 0.01219s ago] ('Cleaned',)
+2026-04-17 16:24:34,046 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:24:34,047 INFO sqlalchemy.engine.Engine [cached since 0.01656s ago] ('Verified',)
+2026-04-17 16:24:34,051 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:24:34,051 INFO sqlalchemy.engine.Engine [cached since 0.02123s ago] ('NeedsReview',)
+2026-04-17 16:24:34,061 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:24:34,062 INFO sqlalchemy.engine.Engine [generated in 0.00099s] ('High',)
+2026-04-17 16:24:34,070 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:24:34,070 INFO sqlalchemy.engine.Engine [cached since 0.009378s ago] ('Medium',)
+2026-04-17 16:24:34,073 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:24:34,074 INFO sqlalchemy.engine.Engine [cached since 0.01283s ago] ('Low',)
+2026-04-17 16:24:34,076 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:24:34,076 INFO sqlalchemy.engine.Engine [cached since 0.01531s ago] ('None',)
+INFO:     127.0.0.1:33282 - "GET /api/incidents/stats HTTP/1.1" 200 OK
+2026-04-17 16:24:34,079 INFO sqlalchemy.engine.Engine COMMIT
+INFO:     127.0.0.1:33276 - "GET /api/incidents?status=active&limit=100 HTTP/1.1" 200 OK
+2026-04-17 16:24:34,198 INFO sqlalchemy.engine.Engine COMMIT
+2026-04-17 16:24:34,199 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 16:24:34,204 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents
+2026-04-17 16:24:34,204 INFO sqlalchemy.engine.Engine [cached since 0.195s ago] ()
+2026-04-17 16:24:34,248 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:24:34,249 INFO sqlalchemy.engine.Engine [cached since 0.2184s ago] ('Pending',)
+2026-04-17 16:24:34,259 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:24:34,260 INFO sqlalchemy.engine.Engine [cached since 0.2294s ago] ('Assigned',)
+2026-04-17 16:24:34,264 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:24:34,265 INFO sqlalchemy.engine.Engine [cached since 0.2345s ago] ('InProgress',)
+2026-04-17 16:24:34,279 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:24:34,279 INFO sqlalchemy.engine.Engine [cached since 0.2486s ago] ('Cleaned',)
+2026-04-17 16:24:34,425 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:24:34,425 INFO sqlalchemy.engine.Engine [cached since 0.3947s ago] ('Verified',)
+2026-04-17 16:24:34,428 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:24:34,428 INFO sqlalchemy.engine.Engine [cached since 0.3981s ago] ('NeedsReview',)
+2026-04-17 16:24:34,430 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 16:24:34,431 INFO sqlalchemy.engine.Engine SELECT incidents.id, incidents.reporter_id, incidents.assigned_to, incidents.image_url, incidents.after_image_url, ST_AsBinary(incidents.location) AS location, incidents.address_text, incidents.note, incidents.waste_detected, incidents.confidence, incidents.severity, incidents.bounding_boxes, incidents.status, incidents.priority_score, incidents.is_hotspot, incidents.created_at, incidents.updated_at 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR 
+ LIMIT $2::INTEGER
+2026-04-17 16:24:34,431 INFO sqlalchemy.engine.Engine [cached since 0.4105s ago] ('active', 100)
+2026-04-17 16:24:34,432 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:24:34,432 INFO sqlalchemy.engine.Engine [cached since 0.3716s ago] ('High',)
+2026-04-17 16:24:34,438 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:24:34,439 INFO sqlalchemy.engine.Engine [cached since 0.3778s ago] ('Medium',)
+2026-04-17 16:24:34,444 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:24:34,444 INFO sqlalchemy.engine.Engine [cached since 0.3831s ago] ('Low',)
+2026-04-17 16:24:34,446 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:24:34,446 INFO sqlalchemy.engine.Engine [cached since 0.3857s ago] ('None',)
+INFO:     127.0.0.1:33282 - "GET /api/incidents/stats HTTP/1.1" 200 OK
+2026-04-17 16:24:34,449 INFO sqlalchemy.engine.Engine COMMIT
+INFO:     127.0.0.1:33276 - "GET /api/incidents?status=active&limit=100 HTTP/1.1" 200 OK
+2026-04-17 16:24:34,469 INFO sqlalchemy.engine.Engine COMMIT
+INFO:     127.0.0.1:60962 - "OPTIONS /api/auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60960 - "POST /api/auth/login HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:43876 - "GET /api/auth/me HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:43892 - "GET /api/auth/me HTTP/1.1" 404 Not Found
+2026-04-17 16:26:03,578 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 16:26:03,578 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents
+2026-04-17 16:26:03,579 INFO sqlalchemy.engine.Engine [cached since 89.57s ago] ()
+2026-04-17 16:26:03,595 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 16:26:03,595 INFO sqlalchemy.engine.Engine SELECT incidents.id, incidents.reporter_id, incidents.assigned_to, incidents.image_url, incidents.after_image_url, ST_AsBinary(incidents.location) AS location, incidents.address_text, incidents.note, incidents.waste_detected, incidents.confidence, incidents.severity, incidents.bounding_boxes, incidents.status, incidents.priority_score, incidents.is_hotspot, incidents.created_at, incidents.updated_at 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR 
+ LIMIT $2::INTEGER
+2026-04-17 16:26:03,600 INFO sqlalchemy.engine.Engine [cached since 89.58s ago] ('active', 100)
+2026-04-17 16:26:03,605 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:26:03,606 INFO sqlalchemy.engine.Engine [cached since 89.58s ago] ('Pending',)
+2026-04-17 16:26:03,615 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:26:03,616 INFO sqlalchemy.engine.Engine [cached since 89.59s ago] ('Assigned',)
+2026-04-17 16:26:03,618 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:26:03,619 INFO sqlalchemy.engine.Engine [cached since 89.59s ago] ('InProgress',)
+2026-04-17 16:26:03,621 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:26:03,629 INFO sqlalchemy.engine.Engine [cached since 89.6s ago] ('Cleaned',)
+2026-04-17 16:26:03,636 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:26:03,637 INFO sqlalchemy.engine.Engine [cached since 89.61s ago] ('Verified',)
+2026-04-17 16:26:03,651 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:26:03,651 INFO sqlalchemy.engine.Engine [cached since 89.62s ago] ('NeedsReview',)
+2026-04-17 16:26:03,659 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:26:03,659 INFO sqlalchemy.engine.Engine [cached since 89.6s ago] ('High',)
+2026-04-17 16:26:03,667 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:26:03,667 INFO sqlalchemy.engine.Engine [cached since 89.61s ago] ('Medium',)
+INFO:     127.0.0.1:43918 - "GET /api/incidents?status=active&limit=100 HTTP/1.1" 200 OK
+2026-04-17 16:26:03,682 INFO sqlalchemy.engine.Engine COMMIT
+2026-04-17 16:26:03,693 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:26:03,693 INFO sqlalchemy.engine.Engine [cached since 89.63s ago] ('Low',)
+2026-04-17 16:26:03,726 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:26:03,727 INFO sqlalchemy.engine.Engine [cached since 89.67s ago] ('None',)
+INFO:     127.0.0.1:43902 - "GET /api/incidents/stats HTTP/1.1" 200 OK
+2026-04-17 16:26:03,743 INFO sqlalchemy.engine.Engine COMMIT
+2026-04-17 16:26:03,976 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 16:26:03,977 INFO sqlalchemy.engine.Engine SELECT incidents.id, incidents.reporter_id, incidents.assigned_to, incidents.image_url, incidents.after_image_url, ST_AsBinary(incidents.location) AS location, incidents.address_text, incidents.note, incidents.waste_detected, incidents.confidence, incidents.severity, incidents.bounding_boxes, incidents.status, incidents.priority_score, incidents.is_hotspot, incidents.created_at, incidents.updated_at 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR 
+ LIMIT $2::INTEGER
+2026-04-17 16:26:03,977 INFO sqlalchemy.engine.Engine [cached since 89.96s ago] ('active', 100)
+INFO:     127.0.0.1:43918 - "GET /api/incidents?status=active&limit=100 HTTP/1.1" 200 OK
+2026-04-17 16:26:04,154 INFO sqlalchemy.engine.Engine COMMIT
+2026-04-17 16:26:04,174 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 16:26:04,175 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents
+2026-04-17 16:26:04,184 INFO sqlalchemy.engine.Engine [cached since 90.17s ago] ()
+2026-04-17 16:26:04,239 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:26:04,240 INFO sqlalchemy.engine.Engine [cached since 90.21s ago] ('Pending',)
+2026-04-17 16:26:04,248 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:26:04,250 INFO sqlalchemy.engine.Engine [cached since 90.22s ago] ('Assigned',)
+2026-04-17 16:26:04,255 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:26:04,256 INFO sqlalchemy.engine.Engine [cached since 90.23s ago] ('InProgress',)
+2026-04-17 16:26:04,258 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:26:04,258 INFO sqlalchemy.engine.Engine [cached since 90.23s ago] ('Cleaned',)
+2026-04-17 16:26:04,261 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:26:04,261 INFO sqlalchemy.engine.Engine [cached since 90.23s ago] ('Verified',)
+2026-04-17 16:26:04,264 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:26:04,265 INFO sqlalchemy.engine.Engine [cached since 90.23s ago] ('NeedsReview',)
+2026-04-17 16:26:04,267 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:26:04,267 INFO sqlalchemy.engine.Engine [cached since 90.21s ago] ('High',)
+2026-04-17 16:26:04,291 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:26:04,291 INFO sqlalchemy.engine.Engine [cached since 90.23s ago] ('Medium',)
+2026-04-17 16:26:04,293 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:26:04,294 INFO sqlalchemy.engine.Engine [cached since 90.23s ago] ('Low',)
+2026-04-17 16:26:04,296 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:26:04,296 INFO sqlalchemy.engine.Engine [cached since 90.24s ago] ('None',)
+INFO:     127.0.0.1:43902 - "GET /api/incidents/stats HTTP/1.1" 200 OK
+2026-04-17 16:26:04,299 INFO sqlalchemy.engine.Engine COMMIT
+INFO:     127.0.0.1:59036 - "GET /api/auth/me HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:59038 - "GET /api/auth/me HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:56450 - "GET /api/auth/me HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:56456 - "GET /api/auth/me HTTP/1.1" 404 Not Found
+2026-04-17 16:46:12,450 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 16:46:12,484 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents
+2026-04-17 16:46:12,486 INFO sqlalchemy.engine.Engine [cached since 1298s ago] ()
+2026-04-17 16:46:12,503 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 16:46:12,520 INFO sqlalchemy.engine.Engine SELECT incidents.id, incidents.reporter_id, incidents.assigned_to, incidents.image_url, incidents.after_image_url, ST_AsBinary(incidents.location) AS location, incidents.address_text, incidents.note, incidents.waste_detected, incidents.confidence, incidents.severity, incidents.bounding_boxes, incidents.status, incidents.priority_score, incidents.is_hotspot, incidents.created_at, incidents.updated_at 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR 
+ LIMIT $2::INTEGER
+2026-04-17 16:46:12,521 INFO sqlalchemy.engine.Engine [cached since 1299s ago] ('active', 100)
+2026-04-17 16:46:12,571 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:46:12,571 INFO sqlalchemy.engine.Engine [cached since 1299s ago] ('Pending',)
+2026-04-17 16:46:12,577 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:46:12,577 INFO sqlalchemy.engine.Engine [cached since 1299s ago] ('Assigned',)
+2026-04-17 16:46:12,584 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:46:12,588 INFO sqlalchemy.engine.Engine [cached since 1299s ago] ('InProgress',)
+2026-04-17 16:46:12,591 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:46:12,591 INFO sqlalchemy.engine.Engine [cached since 1299s ago] ('Cleaned',)
+2026-04-17 16:46:12,595 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:46:12,596 INFO sqlalchemy.engine.Engine [cached since 1299s ago] ('Verified',)
+2026-04-17 16:46:12,601 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:46:12,601 INFO sqlalchemy.engine.Engine [cached since 1299s ago] ('NeedsReview',)
+2026-04-17 16:46:12,605 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:46:12,605 INFO sqlalchemy.engine.Engine [cached since 1299s ago] ('High',)
+2026-04-17 16:46:12,609 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:46:12,610 INFO sqlalchemy.engine.Engine [cached since 1299s ago] ('Medium',)
+2026-04-17 16:46:12,612 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:46:12,613 INFO sqlalchemy.engine.Engine [cached since 1299s ago] ('Low',)
+2026-04-17 16:46:12,617 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:46:12,618 INFO sqlalchemy.engine.Engine [cached since 1299s ago] ('None',)
+INFO:     127.0.0.1:56426 - "GET /api/incidents/stats HTTP/1.1" 200 OK
+2026-04-17 16:46:12,630 INFO sqlalchemy.engine.Engine COMMIT
+INFO:     127.0.0.1:56436 - "GET /api/incidents?status=active&limit=100 HTTP/1.1" 200 OK
+2026-04-17 16:46:12,702 INFO sqlalchemy.engine.Engine COMMIT
+2026-04-17 16:46:12,884 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 16:46:12,885 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents
+2026-04-17 16:46:12,886 INFO sqlalchemy.engine.Engine [cached since 1299s ago] ()
+2026-04-17 16:46:13,044 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:46:13,045 INFO sqlalchemy.engine.Engine [cached since 1299s ago] ('Pending',)
+2026-04-17 16:46:13,054 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 16:46:13,072 INFO sqlalchemy.engine.Engine SELECT incidents.id, incidents.reporter_id, incidents.assigned_to, incidents.image_url, incidents.after_image_url, ST_AsBinary(incidents.location) AS location, incidents.address_text, incidents.note, incidents.waste_detected, incidents.confidence, incidents.severity, incidents.bounding_boxes, incidents.status, incidents.priority_score, incidents.is_hotspot, incidents.created_at, incidents.updated_at 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR 
+ LIMIT $2::INTEGER
+2026-04-17 16:46:13,073 INFO sqlalchemy.engine.Engine [cached since 1299s ago] ('active', 100)
+2026-04-17 16:46:13,087 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:46:13,088 INFO sqlalchemy.engine.Engine [cached since 1299s ago] ('Assigned',)
+2026-04-17 16:46:13,115 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:46:13,124 INFO sqlalchemy.engine.Engine [cached since 1299s ago] ('InProgress',)
+2026-04-17 16:46:13,164 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:46:13,193 INFO sqlalchemy.engine.Engine [cached since 1299s ago] ('Cleaned',)
+INFO:     127.0.0.1:56436 - "GET /api/incidents?status=active&limit=100 HTTP/1.1" 200 OK
+2026-04-17 16:46:13,236 INFO sqlalchemy.engine.Engine COMMIT
+2026-04-17 16:46:13,258 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:46:13,265 INFO sqlalchemy.engine.Engine [cached since 1299s ago] ('Verified',)
+2026-04-17 16:46:13,354 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:46:13,355 INFO sqlalchemy.engine.Engine [cached since 1299s ago] ('NeedsReview',)
+2026-04-17 16:46:13,407 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:46:13,407 INFO sqlalchemy.engine.Engine [cached since 1299s ago] ('High',)
+2026-04-17 16:46:13,438 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:46:13,461 INFO sqlalchemy.engine.Engine [cached since 1299s ago] ('Medium',)
+2026-04-17 16:46:13,465 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:46:13,465 INFO sqlalchemy.engine.Engine [cached since 1299s ago] ('Low',)
+2026-04-17 16:46:13,488 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:46:13,489 INFO sqlalchemy.engine.Engine [cached since 1299s ago] ('None',)
+INFO:     127.0.0.1:56426 - "GET /api/incidents/stats HTTP/1.1" 200 OK
+2026-04-17 16:46:13,496 INFO sqlalchemy.engine.Engine COMMIT
+INFO:     127.0.0.1:53502 - "GET /api/auth/me HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53508 - "GET /api/auth/me HTTP/1.1" 404 Not Found
+2026-04-17 16:53:06,442 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 16:53:06,456 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents
+2026-04-17 16:53:06,459 INFO sqlalchemy.engine.Engine [cached since 1712s ago] ()
+2026-04-17 16:53:06,483 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 16:53:06,490 INFO sqlalchemy.engine.Engine SELECT incidents.id, incidents.reporter_id, incidents.assigned_to, incidents.image_url, incidents.after_image_url, ST_AsBinary(incidents.location) AS location, incidents.address_text, incidents.note, incidents.waste_detected, incidents.confidence, incidents.severity, incidents.bounding_boxes, incidents.status, incidents.priority_score, incidents.is_hotspot, incidents.created_at, incidents.updated_at 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR 
+ LIMIT $2::INTEGER
+2026-04-17 16:53:06,499 INFO sqlalchemy.engine.Engine [cached since 1712s ago] ('active', 100)
+2026-04-17 16:53:06,605 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:53:06,605 INFO sqlalchemy.engine.Engine [cached since 1713s ago] ('Pending',)
+INFO:     127.0.0.1:53490 - "GET /api/incidents?status=active&limit=100 HTTP/1.1" 200 OK
+2026-04-17 16:53:06,612 INFO sqlalchemy.engine.Engine COMMIT
+2026-04-17 16:53:06,620 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:53:06,620 INFO sqlalchemy.engine.Engine [cached since 1713s ago] ('Assigned',)
+2026-04-17 16:53:06,657 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:53:06,657 INFO sqlalchemy.engine.Engine [cached since 1713s ago] ('InProgress',)
+2026-04-17 16:53:06,665 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:53:06,665 INFO sqlalchemy.engine.Engine [cached since 1713s ago] ('Cleaned',)
+2026-04-17 16:53:06,667 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:53:06,668 INFO sqlalchemy.engine.Engine [cached since 1713s ago] ('Verified',)
+2026-04-17 16:53:06,693 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:53:06,694 INFO sqlalchemy.engine.Engine [cached since 1713s ago] ('NeedsReview',)
+2026-04-17 16:53:07,016 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:53:07,016 INFO sqlalchemy.engine.Engine [cached since 1713s ago] ('High',)
+2026-04-17 16:53:07,023 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 16:53:07,024 INFO sqlalchemy.engine.Engine SELECT incidents.id, incidents.reporter_id, incidents.assigned_to, incidents.image_url, incidents.after_image_url, ST_AsBinary(incidents.location) AS location, incidents.address_text, incidents.note, incidents.waste_detected, incidents.confidence, incidents.severity, incidents.bounding_boxes, incidents.status, incidents.priority_score, incidents.is_hotspot, incidents.created_at, incidents.updated_at 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR 
+ LIMIT $2::INTEGER
+2026-04-17 16:53:07,026 INFO sqlalchemy.engine.Engine [cached since 1713s ago] ('active', 100)
+2026-04-17 16:53:07,035 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:53:07,035 INFO sqlalchemy.engine.Engine [cached since 1713s ago] ('Medium',)
+2026-04-17 16:53:07,037 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:53:07,037 INFO sqlalchemy.engine.Engine [cached since 1713s ago] ('Low',)
+2026-04-17 16:53:07,089 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:53:07,093 INFO sqlalchemy.engine.Engine [cached since 1713s ago] ('None',)
+INFO:     127.0.0.1:53490 - "GET /api/incidents?status=active&limit=100 HTTP/1.1" 200 OK
+2026-04-17 16:53:07,107 INFO sqlalchemy.engine.Engine COMMIT
+INFO:     127.0.0.1:53496 - "GET /api/incidents/stats HTTP/1.1" 200 OK
+2026-04-17 16:53:07,133 INFO sqlalchemy.engine.Engine COMMIT
+2026-04-17 16:53:07,480 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 16:53:07,481 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents
+2026-04-17 16:53:07,481 INFO sqlalchemy.engine.Engine [cached since 1713s ago] ()
+2026-04-17 16:53:07,501 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:53:07,501 INFO sqlalchemy.engine.Engine [cached since 1713s ago] ('Pending',)
+2026-04-17 16:53:07,511 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:53:07,512 INFO sqlalchemy.engine.Engine [cached since 1713s ago] ('Assigned',)
+2026-04-17 16:53:07,525 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:53:07,525 INFO sqlalchemy.engine.Engine [cached since 1713s ago] ('InProgress',)
+2026-04-17 16:53:07,530 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:53:07,535 INFO sqlalchemy.engine.Engine [cached since 1714s ago] ('Cleaned',)
+2026-04-17 16:53:07,553 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:53:07,554 INFO sqlalchemy.engine.Engine [cached since 1714s ago] ('Verified',)
+2026-04-17 16:53:07,568 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:53:07,575 INFO sqlalchemy.engine.Engine [cached since 1714s ago] ('NeedsReview',)
+2026-04-17 16:53:07,590 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:53:07,590 INFO sqlalchemy.engine.Engine [cached since 1714s ago] ('High',)
+2026-04-17 16:53:07,610 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:53:07,610 INFO sqlalchemy.engine.Engine [cached since 1714s ago] ('Medium',)
+2026-04-17 16:53:07,629 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:53:07,630 INFO sqlalchemy.engine.Engine [cached since 1714s ago] ('Low',)
+2026-04-17 16:53:07,673 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:53:07,674 INFO sqlalchemy.engine.Engine [cached since 1714s ago] ('None',)
+INFO:     127.0.0.1:53496 - "GET /api/incidents/stats HTTP/1.1" 200 OK
+2026-04-17 16:53:07,684 INFO sqlalchemy.engine.Engine COMMIT
+INFO:     127.0.0.1:59954 - "OPTIONS /api/auth/register HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59940 - "POST /api/auth/register HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:59940 - "POST /api/auth/register HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:32910 - "POST /api/auth/register HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:32910 - "POST /api/auth/register HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:32938 - "OPTIONS /api/auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:32926 - "POST /api/auth/login HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:32926 - "POST /api/auth/login HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:43746 - "GET /api/events/incidents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43760 - "OPTIONS /api/admin/users?role=crew HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43768 - "GET /api/auth/me HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:43800 - "GET /api/auth/me HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:43782 - "GET /api/events/incidents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43792 - "GET /api/admin/users?role=crew HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:43768 - "GET /api/admin/users?role=crew HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:43760 - "OPTIONS /api/admin/incidents?limit=20&offset=0&sort=created_at&order=desc HTTP/1.1" 200 OK
+2026-04-17 16:55:05,410 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 16:55:05,510 INFO sqlalchemy.engine.Engine SELECT incidents.id, incidents.reporter_id, incidents.assigned_to, incidents.image_url, incidents.after_image_url, ST_AsBinary(incidents.location) AS location, incidents.address_text, incidents.note, incidents.waste_detected, incidents.confidence, incidents.severity, incidents.bounding_boxes, incidents.status, incidents.priority_score, incidents.is_hotspot, incidents.created_at, incidents.updated_at 
+FROM incidents 
+ LIMIT $1::INTEGER
+2026-04-17 16:55:05,515 INFO sqlalchemy.engine.Engine [generated in 0.00582s] (100,)
+2026-04-17 16:55:05,529 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 16:55:05,531 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents
+2026-04-17 16:55:05,535 INFO sqlalchemy.engine.Engine [cached since 1832s ago] ()
+INFO:     127.0.0.1:43800 - "GET /api/admin/incidents?limit=20&offset=0&sort=created_at&order=desc HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:43792 - "GET /api/admin/incidents?limit=20&offset=0&sort=created_at&order=desc HTTP/1.1" 404 Not Found
+2026-04-17 16:55:05,615 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:55:05,616 INFO sqlalchemy.engine.Engine [cached since 1832s ago] ('Pending',)
+2026-04-17 16:55:05,650 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:55:05,650 INFO sqlalchemy.engine.Engine [cached since 1832s ago] ('Assigned',)
+2026-04-17 16:55:05,659 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:55:05,660 INFO sqlalchemy.engine.Engine [cached since 1832s ago] ('InProgress',)
+2026-04-17 16:55:05,684 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:55:05,685 INFO sqlalchemy.engine.Engine [cached since 1832s ago] ('Cleaned',)
+INFO:     127.0.0.1:43748 - "GET /api/incidents?limit=100 HTTP/1.1" 200 OK
+2026-04-17 16:55:05,713 INFO sqlalchemy.engine.Engine COMMIT
+2026-04-17 16:55:05,716 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:55:05,716 INFO sqlalchemy.engine.Engine [cached since 1832s ago] ('Verified',)
+2026-04-17 16:55:05,723 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:55:05,724 INFO sqlalchemy.engine.Engine [cached since 1832s ago] ('NeedsReview',)
+2026-04-17 16:55:05,727 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:55:05,727 INFO sqlalchemy.engine.Engine [cached since 1832s ago] ('High',)
+2026-04-17 16:55:05,740 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:55:05,740 INFO sqlalchemy.engine.Engine [cached since 1832s ago] ('Medium',)
+2026-04-17 16:55:05,745 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:55:05,746 INFO sqlalchemy.engine.Engine [cached since 1832s ago] ('Low',)
+2026-04-17 16:55:05,748 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:55:05,749 INFO sqlalchemy.engine.Engine [cached since 1832s ago] ('None',)
+INFO:     127.0.0.1:43766 - "GET /api/incidents/stats HTTP/1.1" 200 OK
+2026-04-17 16:55:05,753 INFO sqlalchemy.engine.Engine COMMIT
+INFO:     127.0.0.1:58254 - "POST /api/auth/login HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:58254 - "POST /api/auth/login HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:60326 - "GET /api/events/incidents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60340 - "GET /api/admin/users?role=crew HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:60366 - "GET /api/auth/me HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:60386 - "GET /api/admin/users?role=crew HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:60388 - "GET /api/auth/me HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:60402 - "GET /api/admin/incidents?limit=20&offset=0&sort=created_at&order=desc HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:60382 - "GET /api/events/incidents HTTP/1.1" 200 OK
+2026-04-17 16:56:03,272 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 16:56:03,273 INFO sqlalchemy.engine.Engine SELECT incidents.id, incidents.reporter_id, incidents.assigned_to, incidents.image_url, incidents.after_image_url, ST_AsBinary(incidents.location) AS location, incidents.address_text, incidents.note, incidents.waste_detected, incidents.confidence, incidents.severity, incidents.bounding_boxes, incidents.status, incidents.priority_score, incidents.is_hotspot, incidents.created_at, incidents.updated_at 
+FROM incidents 
+ LIMIT $1::INTEGER
+2026-04-17 16:56:03,273 INFO sqlalchemy.engine.Engine [cached since 57.76s ago] (100,)
+2026-04-17 16:56:03,535 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 16:56:03,536 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents
+2026-04-17 16:56:03,542 INFO sqlalchemy.engine.Engine [cached since 1890s ago] ()
+INFO:     127.0.0.1:60366 - "GET /api/admin/incidents?limit=20&offset=0&sort=created_at&order=desc HTTP/1.1" 404 Not Found
+2026-04-17 16:56:03,556 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:56:03,556 INFO sqlalchemy.engine.Engine [cached since 1890s ago] ('Pending',)
+2026-04-17 16:56:03,564 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:56:03,569 INFO sqlalchemy.engine.Engine [cached since 1890s ago] ('Assigned',)
+2026-04-17 16:56:03,593 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:56:03,594 INFO sqlalchemy.engine.Engine [cached since 1890s ago] ('InProgress',)
+2026-04-17 16:56:03,615 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:56:03,615 INFO sqlalchemy.engine.Engine [cached since 1890s ago] ('Cleaned',)
+INFO:     127.0.0.1:60340 - "GET /api/incidents?limit=100 HTTP/1.1" 200 OK
+2026-04-17 16:56:03,635 INFO sqlalchemy.engine.Engine COMMIT
+2026-04-17 16:56:03,638 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:56:03,638 INFO sqlalchemy.engine.Engine [cached since 1890s ago] ('Verified',)
+2026-04-17 16:56:03,652 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:56:03,653 INFO sqlalchemy.engine.Engine [cached since 1890s ago] ('NeedsReview',)
+2026-04-17 16:56:03,656 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:56:03,657 INFO sqlalchemy.engine.Engine [cached since 1890s ago] ('High',)
+2026-04-17 16:56:03,672 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:56:03,672 INFO sqlalchemy.engine.Engine [cached since 1890s ago] ('Medium',)
+2026-04-17 16:56:03,682 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:56:03,683 INFO sqlalchemy.engine.Engine [cached since 1890s ago] ('Low',)
+2026-04-17 16:56:03,691 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:56:03,692 INFO sqlalchemy.engine.Engine [cached since 1890s ago] ('None',)
+INFO:     127.0.0.1:60352 - "GET /api/incidents/stats HTTP/1.1" 200 OK
+2026-04-17 16:56:03,705 INFO sqlalchemy.engine.Engine COMMIT
+INFO:     127.0.0.1:36244 - "GET /api/events/incidents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36260 - "GET /api/admin/users?role=crew HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:36260 - "GET /api/auth/me HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:36300 - "GET /api/admin/users?role=crew HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:36288 - "GET /api/events/incidents HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36304 - "GET /api/auth/me HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:36300 - "GET /api/admin/incidents?limit=20&offset=0&sort=created_at&order=desc HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:36304 - "GET /api/admin/incidents?limit=20&offset=0&sort=created_at&order=desc HTTP/1.1" 404 Not Found
+2026-04-17 16:56:13,338 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 16:56:13,339 INFO sqlalchemy.engine.Engine SELECT incidents.id, incidents.reporter_id, incidents.assigned_to, incidents.image_url, incidents.after_image_url, ST_AsBinary(incidents.location) AS location, incidents.address_text, incidents.note, incidents.waste_detected, incidents.confidence, incidents.severity, incidents.bounding_boxes, incidents.status, incidents.priority_score, incidents.is_hotspot, incidents.created_at, incidents.updated_at 
+FROM incidents 
+ LIMIT $1::INTEGER
+2026-04-17 16:56:13,339 INFO sqlalchemy.engine.Engine [cached since 67.83s ago] (100,)
+2026-04-17 16:56:13,342 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 16:56:13,342 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents
+2026-04-17 16:56:13,343 INFO sqlalchemy.engine.Engine [cached since 1899s ago] ()
+2026-04-17 16:56:13,378 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:56:13,382 INFO sqlalchemy.engine.Engine [cached since 1899s ago] ('Pending',)
+INFO:     127.0.0.1:36272 - "GET /api/incidents?limit=100 HTTP/1.1" 200 OK
+2026-04-17 16:56:13,386 INFO sqlalchemy.engine.Engine COMMIT
+2026-04-17 16:56:13,395 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:56:13,395 INFO sqlalchemy.engine.Engine [cached since 1899s ago] ('Assigned',)
+2026-04-17 16:56:13,400 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:56:13,400 INFO sqlalchemy.engine.Engine [cached since 1899s ago] ('InProgress',)
+2026-04-17 16:56:13,409 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:56:13,410 INFO sqlalchemy.engine.Engine [cached since 1899s ago] ('Cleaned',)
+2026-04-17 16:56:13,415 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:56:13,415 INFO sqlalchemy.engine.Engine [cached since 1899s ago] ('Verified',)
+2026-04-17 16:56:13,418 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.status = $1::VARCHAR
+2026-04-17 16:56:13,420 INFO sqlalchemy.engine.Engine [cached since 1899s ago] ('NeedsReview',)
+2026-04-17 16:56:13,440 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:56:13,440 INFO sqlalchemy.engine.Engine [cached since 1899s ago] ('High',)
+2026-04-17 16:56:13,468 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:56:13,469 INFO sqlalchemy.engine.Engine [cached since 1899s ago] ('Medium',)
+2026-04-17 16:56:13,478 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:56:13,478 INFO sqlalchemy.engine.Engine [cached since 1899s ago] ('Low',)
+2026-04-17 16:56:13,496 INFO sqlalchemy.engine.Engine SELECT count(incidents.id) AS count_1 
+FROM incidents 
+WHERE incidents.severity = $1::VARCHAR
+2026-04-17 16:56:13,512 INFO sqlalchemy.engine.Engine [cached since 1899s ago] ('None',)
+INFO:     127.0.0.1:36278 - "GET /api/incidents/stats HTTP/1.1" 200 OK
+2026-04-17 16:56:13,518 INFO sqlalchemy.engine.Engine COMMIT
+WARNING:  StatReload detected changes in 'app/routers/auth.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [1434008]
+INFO:     Started server process [1472642]
+INFO:     Waiting for application startup.
+2026-04-17 17:02:16,058 INFO sqlalchemy.engine.Engine select pg_catalog.version()
+2026-04-17 17:02:16,058 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-04-17 17:02:16,117 INFO sqlalchemy.engine.Engine select current_schema()
+2026-04-17 17:02:16,117 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-04-17 17:02:16,127 INFO sqlalchemy.engine.Engine show standard_conforming_strings
+2026-04-17 17:02:16,127 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-04-17 17:02:16,143 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 17:02:16,212 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2026-04-17 17:02:16,213 INFO sqlalchemy.engine.Engine [generated in 0.00049s] ('incidents', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2026-04-17 17:02:16,245 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2026-04-17 17:02:16,245 INFO sqlalchemy.engine.Engine [cached since 0.03278s ago] ('users', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2026-04-17 17:02:16,255 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2026-04-17 17:02:16,265 INFO sqlalchemy.engine.Engine [cached since 0.05317s ago] ('point_transactions', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2026-04-17 17:02:16,282 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = $1::VARCHAR AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != $2::VARCHAR
+2026-04-17 17:02:16,309 INFO sqlalchemy.engine.Engine [generated in 0.01548s] ('userrole', 'pg_catalog')
+2026-04-17 17:02:16,330 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = $1::VARCHAR AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != $2::VARCHAR
+2026-04-17 17:02:16,331 INFO sqlalchemy.engine.Engine [cached since 0.04918s ago] ('badgetier', 'pg_catalog')
+2026-04-17 17:02:16,342 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = $1::VARCHAR AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != $2::VARCHAR
+2026-04-17 17:02:16,343 INFO sqlalchemy.engine.Engine [cached since 0.06126s ago] ('pointreason', 'pg_catalog')
+2026-04-17 17:02:16,356 INFO sqlalchemy.engine.Engine COMMIT
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'app/routers/auth.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [1472642]
+INFO:     Started server process [1472902]
+INFO:     Waiting for application startup.
+WARNING:  StatReload detected changes in 'app/routers/auth.py'. Reloading...
+2026-04-17 17:02:52,331 INFO sqlalchemy.engine.Engine select pg_catalog.version()
+2026-04-17 17:02:52,332 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-04-17 17:02:52,337 INFO sqlalchemy.engine.Engine select current_schema()
+2026-04-17 17:02:52,338 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-04-17 17:02:52,353 INFO sqlalchemy.engine.Engine show standard_conforming_strings
+2026-04-17 17:02:52,353 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-04-17 17:02:52,372 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 17:02:52,405 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2026-04-17 17:02:52,405 INFO sqlalchemy.engine.Engine [generated in 0.00074s] ('incidents', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2026-04-17 17:02:52,413 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2026-04-17 17:02:52,414 INFO sqlalchemy.engine.Engine [cached since 0.009389s ago] ('users', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2026-04-17 17:02:52,425 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2026-04-17 17:02:52,431 INFO sqlalchemy.engine.Engine [cached since 0.02672s ago] ('point_transactions', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2026-04-17 17:02:52,444 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = $1::VARCHAR AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != $2::VARCHAR
+2026-04-17 17:02:52,444 INFO sqlalchemy.engine.Engine [generated in 0.00067s] ('userrole', 'pg_catalog')
+2026-04-17 17:02:52,456 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = $1::VARCHAR AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != $2::VARCHAR
+2026-04-17 17:02:52,457 INFO sqlalchemy.engine.Engine [cached since 0.01293s ago] ('badgetier', 'pg_catalog')
+2026-04-17 17:02:52,463 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = $1::VARCHAR AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != $2::VARCHAR
+2026-04-17 17:02:52,468 INFO sqlalchemy.engine.Engine [cached since 0.02413s ago] ('pointreason', 'pg_catalog')
+2026-04-17 17:02:52,472 INFO sqlalchemy.engine.Engine COMMIT
+INFO:     Application startup complete.
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [1472902]
+INFO:     Started server process [1473040]
+INFO:     Waiting for application startup.
+2026-04-17 17:02:58,137 INFO sqlalchemy.engine.Engine select pg_catalog.version()
+2026-04-17 17:02:58,137 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-04-17 17:02:58,143 INFO sqlalchemy.engine.Engine select current_schema()
+2026-04-17 17:02:58,144 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-04-17 17:02:58,150 INFO sqlalchemy.engine.Engine show standard_conforming_strings
+2026-04-17 17:02:58,150 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-04-17 17:02:58,158 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 17:02:58,173 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2026-04-17 17:02:58,174 INFO sqlalchemy.engine.Engine [generated in 0.00067s] ('incidents', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2026-04-17 17:02:58,186 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2026-04-17 17:02:58,186 INFO sqlalchemy.engine.Engine [cached since 0.01334s ago] ('users', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2026-04-17 17:02:58,188 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2026-04-17 17:02:58,189 INFO sqlalchemy.engine.Engine [cached since 0.01586s ago] ('point_transactions', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2026-04-17 17:02:58,196 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = $1::VARCHAR AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != $2::VARCHAR
+2026-04-17 17:02:58,197 INFO sqlalchemy.engine.Engine [generated in 0.00083s] ('userrole', 'pg_catalog')
+2026-04-17 17:02:58,204 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = $1::VARCHAR AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != $2::VARCHAR
+2026-04-17 17:02:58,204 INFO sqlalchemy.engine.Engine [cached since 0.008521s ago] ('badgetier', 'pg_catalog')
+2026-04-17 17:02:58,207 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = $1::VARCHAR AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != $2::VARCHAR
+2026-04-17 17:02:58,208 INFO sqlalchemy.engine.Engine [cached since 0.01191s ago] ('pointreason', 'pg_catalog')
+2026-04-17 17:02:58,210 INFO sqlalchemy.engine.Engine COMMIT
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'app/routers/auth.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [1473040]
+WARNING:  StatReload detected changes in 'app/routers/auth.py'. Reloading...
+INFO:     Started server process [1474998]
+INFO:     Waiting for application startup.
+2026-04-17 17:07:20,108 INFO sqlalchemy.engine.Engine select pg_catalog.version()
+2026-04-17 17:07:20,108 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-04-17 17:07:20,126 INFO sqlalchemy.engine.Engine select current_schema()
+2026-04-17 17:07:20,127 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-04-17 17:07:20,160 INFO sqlalchemy.engine.Engine show standard_conforming_strings
+2026-04-17 17:07:20,160 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-04-17 17:07:20,204 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-04-17 17:07:20,321 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2026-04-17 17:07:20,322 INFO sqlalchemy.engine.Engine [generated in 0.00070s] ('incidents', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2026-04-17 17:07:20,704 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2026-04-17 17:07:20,705 INFO sqlalchemy.engine.Engine [cached since 0.3839s ago] ('users', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2026-04-17 17:07:20,715 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = $1::VARCHAR AND pg_catalog.pg_class.relkind = ANY (ARRAY[$2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::VARCHAR]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != $7::VARCHAR
+2026-04-17 17:07:20,715 INFO sqlalchemy.engine.Engine [cached since 0.3943s ago] ('point_transactions', 'r', 'p', 'f', 'v', 'm', 'pg_catalog')
+2026-04-17 17:07:20,726 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = $1::VARCHAR AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != $2::VARCHAR
+2026-04-17 17:07:20,726 INFO sqlalchemy.engine.Engine [generated in 0.00090s] ('userrole', 'pg_catalog')
+2026-04-17 17:07:20,732 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = $1::VARCHAR AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != $2::VARCHAR
+2026-04-17 17:07:20,732 INFO sqlalchemy.engine.Engine [cached since 0.006943s ago] ('badgetier', 'pg_catalog')
+2026-04-17 17:07:20,736 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_type.typname 
+FROM pg_catalog.pg_type JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_type.typnamespace 
+WHERE pg_catalog.pg_type.typname = $1::VARCHAR AND pg_catalog.pg_type_is_visible(pg_catalog.pg_type.oid) AND pg_catalog.pg_namespace.nspname != $2::VARCHAR
+2026-04-17 17:07:20,736 INFO sqlalchemy.engine.Engine [cached since 0.0109s ago] ('pointreason', 'pg_catalog')
+2026-04-17 17:07:20,739 INFO sqlalchemy.engine.Engine COMMIT
+INFO:     Application startup complete.
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [1474998]
+Process SpawnProcess-14:
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/multiprocessing/process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/usr/lib/python3.14/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+    ~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "/usr/lib/python3.14/asyncio/runners.py", line 204, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "/usr/lib/python3.14/asyncio/runners.py", line 127, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib/python3.14/asyncio/base_events.py", line 719, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/server.py", line 79, in serve
+    await self._serve(sockets)
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/server.py", line 86, in _serve
+    config.load()
+    ~~~~~~~~~~~^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/config.py", line 441, in load
+    self.loaded_app = import_from_string(self.app)
+                      ~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "/usr/lib/python3.14/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1406, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/home/ken/Projects/Waste_detection_bot/backend/app/main.py", line 17, in <module>
+    from app.routers import auth, admin, leaderboard, events
+  File "/home/ken/Projects/Waste_detection_bot/backend/app/routers/auth.py", line 178
+    secure=False  # Set to False for localhost, True in production
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax. Perhaps you forgot a comma?
+WARNING:  StatReload detected changes in 'app/main.py'. Reloading...
+Process SpawnProcess-15:
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/multiprocessing/process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/usr/lib/python3.14/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+    ~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "/usr/lib/python3.14/asyncio/runners.py", line 204, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "/usr/lib/python3.14/asyncio/runners.py", line 127, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib/python3.14/asyncio/base_events.py", line 719, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/server.py", line 79, in serve
+    await self._serve(sockets)
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/server.py", line 86, in _serve
+    config.load()
+    ~~~~~~~~~~~^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/config.py", line 441, in load
+    self.loaded_app = import_from_string(self.app)
+                      ~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "/usr/lib/python3.14/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1406, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/home/ken/Projects/Waste_detection_bot/backend/app/main.py", line 17, in <module>
+    from app.routers import auth, admin, leaderboard, events
+  File "/home/ken/Projects/Waste_detection_bot/backend/app/routers/auth.py", line 178
+    secure=False  # Set to False for localhost, True in production
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax. Perhaps you forgot a comma?
+WARNING:  StatReload detected changes in 'app/routers/users.py'. Reloading...
+Process SpawnProcess-16:
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/multiprocessing/process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/usr/lib/python3.14/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+    ~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "/usr/lib/python3.14/asyncio/runners.py", line 204, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "/usr/lib/python3.14/asyncio/runners.py", line 127, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib/python3.14/asyncio/base_events.py", line 719, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/server.py", line 79, in serve
+    await self._serve(sockets)
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/server.py", line 86, in _serve
+    config.load()
+    ~~~~~~~~~~~^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/config.py", line 441, in load
+    self.loaded_app = import_from_string(self.app)
+                      ~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "/usr/lib/python3.14/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1406, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/home/ken/Projects/Waste_detection_bot/backend/app/main.py", line 17, in <module>
+    from app.routers import auth, admin, leaderboard, events
+  File "/home/ken/Projects/Waste_detection_bot/backend/app/routers/auth.py", line 178
+    secure=False  # Set to False for localhost, True in production
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax. Perhaps you forgot a comma?
+WARNING:  StatReload detected changes in 'app/routers/auth.py'. Reloading...
+Process SpawnProcess-17:
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/multiprocessing/process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/usr/lib/python3.14/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+    ~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "/usr/lib/python3.14/asyncio/runners.py", line 204, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "/usr/lib/python3.14/asyncio/runners.py", line 127, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib/python3.14/asyncio/base_events.py", line 719, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/server.py", line 79, in serve
+    await self._serve(sockets)
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/server.py", line 86, in _serve
+    config.load()
+    ~~~~~~~~~~~^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/config.py", line 441, in load
+    self.loaded_app = import_from_string(self.app)
+                      ~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "/usr/lib/python3.14/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1406, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/home/ken/Projects/Waste_detection_bot/backend/app/main.py", line 17, in <module>
+    from app.routers import auth, admin, leaderboard, events
+  File "/home/ken/Projects/Waste_detection_bot/backend/app/routers/auth.py", line 178
+    secure=False  # Set to False for localhost, True in production
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax. Perhaps you forgot a comma?
+WARNING:  StatReload detected changes in 'app/core/config.py'. Reloading...
+Process SpawnProcess-18:
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/multiprocessing/process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/usr/lib/python3.14/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+    ~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "/usr/lib/python3.14/asyncio/runners.py", line 204, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "/usr/lib/python3.14/asyncio/runners.py", line 127, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib/python3.14/asyncio/base_events.py", line 719, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/server.py", line 79, in serve
+    await self._serve(sockets)
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/server.py", line 86, in _serve
+    config.load()
+    ~~~~~~~~~~~^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/config.py", line 441, in load
+    self.loaded_app = import_from_string(self.app)
+                      ~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "/usr/lib/python3.14/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1406, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/home/ken/Projects/Waste_detection_bot/backend/app/main.py", line 17, in <module>
+    from app.routers import auth, admin, leaderboard, events
+  File "/home/ken/Projects/Waste_detection_bot/backend/app/routers/auth.py", line 178
+    secure=False  # Set to False for localhost, True in production
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax. Perhaps you forgot a comma?
+WARNING:  StatReload detected changes in 'app/core/auth.py'. Reloading...
+Process SpawnProcess-19:
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/multiprocessing/process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/usr/lib/python3.14/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+    ~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "/usr/lib/python3.14/asyncio/runners.py", line 204, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "/usr/lib/python3.14/asyncio/runners.py", line 127, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib/python3.14/asyncio/base_events.py", line 719, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/server.py", line 79, in serve
+    await self._serve(sockets)
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/server.py", line 86, in _serve
+    config.load()
+    ~~~~~~~~~~~^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/config.py", line 441, in load
+    self.loaded_app = import_from_string(self.app)
+                      ~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "/usr/lib/python3.14/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1406, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/home/ken/Projects/Waste_detection_bot/backend/app/main.py", line 17, in <module>
+    from app.routers import auth, admin, leaderboard, events
+  File "/home/ken/Projects/Waste_detection_bot/backend/app/routers/auth.py", line 178
+    secure=False  # Set to False for localhost, True in production
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax. Perhaps you forgot a comma?
+WARNING:  StatReload detected changes in 'app/routers/auth.py'. Reloading...
+Process SpawnProcess-20:
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/multiprocessing/process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/usr/lib/python3.14/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+    ~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/server.py", line 75, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "/usr/lib/python3.14/asyncio/runners.py", line 204, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "/usr/lib/python3.14/asyncio/runners.py", line 127, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib/python3.14/asyncio/base_events.py", line 719, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/server.py", line 79, in serve
+    await self._serve(sockets)
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/server.py", line 86, in _serve
+    config.load()
+    ~~~~~~~~~~~^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/config.py", line 441, in load
+    self.loaded_app = import_from_string(self.app)
+                      ~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "/usr/lib/python3.14/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1406, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/home/ken/Projects/Waste_detection_bot/backend/app/main.py", line 17, in <module>
+    from app.routers import auth, admin, leaderboard, events
+  File "/home/ken/Projects/Waste_detection_bot/backend/app/routers/auth.py", line 180
+    secure=False  # Set to False for localhost, True in production
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax. Perhaps you forgot a comma?

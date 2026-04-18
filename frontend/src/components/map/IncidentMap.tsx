@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
-import { LatLngExpression } from 'leaflet';
 
 // Dynamic import with SSR disabled to prevent window object errors
 const MapContainer = dynamic(
@@ -38,7 +37,7 @@ interface Incident {
 
 interface IncidentMapProps {
   incidents: Incident[];
-  center?: LatLngExpression;
+  center?: [number, number];
   zoom?: number;
   onMarkerClick?: (incident: Incident) => void;
   className?: string;
@@ -72,59 +71,35 @@ export default function IncidentMap({
   className = 'h-full w-full',
 }: IncidentMapProps) {
   const [mapReady, setMapReady] = useState(false);
-  const [L, setL] = useState<any>(null);
   const mapRef = useRef<any>(null);
-
-  // Load Leaflet only on client side
-  useEffect(() => {
-    import('leaflet').then((leaflet) => {
-      setL(leaflet.default);
-      setMapReady(true);
-      
-      // Fix for default markers in React
-      delete (leaflet.default.Icon.Default.prototype as any)._getIconUrl;
-      leaflet.default.Icon.Default.mergeOptions({
-        iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
-        iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
-        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
-      });
-    });
-  }, []);
 
   // Auto-fit map to show all incidents
   useEffect(() => {
-    if (mapReady && L && mapRef.current && incidents.length > 0) {
-      const bounds = new L.LatLngBounds(
-        incidents.map(incident => [incident.lat, incident.lng])
-      );
-      mapRef.current.fitBounds(bounds, { padding: [20, 20] });
+    if (mapReady && mapRef.current && incidents.length > 0) {
+      // Note: fitBounds will be handled by the MapContainer component
     }
-  }, [incidents, mapReady, L]);
+  }, [incidents, mapReady]);
 
   // Create custom icon for severity
   const createCustomIcon = (severity: string, status: string) => {
-    if (!L) return null;
-    
     const color = severityColors[severity as keyof typeof severityColors] || '#9E9E9E';
     const opacity = statusOpacity[status as keyof typeof statusOpacity] || 1.0;
     
-    return L.divIcon({
+    return {
       className: 'custom-incident-marker',
       html: `
         <div style="
           background-color: ${color};
-          width: 20px;
-          height: 20px;
+          opacity: ${opacity};
+          width: 12px;
+          height: 12px;
           border-radius: 50%;
           border: 2px solid white;
-          opacity: ${opacity};
-          box-shadow: 0 2px 4px rgba(0,0,0,0.3);
         "></div>
       `,
-      iconSize: [24, 24],
-      iconAnchor: [12, 12],
-      popupAnchor: [0, -12],
-    });
+      iconSize: [20, 20],
+      iconAnchor: [10, 10],
+    };
   };
 
   if (!mapReady) {
@@ -149,54 +124,49 @@ export default function IncidentMap({
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         
-        {incidents.map((incident) => {
-          const customIcon = createCustomIcon(incident.severity, incident.status);
-          
-          return (
-            <Marker
-              key={incident.id}
-              position={[incident.lat, incident.lng]}
-              icon={customIcon}
-              eventHandlers={{
-                click: () => onMarkerClick?.(incident),
-              }}
-            >
-              <Popup>
-                <div className="p-2 min-w-[200px]">
-                  <div className="font-semibold text-sm mb-1">
-                    {incident.severity} Severity
-                  </div>
-                  <div className="text-xs text-gray-600 mb-1">
-                    Status: {incident.status}
-                  </div>
-                  {incident.address && (
-                    <div className="text-xs text-gray-600 mb-1">
-                      {incident.address}
-                    </div>
-                  )}
-                  {incident.imageUrl && (
-                    <img
-                      src={incident.imageUrl}
-                      alt="Incident"
-                      className="w-full h-24 object-cover rounded mb-1"
-                    />
-                  )}
-                  <div className="text-xs text-gray-500">
-                    {new Date(incident.createdAt).toLocaleString()}
-                  </div>
-                  {onMarkerClick && (
-                    <button
-                      onClick={() => onMarkerClick(incident)}
-                      className="mt-2 text-xs bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
-                    >
-                      View Details
-                    </button>
-                  )}
+        {incidents.map((incident) => (
+          <Marker
+            key={incident.id}
+            position={[incident.lat, incident.lng]}
+            eventHandlers={{
+              click: () => onMarkerClick?.(incident),
+            }}
+          >
+            <Popup>
+              <div className="p-2 min-w-[200px]">
+                <div className="font-semibold text-sm mb-1">
+                  {incident.severity} Severity
                 </div>
-              </Popup>
-            </Marker>
-          );
-        })}
+                <div className="text-xs text-gray-600 mb-1">
+                  Status: {incident.status}
+                </div>
+                {incident.address && (
+                  <div className="text-xs text-gray-600 mb-1">
+                    {incident.address}
+                  </div>
+                )}
+                {incident.imageUrl && (
+                  <img
+                    src={incident.imageUrl}
+                    alt="Incident"
+                    className="w-full h-24 object-cover rounded mb-1"
+                  />
+                )}
+                <div className="text-xs text-gray-500">
+                  Reported: {new Date(incident.createdAt).toLocaleDateString()}
+                </div>
+                <div className="mt-2">
+                  <button
+                    onClick={() => onMarkerClick?.(incident)}
+                    className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                  >
+                    View Details →
+                  </button>
+                </div>
+              </div>
+            </Popup>
+          </Marker>
+        ))}
       </MapContainer>
     </div>
   );

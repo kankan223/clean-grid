@@ -6,9 +6,22 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet';
+import dynamic from 'next/dynamic';
 import 'leaflet/dist/leaflet.css';
-import { LatLngExpression } from 'leaflet';
+
+// Dynamic imports to avoid SSR issues
+const MapContainer = dynamic(
+  () => import('react-leaflet').then(mod => mod.MapContainer),
+  { ssr: false }
+);
+const TileLayer = dynamic(
+  () => import('react-leaflet').then(mod => mod.TileLayer),
+  { ssr: false }
+);
+const Marker = dynamic(
+  () => import('react-leaflet').then(mod => mod.Marker),
+  { ssr: false }
+);
 
 interface LocationPickerProps {
   onLocationChange: (lat: number, lng: number) => void;
@@ -43,14 +56,28 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
         setIsGeolocating(false);
         
         // Update parent
-        onLocationChange({ lat: latitude, lng: longitude });
+        onLocationChange(latitude, longitude);
       },
       
       // Error callback
       (error) => {
         console.error('Geolocation error:', error);
         setIsGeolocating(false);
-        alert('Could not get your location. Please place the pin manually.');
+        
+        let errorMessage = 'Could not get your location. Please place the pin manually.';
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            errorMessage = 'Location permission denied. Please enable location access in your browser settings.';
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMessage = 'Location information is unavailable. Please place the pin manually.';
+            break;
+          case error.TIMEOUT:
+            errorMessage = 'Location request timed out. Please try again or place the pin manually.';
+            break;
+        }
+        
+        alert(errorMessage);
       },
       
       // Options
@@ -66,7 +93,7 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
   const handleMapClick = (e: any) => {
     const { lat, lng } = e.latlng;
     setPosition({ lat, lng });
-    onLocationChange({ lat, lng });
+    onLocationChange(lat, lng);
   };
 
   // Update position when props change
@@ -138,7 +165,7 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
 
       <div className="mt-2 text-sm text-gray-600">
         <p>
-          Drag the pin to the exact location, or click "Use My Location" for GPS.
+          Drag the pin to the exact location, or click &quot;Use My Location&quot; for GPS.
         </p>
       </div>
     </div>

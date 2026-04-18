@@ -92,28 +92,37 @@ const SortIcon = ({ column, currentSort, currentOrder }: {
 };
 
 interface IncidentTableProps {
+  incidents?: Incident[];
+  isLoading?: boolean;
   onRowClick?: (incident: Incident) => void;
+  onStatusUpdate?: (incidentId: string, status: string) => void;
 }
 
-export const IncidentTable: React.FC<IncidentTableProps> = ({ onRowClick }) => {
+export const IncidentTable: React.FC<IncidentTableProps> = ({ 
+  incidents = [], 
+  isLoading = false, 
+  onRowClick, 
+  onStatusUpdate 
+}) => {
   const {
-    incidents,
     crewMembers,
     selectedIncidentIds,
-    isLoading,
     filters,
     setFilters,
     toggleIncidentSelection,
     selectAllIncidents,
     clearSelection,
-    activeIncidentId,
+    refreshIncidents,
   } = useIncidentStore();
-
   const [allSelected, setAllSelected] = useState(false);
+  const [activeIncidentId, setActiveIncidentId] = useState<string | null>(null);
+  const [sortField, setSortField] = useState<'created_at' | 'priority_score' | 'severity'>('created_at');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
   const handleSort = (column: 'created_at' | 'priority_score' | 'severity') => {
-    const newOrder = filters.sort === column && filters.order === 'desc' ? 'asc' : 'desc';
-    setFilters({ sort: column, order: newOrder });
+    const newOrder = sortOrder === 'desc' ? 'asc' : 'desc';
+    setSortField(column);
+    setSortOrder(newOrder);
   };
 
   const handleSelectAll = (checked: boolean) => {
@@ -126,6 +135,7 @@ export const IncidentTable: React.FC<IncidentTableProps> = ({ onRowClick }) => {
   };
 
   const handleRowClick = (incident: Incident) => {
+    setActiveIncidentId(incident.id);
     if (onRowClick) {
       onRowClick(incident);
     }
@@ -259,14 +269,30 @@ export const IncidentTable: React.FC<IncidentTableProps> = ({ onRowClick }) => {
                   {incident.age}
                 </TableCell>
                 <TableCell>
-                  <StatusPill status={incident.status} />
+                  {onStatusUpdate ? (
+                    <select
+                      value={incident.status}
+                      onChange={(e) => onStatusUpdate(incident.id, e.target.value)}
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-sm border rounded px-2 py-1"
+                    >
+                      <option value="pending">Pending</option>
+                      <option value="assigned">Assigned</option>
+                      <option value="in_progress">In Progress</option>
+                      <option value="cleaned">Cleaned</option>
+                      <option value="verified">Verified</option>
+                      <option value="needs_review">Needs Review</option>
+                    </select>
+                  ) : (
+                    <StatusPill status={incident.status} />
+                  )}
                 </TableCell>
                 <TableCell className="text-sm">
                   {incident.assigned_to ? getCrewMemberName(incident.assigned_to) : 'Unassigned'}
                 </TableCell>
                 <TableCell>
                   <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
+                    <DropdownMenuTrigger>
                       <Button
                         variant="ghost"
                         className="h-8 w-8 p-0"

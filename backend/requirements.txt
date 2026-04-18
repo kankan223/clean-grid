@@ -17,7 +17,7 @@ passlib[bcrypt]==1.7.4
 python-multipart==0.0.6
 
 # Configuration & Environment
-pydantic==2.5.0
+pydantic[email]==2.5.0
 pydantic-settings==2.1.0
 python-decouple==3.8
 

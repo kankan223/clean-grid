@@ -38,6 +38,11 @@ class LoginRequest(BaseModel):
     password: str
     remember_me: bool = False
 
+class RegisterRequest(BaseModel):
+    email: EmailStr
+    password: str
+    display_name: str
+
 class TokenResponse(BaseModel):
     access_token: str
     refresh_token: str
@@ -56,10 +61,12 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
         return False
 
 def hash_password(password: str) -> str:
-    """Hash password using bcrypt with cost factor 12"""
+    """Hash password using bcrypt with dynamic cost factor"""
     try:
-        # Generate salt with cost factor 12
-        salt = bcrypt.gensalt(rounds=12)
+        # Use lower rounds for development to speed up hashing
+        from app.core.config import settings
+        rounds = 4 if settings.ENVIRONMENT == "development" else 12
+        salt = bcrypt.gensalt(rounds=rounds)
         hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
         return hashed.decode('utf-8')
     except Exception as e:
@@ -100,6 +107,102 @@ async def is_refresh_token_blacklisted(refresh_token: str) -> bool:
         logger.error(f"Failed to check refresh token blacklist: {e}")
         return False  # Fail open - allow request if Redis fails
 
+@router.post("/register")
+async def register(
+    request: Request,
+    register_data: RegisterRequest,
+    db: AsyncSession = Depends(get_db)
+):
+    """Register new user and issue JWT tokens"""
+    
+    try:
+        # Check if user already exists
+        result = await db.execute(
+            select(User).where(User.email == register_data.email)
+        )
+        existing_user = result.scalar_one_or_none()
+        
+        if existing_user:
+            raise HTTPException(
+                status_code=400,
+                detail="Email already registered"
+            )
+        
+        # Create new user
+        hashed_password = hash_password(register_data.password)
+        user = User(
+            email=register_data.email,
+            password_hash=hashed_password,
+            display_name=register_data.display_name,
+            role="citizen"
+        )
+        
+        db.add(user)
+        await db.commit()
+        await db.refresh(user)
+        
+        # Create tokens for immediate login
+        access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        refresh_token = create_refresh_token()
+        
+        access_token = create_access_token(
+            data={"sub": str(user.id), "email": user.email, "role": user.role},
+            expires_delta=access_token_expires
+        )
+        
+        # Create response
+        response = JSONResponse(
+            content={
+                "access_token": access_token,
+                "refresh_token": refresh_token,
+                "token_type": "bearer",
+                "expires_in": ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+                "user": {
+                    "id": str(user.id),
+                    "email": user.email,
+                    "display_name": user.display_name,
+                    "role": user.role.value,
+                    "total_points": user.total_points,
+                    "badge_tier": user.badge_tier.value if user.badge_tier else None,
+                    "created_at": user.created_at.isoformat(),
+                    "updated_at": user.updated_at.isoformat()
+                }
+            }
+        )
+        
+        # Set secure HTTP-only cookies
+        response.set_cookie(
+            key="access_token",
+            value=access_token,
+            max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+            httponly=True,
+            samesite="lax",
+            secure=False,  # Set to False for localhost, True in production
+            path="/"
+        )
+        
+        response.set_cookie(
+            key="refresh_token",
+            value=refresh_token,
+            max_age=REFRESH_TOKEN_DAYS * 24 * 60 * 60,
+            httponly=True,
+            samesite="lax",
+            secure=False,  # Set to True in production with HTTPS
+        )
+        
+        logger.info(f"User registered successfully: {user.email}")
+        return response
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Registration error: {e}")
+        await db.rollback()
+        raise HTTPException(
+            status_code=500,
+            detail="Registration failed"
+        )
+
 @router.post("/login")
 async def login(
     request: Request,
@@ -115,7 +218,7 @@ async def login(
         )
         user = result.scalar_one_or_none()
         
-        if not user or not verify_password(login_data.password, user.hashed_password):
+        if not user or not verify_password(login_data.password, user.password_hash):
             raise HTTPException(
                 status_code=401,
                 detail="Invalid email or password",
@@ -137,7 +240,17 @@ async def login(
                 "access_token": access_token,
                 "refresh_token": refresh_token,
                 "token_type": "bearer",
-                "expires_in": ACCESS_TOKEN_EXPIRE_MINUTES * 60
+                "expires_in": ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+                "user": {
+                    "id": str(user.id),
+                    "email": user.email,
+                    "display_name": user.display_name,
+                    "role": user.role.value,
+                    "total_points": user.total_points,
+                    "badge_tier": user.badge_tier.value if user.badge_tier else None,
+                    "created_at": user.created_at.isoformat(),
+                    "updated_at": user.updated_at.isoformat()
+                }
             }
         )
         
@@ -147,8 +260,8 @@ async def login(
             value=access_token,
             max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60,
             httponly=True,
-            secure=True,  # Set to False for localhost, True in production
-            samesite="strict",
+            samesite="lax",
+            secure=False,  # Set to False for localhost, True in production
             path="/"
         )
         
@@ -319,6 +432,51 @@ async def logout(request: Request):
         raise HTTPException(
             status_code=500,
             detail="Logout service unavailable"
+        )
+
+async def verify_access_token(request: Request) -> str:
+    """
+    Verify access token from cookie and return user ID
+    This is a dependency function for protected routes
+    """
+    
+    try:
+        # Get access token from cookie
+        access_token = request.cookies.get("access_token")
+        
+        if not access_token:
+            raise HTTPException(
+                status_code=401,
+                detail="No access token provided"
+            )
+        
+        # Decode token
+        payload = jwt.decode(
+            access_token,
+            SECRET_KEY,
+            algorithms=[ALGORITHM]
+        )
+        
+        user_id = payload.get("sub")
+        if not user_id:
+            raise HTTPException(
+                status_code=401,
+                detail="Invalid token payload"
+            )
+        
+        return user_id
+        
+    except JWTError as e:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid token"
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=401,
+            detail="Token verification failed"
         )
 
 @router.get("/health")

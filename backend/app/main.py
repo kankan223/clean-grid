@@ -16,6 +16,7 @@ from app.core.database import init_db, close_db
 from app.core.redis import init_redis, redis_client
 from app.routers import auth, admin, leaderboard, events
 from app.routers import reports
+from app.routers import incidents
 
 # Configure structured logging
 structlog.configure(
@@ -180,6 +181,18 @@ app.include_router(
     prefix="/api/reports",
     tags=["Reports"]
 )
+
+app.include_router(
+    incidents.router,
+    prefix="/api",
+    tags=["Incidents"]
+)
+
+app.include_router(
+    events.router,
+    tags=["Events"]
+)
+
 
 
 

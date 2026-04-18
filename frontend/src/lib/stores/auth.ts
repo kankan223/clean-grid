@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -5,10 +6,12 @@ import { persist } from 'zustand/middleware';
 export interface User {
   id: string;
   email: string;
+  display_name: string;
   role: 'citizen' | 'crew' | 'admin';
-  points: number;
-  createdAt: string;
-  updatedAt: string;
+  total_points: number;
+  badge_tier?: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface AuthState {
@@ -18,6 +21,7 @@ export interface AuthState {
   refreshToken: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  isInitializing: boolean;
   error: string | null;
 
   // Actions
@@ -27,6 +31,7 @@ export interface AuthState {
   updateProfile: (userData: Partial<User>) => void;
   clearError: () => void;
   setLoading: (loading: boolean) => void;
+  initializeAuth: () => Promise<void>;
 }
 
 // API functions
@@ -105,6 +110,7 @@ export const useAuthStore = create<AuthState>()(
       refreshToken: null,
       isAuthenticated: false,
       isLoading: false,
+      isInitializing: true,
       error: null,
 
       // Actions
@@ -184,7 +190,7 @@ export const useAuthStore = create<AuthState>()(
           const updatedUser: User = {
             ...user,
             ...userData,
-            updatedAt: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
           };
           
           set({ user: updatedUser });
@@ -193,6 +199,42 @@ export const useAuthStore = create<AuthState>()(
 
       clearError: () => {
         set({ error: null });
+      },
+
+      initializeAuth: async () => {
+        set({ isInitializing: true, error: null });
+        
+        try {
+          // Check session by calling /api/users/me
+          const response = await fetch(`${API_BASE}/api/users/me`, {
+            credentials: 'include',
+          });
+          
+          if (response.ok) {
+            const userData = await response.json();
+            set({
+              user: userData,
+              isAuthenticated: true,
+              isInitializing: false,
+              error: null,
+            });
+          } else {
+            // No valid session
+            set({
+              user: null,
+              isAuthenticated: false,
+              isInitializing: false,
+              error: null,
+            });
+          }
+        } catch (error) {
+          set({
+            user: null,
+            isAuthenticated: false,
+            isInitializing: false,
+            error: null,
+          });
+        }
       },
 
       setLoading: (loading: boolean) => {
@@ -204,6 +246,7 @@ export const useAuthStore = create<AuthState>()(
       partialize: (state) => ({
         user: state.user,
         isAuthenticated: state.isAuthenticated,
+        isInitializing: state.isInitializing,
       }),
     }
   )
@@ -216,7 +259,19 @@ export const useIsAuthenticated = () => useAuthStore((state) => state.isAuthenti
 export const useIsAdmin = () => useAuthStore((state) => state.user?.role === 'admin');
 export const useIsCrew = () => useAuthStore((state) => state.user?.role === 'crew');
 export const useAuthLoading = () => useAuthStore((state) => state.isLoading);
+export const useAuthInitializing = () => useAuthStore((state) => state.isInitializing);
 export const useAuthError = () => useAuthStore((state) => state.error);
+
+// Auth Provider component
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { initializeAuth } = useAuthStore();
+  
+  useEffect(() => {
+    initializeAuth();
+  }, [initializeAuth]);
+  
+  return React.createElement(React.Fragment, null, children);
+};
 
 // Helper functions
 export const hasRole = (user: User | null, role: User['role']): boolean => {

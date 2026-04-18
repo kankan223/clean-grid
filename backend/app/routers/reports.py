@@ -23,7 +23,7 @@ from app.models.incident import Incident
 
 logger = structlog.get_logger(__name__)
 
-router = APIRouter(prefix="/reports", tags=["Reports"])
+router = APIRouter(tags=["Reports"])
 
 # Rate limiting configuration
 RATE_LIMIT_WINDOW = 3600  # 1 hour in seconds
@@ -82,6 +82,47 @@ async def health():
 @router.get("/")
 async def list_reports():
     return {"message": "Incident list working", "incidents": []}
+
+@router.get("/{report_id}")
+async def get_report_status(
+    report_id: str,
+    db: AsyncSession = Depends(get_db)
+):
+    """Get the status of a report for polling"""
+    try:
+        # Query incident by ID
+        result = await db.execute(
+            text("SELECT * FROM incidents WHERE id = :id"),
+            {"id": report_id}
+        )
+        incident = result.fetchone()
+        
+        if not incident:
+            raise HTTPException(
+                status_code=404,
+                detail="Report not found"
+            )
+        
+        # Convert to dict for response
+        incident_dict = dict(incident._mapping)
+        
+        return {
+            "report_id": incident_dict["id"],
+            "status": incident_dict["status"],
+            "severity": incident_dict["severity"],
+            "confidence": incident_dict["confidence"],
+            "waste_detected": incident_dict["waste_detected"],
+            "message": f"Report status: {incident_dict['status']}"
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching report {report_id}: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail="Internal server error while fetching report status."
+        )
 
 @router.post("/")
 async def create_report(

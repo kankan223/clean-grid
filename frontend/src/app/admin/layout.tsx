@@ -2,7 +2,8 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/lib/stores/auth';
+import { useAuth, useAuthInitializing } from '@/lib/stores/auth';
+import { Loader2 } from 'lucide-react';
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -10,9 +11,15 @@ interface AdminLayoutProps {
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
   const { user, isAuthenticated } = useAuth();
+  const isInitializing = useAuthInitializing();
   const router = useRouter();
 
   useEffect(() => {
+    // Wait for initialization to complete
+    if (isInitializing) {
+      return;
+    }
+
     // Check authentication and role
     if (!isAuthenticated || !user) {
       // Redirect to login page
@@ -26,7 +33,19 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       router.push('/');
       return;
     }
-  }, [user, isAuthenticated, router]);
+  }, [user, isAuthenticated, isInitializing, router]);
+
+  // Show loading spinner while initializing
+  if (isInitializing) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+          <p className="text-gray-600">Checking authentication...</p>
+        </div>
+      </div>
+    );
+  }
 
   // If we reach here, user is authenticated admin
   return (

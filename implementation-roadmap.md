@@ -97,22 +97,23 @@
 - [x] Build IncidentTable with sorting/filtering
 - [x] Create DetailDrawer for incident details
 - [x] Implement BulkActionBar for selection
-- [ ] Add synchronized AdminMapPanel
-- [ ] Create status override controls
+- [x] Add synchronized AdminMapPanel
+- [x] Create status override controls
 
 ### Task Assignment Backend
 - [x] GET /api/incidents with filters/pagination
 - [x] PATCH /api/incidents/:id/assign
 - [x] GET /api/incidents/stats for dashboard KPIs
-- [ ] Implement SSE endpoint for real-time updates
+- [x] Implement SSE endpoint for real-time updates
 - [x] Add crew management endpoints
 
 ### Frontend Admin Features
-- [ ] Connect table to API with TanStack Query
-- [ ] Implement optimistic updates for status changes
-- [ ] Add filter bar with status/severity/date filters
-- [ ] Create assign dropdown with crew workload
-- [ ] Build real-time sync via SSE
+- [x] Connect table to API with TanStack Query
+- [x] Implement QueryClientProvider for global query management
+- [x] Implement optimistic updates for status changes
+- [x] Add filter bar with status/severity/date filters
+- [x] Create assign dropdown with crew workload
+- [x] Build real-time sync via SSE
 
 ### Validation & Testing Gate
 - [x] Authenticate as admin user
@@ -124,6 +125,47 @@
 - [x] Confirm bulk selection works
 - [x] Test error handling and rollback
 - [x] Validate no data leakage between roles
+
+---
+
+## Phase 3: Citizen Portal & Gamification (Auth UI, Profile, Leaderboard)
+
+### Authentication UI
+- [x] Create QueryClientProvider for global TanStack Query support
+- [x] Build /login page with form validation and error handling
+- [x] Build /register page with password confirmation
+- [x] Update AppHeader with auth-aware navigation (Login/Register vs Profile/Logout)
+- [x] Add points display and badge tier in header for authenticated users
+
+### User Profile Page
+- [x] Build /profile page with user info and stats display
+- [x] Fetch user data from GET /api/users/me endpoint
+- [x] Display total points, badge tier, and member since date
+- [x] Show user's report history with status pills and severity badges
+- [x] Add "View Details" links for each report
+
+### Community Leaderboard
+- [x] Build /leaderboard page with ranked user list
+- [x] Fetch leaderboard data from GET /api/leaderboard endpoint
+- [x] Display rank icons (crown, medal, award) for top 3
+- [x] Show user stats: points, reports count, verifications count
+- [x] Add badge tier display and color coding
+- [x] Include call-to-action for new contributors
+
+### Navigation & Routing
+- [x] Create (auth) route group for login/register pages
+- [x] Update AppHeader navigation based on auth state
+- [x] Add Profile link for authenticated users
+- [x] Show Admin link only for admin users
+- [x] Implement proper mobile menu with auth state
+
+### Validation & Testing Gate
+- [x] Test user registration flow
+- [x] Test user login flow with proper redirects
+- [x] Verify profile page displays correct user data
+- [x] Confirm leaderboard updates with new users
+- [x] Test navigation state changes on login/logout
+- [x] Validate points display in header
 
 ---
 

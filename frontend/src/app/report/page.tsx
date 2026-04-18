@@ -24,8 +24,8 @@ const ReportPage: React.FC = () => {
   const [analysisResult, setAnalysisResult] = useState<any>(null);
 
   // Handle location change from LocationPicker
-  const handleLocationChange = useCallback((newLocation: { lat: number; lng: number }) => {
-    setLocation(newLocation);
+  const handleLocationChange = useCallback((lat: number, lng: number) => {
+    setLocation({ lat, lng });
   }, []);
 
   // Handle image upload
@@ -52,22 +52,35 @@ const ReportPage: React.FC = () => {
     try {
       // Create form data
       const formData = new FormData();
-      formData.append('image', imageFile);
-      formData.append('lat', location.lat.toString());
-      formData.append('lng', location.lng.toString());
+      if (imageFile) {
+        formData.append('image', imageFile);
+      }
+      if (location) {
+        formData.append('lat', location.lat.toString());
+        formData.append('lng', location.lng.toString());
+      }
       if (note.trim()) {
         formData.append('note', note.trim());
       }
 
       // Submit to API
-      const response = await fetch('/api/reports', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8004';
+      const response = await fetch(`${apiUrl}/api/reports`, {
         method: 'POST',
         body: formData,
+        // DO NOT set Content-Type header - let browser set it with correct boundary
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || 'Failed to submit report');
+        let errorMessage = 'Failed to submit report';
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.detail || errorMessage;
+        } catch (parseError) {
+          // If response is not JSON, use status text
+          errorMessage = response.statusText || errorMessage;
+        }
+        throw new Error(errorMessage);
       }
 
       const result = await response.json();
@@ -81,7 +94,7 @@ const ReportPage: React.FC = () => {
       // Poll for completion (simplified - in production would use SSE)
       const pollInterval = setInterval(async () => {
         try {
-          const checkResponse = await fetch(`/api/reports/${result.report_id}`);
+          const checkResponse = await fetch(`${apiUrl}/api/reports/${result.report_id}`);
           const checkData = await checkResponse.json();
           
           if (checkData.status !== 'processing') {
@@ -95,7 +108,7 @@ const ReportPage: React.FC = () => {
 
     } catch (error) {
       console.error('Submission error:', error);
-      alert(`Failed to submit report: ${error.message}`);
+      alert(`Failed to submit report: ${(error as Error).message}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -148,7 +161,7 @@ const ReportPage: React.FC = () => {
               </h2>
               <LocationPicker
                 onLocationChange={handleLocationChange}
-                initialLocation={location}
+                initialLocation={location || undefined}
               />
             </div>
 

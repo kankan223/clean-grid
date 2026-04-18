@@ -29,7 +29,7 @@ const ImageUploadZone: React.FC<ImageUploadZoneProps> = ({
     return allowedTypes.includes(file.type) && file.size <= maxSize;
   };
 
-  const getFileError = (file: File): string | null => {
+  const getFileError = useCallback((file: File): string | null => {
     if (!isValidFile(file)) {
       if (file.size > 10 * 1024 * 1024) {
         return 'File exceeds 10MB limit. Please compress or choose another image.';
@@ -40,7 +40,7 @@ const ImageUploadZone: React.FC<ImageUploadZoneProps> = ({
       return null;
     }
     return null;
-  };
+  }, []);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -68,7 +68,7 @@ const ImageUploadZone: React.FC<ImageUploadZoneProps> = ({
         onImageSelect(file);
       }
     }
-  }, [onImageSelect]);
+  }, [onImageSelect, getFileError]);
 
   const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -82,9 +82,9 @@ const ImageUploadZone: React.FC<ImageUploadZoneProps> = ({
         onImageSelect(file);
       }
     }
-  }, [onImageSelect]);
+  }, [onImageSelect, getFileError]);
 
-  const handleClick = () => {
+  const handleClick = useCallback(() => {
     if (!disabled) {
       document.getElementById('file-input')?.click();
     }
@@ -136,7 +136,7 @@ const ImageUploadZone: React.FC<ImageUploadZoneProps> = ({
             >
               Remove Image
             </button>
-          </>
+          </div>
         ) : (
           <div className="space-y-4">
             <div className="text-gray-400">

@@ -8,6 +8,23 @@
   }
 }
 
+/* Leaflet CSS is imported in layout.tsx to avoid @import conflicts */
+
+/* Contain Leaflet map z-index to prevent overlap with UI elements */
+.leaflet-pane {
+  z-index: 400 !important;
+}
+
+.leaflet-control-container {
+  z-index: 401 !important;
+}
+
+/* Ensure admin dashboard elements stay above map */
+.admin-dashboard {
+  position: relative;
+  z-index: 500;
+}
+
 @layer base {
   .theme {
     --font-heading: var(--font-sans);

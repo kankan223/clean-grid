@@ -23,10 +23,9 @@ interface DetailDrawerProps {
 }
 
 // Status Timeline Component
-const StatusTimeline = ({ status, created_at, updated_at }: {
+const StatusTimeline = ({ status, created_at }: {
   status: string;
   created_at: string;
-  updated_at: string;
 }) => {
   const getStatusColor = (status: string) => {
     const colors: Record<string, string> = {
@@ -47,7 +46,7 @@ const StatusTimeline = ({ status, created_at, updated_at }: {
         <div className="flex items-center gap-2">
           <span className="font-medium">{status}</span>
           <span className="text-sm text-gray-500">
-            {new Date(updated_at).toLocaleDateString()}
+            {new Date(created_at).toLocaleDateString()}
           </span>
         </div>
         <div className="text-xs text-gray-500">
@@ -82,12 +81,12 @@ export const DetailDrawer: React.FC<DetailDrawerProps> = ({
   onClose,
 }) => {
   const { crewMembers, assignIncident, isLoading } = useIncidentStore();
-  const [selectedCrewId, setSelectedCrewId] = useState<string>('');
+  const [selectedCrewId, setSelectedCrewId] = useState<string | null>(null);
   const [isAssigning, setIsAssigning] = useState(false);
 
   useEffect(() => {
     if (incident) {
-      setSelectedCrewId(incident.assigned_to || '');
+      setSelectedCrewId(incident.assigned_to || null);
     }
   }, [incident]);
 
@@ -196,7 +195,6 @@ export const DetailDrawer: React.FC<DetailDrawerProps> = ({
               <StatusTimeline
                 status={incident.status}
                 created_at={incident.created_at}
-                updated_at={incident.updated_at || incident.created_at}
               />
             </div>
           </div>

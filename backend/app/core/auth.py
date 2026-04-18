@@ -15,8 +15,16 @@ from app.core.config import settings
 from app.core.database import get_db
 from app.models.user import User
 
-# Password hashing context
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Password hashing context with dynamic rounds
+import os
+
+# Use lower bcrypt rounds for development to speed up hashing
+bcrypt_rounds = 4 if settings.ENVIRONMENT == "development" else 12
+pwd_context = CryptContext(
+    schemes=["bcrypt"], 
+    deprecated="auto",
+    bcrypt__rounds=bcrypt_rounds
+)
 
 # HTTP Bearer token scheme
 security = HTTPBearer()
