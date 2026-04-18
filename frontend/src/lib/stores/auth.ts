@@ -39,15 +39,11 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8004';
 
 interface LoginResponse {
   user: User;
-  accessToken: string;
-  refreshToken: string;
   tokenType: string;
   expiresIn: number;
 }
 
 interface RefreshResponse {
-  accessToken: string;
-  refreshToken: string;
   tokenType: string;
   expiresIn: number;
 }
@@ -74,15 +70,13 @@ const apiLogin = async (email: string, password: string): Promise<LoginResponse>
   return response.json();
 };
 
-const apiRefreshToken = async (refreshToken: string): Promise<RefreshResponse> => {
+const apiRefreshToken = async (): Promise<RefreshResponse> => {
   const response = await fetch(`${API_BASE}/api/auth/refresh`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      refresh_token: refreshToken,
-    }),
+    body: JSON.stringify({}),
     credentials: 'include', // Important for cookies
   });
 
@@ -122,8 +116,8 @@ export const useAuthStore = create<AuthState>()(
           
           set({
             user: response.user,
-            accessToken: response.accessToken,
-            refreshToken: response.refreshToken,
+            accessToken: null,
+            refreshToken: null,
             isAuthenticated: true,
             isLoading: false,
             error: null,
@@ -160,19 +154,12 @@ export const useAuthStore = create<AuthState>()(
       },
 
       refreshAccessToken: async () => {
-        const { refreshToken } = get();
-        
-        if (!refreshToken) {
-          get().logout();
-          return;
-        }
-        
         try {
-          const response = await apiRefreshToken(refreshToken);
+          await apiRefreshToken();
           
           set({
-            accessToken: response.accessToken,
-            refreshToken: response.refreshToken,
+            accessToken: null,
+            refreshToken: null,
             error: null,
           });
           // Tokens are updated as HttpOnly cookies by the backend
@@ -245,8 +232,12 @@ export const useAuthStore = create<AuthState>()(
       name: 'cleangrid-auth',
       partialize: (state) => ({
         user: state.user,
+        accessToken: null,
+        refreshToken: null,
         isAuthenticated: state.isAuthenticated,
+        isLoading: false,
         isInitializing: state.isInitializing,
+        error: state.error,
       }),
     }
   )

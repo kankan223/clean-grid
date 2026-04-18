@@ -25,6 +25,9 @@ python-decouple==3.8
 httpx==0.25.2
 aiofiles==23.2.1
 
+# Binary compatibility for geospatial stack
+numpy<2.0.0
+
 # Redis
 redis==5.0.1
 

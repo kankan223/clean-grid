@@ -136,6 +136,81 @@ Every PR must include:
 
 ---
 
+## 4.1 Remote Branch Debug/Security Patch Workflow
+
+This workflow is for reviewing a teammate's feature branch and applying debug/security patches before merge.
+
+### Step 1: Configure Git for cross-OS line endings (per clone)
+
+**Windows (recommended for this repo):**
+```sh
+git config --local core.autocrlf false
+git config --local core.eol lf
+git config --local core.safecrlf warn
+```
+
+**Linux/macOS:**
+```sh
+git config --local core.autocrlf false
+git config --local core.eol lf
+git config --local core.safecrlf warn
+```
+
+Optional verification:
+```sh
+git config --local --get-regexp "core.autocrlf|core.eol|core.safecrlf"
+```
+
+### Step 2: Safely fetch and check out their remote branch
+```sh
+git fetch origin --prune
+git branch -r
+git checkout -b fix/<module>-patch-<initials> origin/<remote-feature-branch>
+```
+
+### Step 3: Commit debug/security patches with naming convention
+Use commit format: `fix(module): short description`
+
+```sh
+git add -A
+git commit -m "fix(<module>): <debug-or-security-patch-description>"
+```
+
+Examples:
+```sh
+git commit -m "fix(auth): validate refresh token expiry on rotation"
+git commit -m "fix(reports): sanitize uploaded filename before storage"
+```
+
+### Step 4: Pull latest main and handle merge conflicts
+```sh
+git fetch origin
+git checkout main
+git pull --ff-only origin main
+git checkout fix/<module>-patch-<initials>
+git merge origin/main
+```
+
+If conflicts occur:
+```sh
+git status
+# Resolve conflict markers in files, then:
+git add <resolved-files>
+git commit -m "fix(<module>): resolve merge conflicts with main"
+```
+
+### Step 5: Push the patched branch back to remote
+```sh
+git push -u origin fix/<module>-patch-<initials>
+```
+
+If the team wants updates pushed directly to the original remote feature branch:
+```sh
+git push origin HEAD:<remote-feature-branch>
+```
+
+---
+
 ## 5. Local Environment & Safe Commands
 
 ### Use the unified startup script (recommended)

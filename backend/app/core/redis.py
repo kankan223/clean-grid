@@ -3,15 +3,15 @@ Redis client configuration for CleanGrid Backend
 Used for caching, rate limiting, and session management
 """
 
-import redis
-from redis import Redis
+import redis.asyncio as redis
+from redis.asyncio import Redis
 from typing import Optional, Any
 import json
 
 from app.core.config import settings
 
 # Global Redis client
-redis_client: Redis = None
+redis_client: Optional[Redis] = None
 
 
 async def init_redis() -> Redis:
@@ -129,7 +129,7 @@ async def is_in_set(key: str, value: str) -> bool:
     """
     try:
         client = await get_redis()
-        return bool(client.sismember(key, value))
+        return bool(await client.sismember(key, value))
     except Exception:
         return False
 
