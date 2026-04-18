@@ -170,10 +170,14 @@ else
     echo "Shapely is optional for basic functionality" >> ../logs/backend-install.log
 fi
 
-# Install remaining dependencies, ignoring shapely if it fails
-pip install -r requirements.txt >> ../logs/backend-install.log 2>&1 || {
-    print_warning "Some dependencies failed, but continuing..."
-}
+# Install all requirements (stop on error this time)
+print_status "Installing backend dependencies..."
+if ! pip install -r requirements.txt >> ../logs/backend-install.log 2>&1; then
+    print_error "Failed to install dependencies. Details:"
+    tail -50 ../logs/backend-install.log
+    exit 1
+fi
+print_success "Backend dependencies installed"
 export PYTHONPATH=.
 cd ..
 
@@ -183,7 +187,8 @@ cd backend
 source venv/bin/activate
 export PYTHONPATH=.
 
-if ! alembic upgrade head; then
+# Run migrations with explicit python path
+if ! python -m alembic upgrade head; then
     print_error "Database migration failed. Check database connection and migration files."
     print_status "Checking database connection..."
     python -c "
