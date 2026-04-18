@@ -1,33 +1,35 @@
 # =============================================================================
 # CleanGrid AI Service Dependencies
+# NOTE: Optimized for Python 3.14 compatibility
+# PyTorch not required for mock inference during development
 # =============================================================================
 
 # Core FastAPI
-fastapi==0.104.1
-uvicorn[standard]==0.24.0
+fastapi>=0.104.1
+uvicorn[standard]>=0.24.0
 
-# Computer Vision & AI
-ultralytics==8.0.206
-torch==2.1.0
-torchvision==0.16.0
-opencv-python==4.8.1.78
-Pillow==10.1.0
+# Computer Vision & Image Processing (mock implementation)
+# ultralytics and torch excluded for Python 3.14 compatibility
+# Using mock inference for development
+opencv-python>=4.8.1.78
+Pillow>=10.2.0
 
 # HTTP Client for image downloads
-httpx==0.25.2
-aiofiles==23.2.1
+httpx>=0.25.2
+aiofiles>=23.2.1
 
 # File handling
-python-multipart==0.0.6
+python-multipart>=0.0.6
 
 # Configuration & Environment
-pydantic==2.5.0
-pydantic-settings==2.1.0
-python-dotenv==1.0.0
+pydantic>=2.5.0
+pydantic-settings>=2.1.0
+python-dotenv>=1.0.0
 
 # Utilities
-numpy==1.24.3
-structlog==23.2.0
+numpy>=1.24.3
+structlog>=23.2.0
+loguru>=0.7.2
 loguru==0.7.2
 
 # Development Dependencies

@@ -125,15 +125,9 @@ for i in {1..10}; do
     sleep 1
 done
 
-# Step 2: Ensure Backend Virtual Environment (CRITICAL FIX)
+# Step 2: Ensure Backend Virtual Environment
 print_status "Setting up backend virtual environment..."
 cd backend
-
-# Remove broken venv if it exists but is empty
-if [ -d "venv" ] && [ ! -f "venv/bin/activate" ]; then
-    print_status "Removing broken virtual environment..."
-    rm -rf venv
-fi
 
 # Create venv if it doesn't exist
 if [ ! -d "venv" ]; then
@@ -144,39 +138,18 @@ if [ ! -d "venv" ]; then
     }
 fi
 
-# Activate and install dependencies
-source venv/bin/activate || {
-    print_error "Failed to activate virtual environment"
-    exit 1
-}
+source venv/bin/activate
 
-# Install setuptools first to fix shapely build issues
-pip install --upgrade pip setuptools wheel > ../logs/backend-install.log 2>&1 || {
-    print_error "Failed to install pip setuptools"
-    exit 1
-}
+# 🚨 UPGRADE PIP, SETUPTOOLS AND WHEEL FIRST 🚨
+pip install --upgrade pip setuptools wheel
 
-# Install pkg_resources first (needed for shapely)
-pip install setuptools >> ../logs/backend-install.log 2>&1 || {
-    print_error "Failed to install setuptools"
-    exit 1
-}
-
-# Try to install shapely with system packages if available, otherwise skip
-if pip install shapely >> ../logs/backend-install.log 2>&1; then
-    print_success "Shapely installed successfully"
-else
-    print_warning "Shapely installation failed, but continuing without it"
-    echo "Shapely is optional for basic functionality" >> ../logs/backend-install.log
-fi
-
-# Install all requirements (stop on error this time)
+# Now install requirements
 print_status "Installing backend dependencies..."
-if ! pip install -r requirements.txt >> ../logs/backend-install.log 2>&1; then
+pip install -r requirements.txt > ../logs/backend-install.log 2>&1 || {
     print_error "Failed to install dependencies. Details:"
     tail -50 ../logs/backend-install.log
     exit 1
-fi
+}
 print_success "Backend dependencies installed"
 export PYTHONPATH=.
 cd ..
@@ -216,15 +189,9 @@ fi
 print_success "Database seeding completed"
 cd ..
 
-# Step 4: Ensure AI Service Virtual Environment (CRITICAL FIX)
+# Step 4: Ensure AI Service Virtual Environment
 print_status "Setting up AI Service virtual environment..."
 cd ai-service
-
-# Remove broken venv if it exists but is empty
-if [ -d "venv" ] && [ ! -f "venv/bin/activate" ]; then
-    print_status "Removing broken AI Service virtual environment..."
-    rm -rf venv
-fi
 
 # Create venv if it doesn't exist
 if [ ! -d "venv" ]; then
@@ -235,23 +202,18 @@ if [ ! -d "venv" ]; then
     }
 fi
 
-# Activate and install dependencies
-source venv/bin/activate || {
-    print_error "Failed to activate AI Service virtual environment"
-    exit 1
-}
+source venv/bin/activate
 
-# Install setuptools first to fix potential build issues
-pip install --upgrade pip setuptools wheel > ../logs/ai-service-install.log 2>&1 || {
-    print_error "Failed to install pip setuptools for AI Service"
-    exit 1
-}
+# 🚨 UPGRADE PIP, SETUPTOOLS AND WHEEL FIRST 🚨
+pip install --upgrade pip setuptools wheel
 
-# Install dependencies
-pip install -r requirements.txt >> ../logs/ai-service-install.log 2>&1 || {
+# Now install requirements
+print_status "Installing AI Service dependencies..."
+pip install -r requirements.txt > ../logs/ai-service-install.log 2>&1 || {
     print_error "Failed to install AI Service dependencies"
     exit 1
 }
+print_success "AI Service dependencies installed"
 
 # Start AI Service in background
 print_status "Starting AI Service on port 8001..."

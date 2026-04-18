@@ -4,30 +4,9 @@ Computes waste severity based on YOLOv8n detection results
 """
 
 from typing import List, Tuple, Set, Dict
-from pydantic_settings import BaseSettings
-import os
+from app.config import settings
 
-
-# Relevant waste-related COCO classes
-RELEVANT_CLASSES = {"bottle", "cup", "bag", "banana", "can", "backpack", "suitcase"}
-
-class SeverityConfig(BaseSettings):
-    """Configuration for severity scoring"""
-    
-    # Confidence threshold for detection
-    YOLO_CONFIDENCE_THRESHOLD: float = 0.45
-    
-    # Severity thresholds
-    HIGH_CONFIDENCE_THRESHOLD: float = 0.7
-    HIGH_DETECTION_COUNT: int = 3
-    
-    class Config:
-        env_file = ".env"
-        case_sensitive = True
-
-
-# Global config instance
-config = SeverityConfig()
+# Import settings from main config to avoid duplication
 
 
 def compute_severity(detections: List[dict]) -> Tuple[bool, str, float]:
@@ -44,8 +23,8 @@ def compute_severity(detections: List[dict]) -> Tuple[bool, str, float]:
     relevant_detections = [
         detection for detection in detections
         if (
-            detection['label'].lower() in config.RELEVANT_CLASSES and
-            detection['confidence'] >= config.YOLO_CONFIDENCE_THRESHOLD
+            detection['label'].lower() in settings.RELEVANT_CLASSES and
+            detection['confidence'] >= settings.YOLO_CONFIDENCE_THRESHOLD
         )
     ]
     
@@ -58,9 +37,9 @@ def compute_severity(detections: List[dict]) -> Tuple[bool, str, float]:
     detection_count = len(relevant_detections)
     
     # Determine severity
-    if max_confidence >= config.HIGH_CONFIDENCE_THRESHOLD or detection_count >= config.HIGH_DETECTION_COUNT:
+    if max_confidence >= settings.HIGH_CONFIDENCE_THRESHOLD or detection_count >= settings.HIGH_DETECTION_COUNT:
         return True, "High", max_confidence
-    elif max_confidence >= config.YOLO_CONFIDENCE_THRESHOLD or detection_count == 2:
+    elif max_confidence >= settings.YOLO_CONFIDENCE_THRESHOLD or detection_count == 2:
         return True, "Medium", max_confidence
     else:
         return True, "Low", max_confidence
@@ -79,8 +58,8 @@ def filter_relevant_detections(detections: List[dict]) -> List[dict]:
     return [
         detection for detection in detections
         if (
-            detection['label'].lower() in config.RELEVANT_CLASSES and
-            detection['confidence'] >= config.YOLO_CONFIDENCE_THRESHOLD
+            detection['label'].lower() in settings.RELEVANT_CLASSES and
+            detection['confidence'] >= settings.YOLO_CONFIDENCE_THRESHOLD
         )
     ]
 
@@ -124,7 +103,7 @@ def calculate_severity(detections: List[Dict], confidence_threshold: float = 0.4
     # Filter relevant detections above threshold
     relevant_detections = [
         d for d in detections 
-        if d.get("label") in RELEVANT_CLASSES and d.get("confidence", 0) >= confidence_threshold
+        if d.get("label") in settings.RELEVANT_CLASSES and d.get("confidence", 0) >= confidence_threshold
     ]
     
     if not relevant_detections:
@@ -141,38 +120,6 @@ def calculate_severity(detections: List[Dict], confidence_threshold: float = 0.4
         return "Medium"
     else:
         return "Low"
-
-
-def compute_severity(detections: List[Dict]) -> Tuple[bool, str, float]:
-    """
-    Compute severity with return tuple format for AI service
-    
-    Returns: (waste_detected, severity, max_confidence)
-    
-    Args:
-        detections: List of detection dictionaries
-        
-    Returns:
-        Tuple of (waste_detected: bool, severity: str, max_confidence: float)
-    """
-    # Filter relevant detections above threshold
-    threshold = float(os.getenv("YOLO_CONFIDENCE_THRESHOLD", "0.45"))
-    relevant = [d for d in detections 
-                if d.get("label") in RELEVANT_CLASSES and d.get("confidence", 0) >= threshold]
-    
-    if not relevant:
-        return False, "None", 0.0
-    
-    max_conf = max(d.get("confidence", 0) for d in relevant)
-    count = len(relevant)
-    
-    # Apply deterministic severity logic
-    if max_conf >= 0.7 or count >= 3:
-        return True, "High", max_conf
-    elif max_conf >= 0.45 or count == 2:
-        return True, "Medium", max_conf
-    else:
-        return True, "Low", max_conf
 
 
 def get_severity_description(severity: str) -> str:

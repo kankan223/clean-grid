@@ -1,0 +1,8 @@
+[0;34m[01:46:48] Starting CleanGrid Development Environment...[0m
+[0;32m[01:46:48] Logs directory created[0m
+[0;34m[01:46:48] Cleaning up existing processes...[0m
+[0;34m[01:46:53] Clearing Next.js build cache...[0m
+[0;34m[01:46:53] Starting infrastructure services...[0m
+ Container cleangrid_redis Running 
+ Container cleangrid_db Running 
+[0;34m[01:46:54] Waiting for database to be ready...[0m

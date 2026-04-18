@@ -118,7 +118,16 @@ def get_inference_engine() -> Phase1Inference:
     return inference_engine
 
 
-async def initialize_inference_engine(model_path: str = None) -> Phase1Inference:
-    """Initialize the inference engine"""
+def initialize_inference_engine(model_path: str = None) -> bool:
+    """
+    Initialize the inference engine
+    
+    Args:
+        model_path: Path to YOLO model file
+        
+    Returns:
+        bool: True if initialization successful
+    """
     logger.info("Initializing Phase 1 inference engine (mock mode)")
-    return inference_engine
+    return True
+
