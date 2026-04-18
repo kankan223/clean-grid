@@ -1,26 +1,10 @@
 Requirement already satisfied: pip in ./venv/lib/python3.14/site-packages (26.0.1)
-Collecting setuptools
-  Using cached setuptools-82.0.1-py3-none-any.whl.metadata (6.5 kB)
-Collecting wheel
-  Using cached wheel-0.46.3-py3-none-any.whl.metadata (2.4 kB)
-Collecting packaging>=24.0 (from wheel)
-  Using cached packaging-26.1-py3-none-any.whl.metadata (3.5 kB)
-Using cached setuptools-82.0.1-py3-none-any.whl (1.0 MB)
-Using cached wheel-0.46.3-py3-none-any.whl (30 kB)
-Using cached packaging-26.1-py3-none-any.whl (95 kB)
-Installing collected packages: setuptools, packaging, wheel
-
-Successfully installed packaging-26.1 setuptools-82.0.1 wheel-0.46.3
 Requirement already satisfied: setuptools in ./venv/lib/python3.14/site-packages (82.0.1)
-Collecting shapely
-  Using cached shapely-2.1.2-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (6.8 kB)
-Collecting numpy>=1.21 (from shapely)
-  Using cached numpy-2.4.4-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (6.6 kB)
-Using cached shapely-2.1.2-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (3.1 MB)
-Using cached numpy-2.4.4-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (16.6 MB)
-Installing collected packages: numpy, shapely
-
-Successfully installed numpy-2.4.4 shapely-2.1.2
+Requirement already satisfied: wheel in ./venv/lib/python3.14/site-packages (0.46.3)
+Requirement already satisfied: packaging>=24.0 in ./venv/lib/python3.14/site-packages (from wheel) (26.1)
+Requirement already satisfied: setuptools in ./venv/lib/python3.14/site-packages (82.0.1)
+Requirement already satisfied: shapely in ./venv/lib/python3.14/site-packages (2.1.2)
+Requirement already satisfied: numpy>=1.21 in ./venv/lib/python3.14/site-packages (from shapely) (2.4.4)
 Collecting fastapi==0.104.1 (from -r requirements.txt (line 6))
   Using cached fastapi-0.104.1-py3-none-any.whl.metadata (24 kB)
 Collecting uvicorn==0.24.0 (from uvicorn[standard]==0.24.0->-r requirements.txt (line 7))
@@ -32,3 +16,61 @@ Collecting asyncpg==0.29.0 (from -r requirements.txt (line 11))
   Installing build dependencies: started
   Installing build dependencies: finished with status 'done'
   Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Collecting alembic==1.12.1 (from -r requirements.txt (line 12))
+  Using cached alembic-1.12.1-py3-none-any.whl.metadata (7.3 kB)
+Collecting python-jose==3.3.0 (from python-jose[cryptography]==3.3.0->-r requirements.txt (line 15))
+  Using cached python_jose-3.3.0-py2.py3-none-any.whl.metadata (5.4 kB)
+Collecting passlib==1.7.4 (from passlib[bcrypt]==1.7.4->-r requirements.txt (line 16))
+  Using cached passlib-1.7.4-py2.py3-none-any.whl.metadata (1.7 kB)
+Collecting python-multipart==0.0.6 (from -r requirements.txt (line 17))
+  Using cached python_multipart-0.0.6-py3-none-any.whl.metadata (2.5 kB)
+Collecting pydantic==2.5.0 (from pydantic[email]==2.5.0->-r requirements.txt (line 20))
+  Using cached pydantic-2.5.0-py3-none-any.whl.metadata (174 kB)
+Collecting pydantic-settings==2.1.0 (from -r requirements.txt (line 21))
+  Using cached pydantic_settings-2.1.0-py3-none-any.whl.metadata (2.9 kB)
+Collecting python-decouple==3.8 (from -r requirements.txt (line 22))
+  Using cached python_decouple-3.8-py3-none-any.whl.metadata (14 kB)
+Collecting httpx==0.25.2 (from -r requirements.txt (line 25))
+  Using cached httpx-0.25.2-py3-none-any.whl.metadata (6.9 kB)
+Collecting aiofiles==23.2.1 (from -r requirements.txt (line 26))
+  Using cached aiofiles-23.2.1-py3-none-any.whl.metadata (9.7 kB)
+Collecting redis==5.0.1 (from -r requirements.txt (line 29))
+  Using cached redis-5.0.1-py3-none-any.whl.metadata (8.9 kB)
+Collecting shapely==2.0.1 (from -r requirements.txt (line 32))
+  Using cached shapely-2.0.1.tar.gz (275 kB)
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'error'
+  error: subprocess-exited-with-error
+  
+  × Getting requirements to build wheel did not run successfully.
+  │ exit code: 1
+  ╰─> [20 lines of output]
+      Traceback (most recent call last):
+        File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 389, in <module>
+          main()
+          ~~~~^^
+        File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 373, in main
+          json_out["return_val"] = hook(**hook_input["kwargs"])
+                                   ~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 143, in get_requires_for_build_wheel
+          return hook(config_settings)
+        File "/tmp/pip-build-env-gsb7cj65/overlay/lib/python3.14/site-packages/setuptools/build_meta.py", line 333, in get_requires_for_build_wheel
+          return self._get_build_requires(config_settings, requirements=[])
+                 ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/tmp/pip-build-env-gsb7cj65/overlay/lib/python3.14/site-packages/setuptools/build_meta.py", line 301, in _get_build_requires
+          self.run_setup()
+          ~~~~~~~~~~~~~~^^
+        File "/tmp/pip-build-env-gsb7cj65/overlay/lib/python3.14/site-packages/setuptools/build_meta.py", line 317, in run_setup
+          exec(code, locals())
+          ~~~~^^^^^^^^^^^^^^^^
+        File "<string>", line 8, in <module>
+      ModuleNotFoundError: No module named 'pkg_resources'
+      [end of output]
+  
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+ERROR: Failed to build 'shapely' when getting requirements to build wheel

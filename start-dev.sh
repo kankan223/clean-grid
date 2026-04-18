@@ -184,7 +184,20 @@ source venv/bin/activate
 export PYTHONPATH=.
 
 if ! alembic upgrade head; then
-    print_error "Database migration failed"
+    print_error "Database migration failed. Check database connection and migration files."
+    print_status "Checking database connection..."
+    python -c "
+import asyncio
+from app.core.database import engine
+async def test():
+    try:
+        async with engine.connect() as conn:
+            result = await conn.execute('SELECT 1')
+            print('✅ Database connection OK')
+    except Exception as e:
+        print(f'❌ Database error: {e}')
+asyncio.run(test())
+" 2>&1 | tee -a ../logs/backend-install.log
     exit 1
 fi
 print_success "Database migrations completed"
@@ -290,20 +303,31 @@ if [ ! -d "node_modules" ]; then
     npm install > ../logs/frontend-install.log 2>&1
 fi
 
-# Start Frontend in background
+# Start Frontend in background with explicit error handling
 npm run dev > ../logs/frontend.log 2>&1 &
 FRONTEND_PID=$!
+
+# Give npm a moment to start
+sleep 2
+
+# Check if the process is still running
+if ! kill -0 $FRONTEND_PID 2>/dev/null; then
+    print_error "Frontend failed to start. Check logs/frontend.log"
+    cat ../logs/frontend.log
+    exit 1
+fi
+
 cd ..
 
-# Wait for Frontend to be ready
+# Wait for Frontend to be ready with better diagnostics
 print_status "Waiting for Frontend to be ready..."
-for i in {1..20}; do
+for i in {1..30}; do
     if curl -s http://localhost:3000 > /dev/null 2>&1; then
         print_success "Frontend is ready!"
         break
     fi
-    if [ $i -eq 20 ]; then
-        print_warning "Frontend might still be starting..."
+    if [ $i -eq 30 ]; then
+        print_warning "Frontend slow to start, but process is running. Check http://localhost:3000"
         break
     fi
     sleep 1
