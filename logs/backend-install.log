@@ -59,13 +59,13 @@ Collecting shapely==2.0.1 (from -r requirements.txt (line 32))
                                    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^
         File "/home/ken/Projects/Waste_detection_bot/backend/venv/lib/python3.14/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 143, in get_requires_for_build_wheel
           return hook(config_settings)
-        File "/tmp/pip-build-env-gsb7cj65/overlay/lib/python3.14/site-packages/setuptools/build_meta.py", line 333, in get_requires_for_build_wheel
+        File "/tmp/pip-build-env-6k5tra0u/overlay/lib/python3.14/site-packages/setuptools/build_meta.py", line 333, in get_requires_for_build_wheel
           return self._get_build_requires(config_settings, requirements=[])
                  ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        File "/tmp/pip-build-env-gsb7cj65/overlay/lib/python3.14/site-packages/setuptools/build_meta.py", line 301, in _get_build_requires
+        File "/tmp/pip-build-env-6k5tra0u/overlay/lib/python3.14/site-packages/setuptools/build_meta.py", line 301, in _get_build_requires
           self.run_setup()
           ~~~~~~~~~~~~~~^^
-        File "/tmp/pip-build-env-gsb7cj65/overlay/lib/python3.14/site-packages/setuptools/build_meta.py", line 317, in run_setup
+        File "/tmp/pip-build-env-6k5tra0u/overlay/lib/python3.14/site-packages/setuptools/build_meta.py", line 317, in run_setup
           exec(code, locals())
           ~~~~^^^^^^^^^^^^^^^^
         File "<string>", line 8, in <module>
