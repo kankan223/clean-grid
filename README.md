@@ -3,7 +3,7 @@
 **Transforming waste management from reactive schedules to real-time, AI-guided cleanup operations**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Python 3.11](https://img.shields.io/badge/Python-3.11-green.svg)](https://www.python.org/)
+[![Python 3.14](https://img.shields.io/badge/Python-3.11-green.svg)](https://www.python.org/)
 [![Next.js 14](https://img.shields.io/badge/Next.js-14-black.svg)](https://nextjs.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.104-red.svg)](https://fastapi.tiangolo.com/)
 
@@ -185,32 +185,6 @@ CleanGrid uses a **stateless JWT + HttpOnly cookie** system:
 - **No Native Apps**: Mobile-responsive web only
 - **No Blockchain**: Points use simple database ledger
 - **No Drone Routing**: Ground vehicle routing only
-
----
-
-## 📊 Roadmap Status
-
-### ✅ Phase 1: Core Reporting Loop (100% Complete)
-- [x] AI image analysis with YOLOv8n
-- [x] PostGIS spatial database setup
-- [x] Interactive map with clustering
-- [x] Citizen reporting interface
-- [x] Real-time updates via SSE
-- [x] Gamification with points system
-
-### 🔄 Phase 2: Admin Dashboard & Task Assignment (In Progress)
-- [x] JWT authentication system
-- [x] Role-based access control
-- [x] Admin dashboard shell
-- [ ] Incident table with sorting/filtering
-- [ ] Crew assignment interface
-- [ ] Route optimization integration
-
-### 📋 Phase 3: Advanced Features (Planned)
-- [ ] Advanced hotspot prediction
-- [ ] Real-time crew tracking
-- [ ] Mobile PWA with offline support
-- [ ] Multi-tenant SaaS architecture
 
 ---
 
