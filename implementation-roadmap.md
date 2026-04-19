@@ -217,6 +217,21 @@
 
 ---
 
+## Phase 3: Route Optimization & Real-Time Route Management 🔄 IN PROGRESS
+
+### Pre-Phase 3 Environment & AI Bug Fixes ✅ COMPLETE
+- [x] Resolve Pydantic ValidationError blocking AI service startup
+- [x] Resolve JSONDecodeError in settings parsing for complex env types
+- [x] Fix Shapely/pkg_resources/import issues in AI environment
+- [x] Verify unified startup automation (`start-dev.sh`) brings up all 5 services healthy
+
+### ORS (OpenRouteService) Integration (Backend)
+- [x] Create isolated ORS client service (`backend/app/services/ors_client.py`)
+- [ ] Add route models + migrations (PostGIS polyline/GeoJSON)
+- [ ] Add route optimization service layer (ORS + fallback algorithm)
+- [ ] Add API endpoints (deferred until client + models are ready)
+
+
 ## Phase 3: Citizen Portal & Gamification ✅ COMPLETE
 
 ### Authentication UI

@@ -1,9 +1,9 @@
 # 🧠 CleanGrid Project Brain
 
-**Status:** Phase 2 Complete ✅ → Phase 2.5 (Security) + Phase 4 (Routes) Ready  
+**Status:** Phase 2 Complete ✅ → Phase 2.5 (Security) + Phase 3 (Routes) In Progress  
 **Version:** 1.0  
 **Last Updated:** 2026-04-19  
-**Phase:** 2.5 Security Hardening (Co-Developer) + 4 Route Optimization (Main Dev)  
+**Phase:** 2.5 Security Hardening (Co-Developer) + 3 Route Optimization (Main Dev)  
 
 ---
 
@@ -150,10 +150,10 @@ class InferenceResponse(BaseModel):
 
 ## Active Context & Working Memory
 
-**Current Phase**: Phase 2.5 Security Hardening (Co-Developer) + Phase 4 Route Optimization (Main Dev)  
-**Current Task**: Awaiting confirmation to begin Phase 4 Route Optimization (ORS integration)  
+**Current Phase**: Phase 2.5 Security Hardening (Co-Developer) + Phase 3 Route Optimization (Main Dev)  
+**Current Task**: Phase 3 underway — ORS client implemented; next is PostGIS route models + migrations  
 **Last Completed**: Phase 2 Complete - Full Authentication, Admin Dashboard, Citizen Portal  
-**Next Task (Main Dev)**: Integrate OpenRouteService API + Create Route models  
+**Next Task (Main Dev)**: Create PostGIS Route models + migrations; then wire ORS optimization service + endpoints  
 **Next Tasks (Co-Developer)**: 5 security/UX hardening tasks (rate limiting, JWT rotation, CORS, hydration, UX polish)
 
 **Team Mode**: Two-developer collaboration active
@@ -206,6 +206,11 @@ class InferenceResponse(BaseModel):
 ### Current Task
 Phase 3: Route Optimization - Active Development
 Integrating OpenRouteService API, implementing route generation algorithms, and building route visualization components.
+
+**Phase 3 Progress**
+- ✅ Pre-Phase 3 Environment & AI bug fixes (Pydantic/JSON parsing/Shapely) complete
+- ✅ `backend/app/services/ors_client.py` implemented (async httpx client + typed errors)
+- ⏭️ Next: PostGIS `Route` models + Alembic migration for route geometry + ordered stops
 
 ### Last Completed
 Phase 3: Citizen Portal & Gamification - COMPLETE
