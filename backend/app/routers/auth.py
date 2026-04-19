@@ -5,7 +5,6 @@ JWT-based authentication with refresh token rotation
 
 import asyncio
 import hashlib
-import secrets
 from datetime import datetime, timedelta
 from typing import Optional
 
@@ -19,7 +18,9 @@ from pydantic import BaseModel, EmailStr
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from app.core.database import get_db, redis_client
+from app.core.config import settings
+from app.core.database import get_db
+from app.core.redis import get_redis
 from app.models.user import User
 
 logger = __import__('structlog').get_logger(__name__)
@@ -27,10 +28,12 @@ logger = __import__('structlog').get_logger(__name__)
 router = APIRouter(prefix="/auth", tags=["authentication"])
 
 # JWT Configuration
-SECRET_KEY = secrets.token_urlsafe(32)
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 15
-REFRESH_TOKEN_EXPIRE_DAYS = 7
+SECRET_KEY = settings.JWT_SECRET_KEY
+ALGORITHM = settings.JWT_ALGORITHM
+ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
+REFRESH_TOKEN_EXPIRE_DAYS = settings.REFRESH_TOKEN_EXPIRE_DAYS
+IS_PRODUCTION = settings.ENVIRONMENT == "production"
+IS_SECURE_COOKIE = settings.ENVIRONMENT != "development"
 
 # Pydantic models
 class LoginRequest(BaseModel):
@@ -48,9 +51,6 @@ class TokenResponse(BaseModel):
     refresh_token: str
     token_type: str = "bearer"
     expires_in: int
-
-class RefreshRequest(BaseModel):
-    refresh_token: str
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Verify password using bcrypt with cost factor 12"""
@@ -77,17 +77,33 @@ def create_access_token(data: dict, expires_delta: timedelta) -> str:
     """Create JWT access token"""
     to_encode = data.copy()
     expire = datetime.utcnow() + expires_delta
-    to_encode.update({"exp": expire})
+    to_encode.update({"exp": expire, "type": "access"})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
-def create_refresh_token() -> str:
-    """Create secure refresh token"""
-    return secrets.token_urlsafe(32)
+def create_refresh_token(
+    data: dict,
+    expires_delta: Optional[timedelta] = None
+) -> str:
+    """Create JWT refresh token"""
+    to_encode = data.copy()
+
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(
+            days=REFRESH_TOKEN_EXPIRE_DAYS
+        )
+
+    to_encode.update({"exp": expire, "type": "refresh"})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
 
 async def invalidate_refresh_token(refresh_token: str):
     """Invalidate refresh token by adding to Redis blacklist"""
     try:
+        redis_client = await get_redis()
+
         # Add to blacklist with TTL of remaining token validity
         await redis_client.setex(
             f"blacklist:{refresh_token}",
@@ -97,15 +113,17 @@ async def invalidate_refresh_token(refresh_token: str):
         logger.info(f"Refresh token invalidated: {refresh_token[:8]}...")
     except Exception as e:
         logger.error(f"Failed to invalidate refresh token: {e}")
+        raise HTTPException(status_code=500, detail="Failed to invalidate refresh token")
 
 async def is_refresh_token_blacklisted(refresh_token: str) -> bool:
     """Check if refresh token is blacklisted"""
     try:
+        redis_client = await get_redis()
         result = await redis_client.get(f"blacklist:{refresh_token}")
         return result is not None
     except Exception as e:
         logger.error(f"Failed to check refresh token blacklist: {e}")
-        return False  # Fail open - allow request if Redis fails
+        raise HTTPException(status_code=500, detail="Token blacklist check failed")
 
 @router.post("/register")
 async def register(
@@ -143,7 +161,7 @@ async def register(
         
         # Create tokens for immediate login
         access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-        refresh_token = create_refresh_token()
+        refresh_token = create_refresh_token(data={"sub": str(user.id)})
         
         access_token = create_access_token(
             data={"sub": str(user.id), "email": user.email, "role": user.role},
@@ -153,8 +171,6 @@ async def register(
         # Create response
         response = JSONResponse(
             content={
-                "access_token": access_token,
-                "refresh_token": refresh_token,
                 "token_type": "bearer",
                 "expires_in": ACCESS_TOKEN_EXPIRE_MINUTES * 60,
                 "user": {
@@ -176,18 +192,19 @@ async def register(
             value=access_token,
             max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60,
             httponly=True,
-            samesite="lax",
-            secure=False,  # Set to False for localhost, True in production
+            samesite="strict",
+            secure=IS_SECURE_COOKIE,
             path="/"
         )
         
         response.set_cookie(
             key="refresh_token",
             value=refresh_token,
-            max_age=REFRESH_TOKEN_DAYS * 24 * 60 * 60,
+            max_age=REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60,
             httponly=True,
-            samesite="lax",
-            secure=False,  # Set to True in production with HTTPS
+            samesite="strict",
+            secure=IS_SECURE_COOKIE,
+            path="/",
         )
         
         logger.info(f"User registered successfully: {user.email}")
@@ -227,7 +244,7 @@ async def login(
         
         # Create tokens
         access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-        refresh_token = create_refresh_token()
+        refresh_token = create_refresh_token(data={"sub": str(user.id)})
         
         access_token = create_access_token(
             data={"sub": str(user.id), "email": user.email, "role": user.role},
@@ -237,8 +254,6 @@ async def login(
         # Create response
         response = JSONResponse(
             content={
-                "access_token": access_token,
-                "refresh_token": refresh_token,
                 "token_type": "bearer",
                 "expires_in": ACCESS_TOKEN_EXPIRE_MINUTES * 60,
                 "user": {
@@ -260,8 +275,8 @@ async def login(
             value=access_token,
             max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60,
             httponly=True,
-            samesite="lax",
-            secure=False,  # Set to False for localhost, True in production
+            samesite="strict",
+            secure=IS_SECURE_COOKIE,
             path="/"
         )
         
@@ -271,7 +286,7 @@ async def login(
                 value=refresh_token,
                 max_age=REFRESH_TOKEN_EXPIRE_DAYS * 24 * 3600,
                 httponly=True,
-                secure=True,  # Set to False for localhost, True in production
+                secure=IS_SECURE_COOKIE,
                 samesite="strict",
                 path="/"
             )
@@ -291,16 +306,13 @@ async def login(
 @router.post("/refresh")
 async def refresh_token(
     request: Request,
-    refresh_data: RefreshRequest,
     db: AsyncSession = Depends(get_db)
 ):
     """Refresh access token using refresh token"""
     
     try:
-        # Get refresh token from cookie or request body
-        refresh_token = refresh_data.refresh_token
-        if not refresh_token:
-            refresh_token = request.cookies.get("refresh_token")
+        # Cookie-only refresh flow keeps refresh token in HttpOnly channel.
+        refresh_token = request.cookies.get("refresh_token")
         
         if not refresh_token:
             raise HTTPException(
@@ -325,8 +337,15 @@ async def refresh_token(
                 algorithms=[ALGORITHM]
             )
             user_id = payload.get("sub")
+            token_type = payload.get("type")
             
             if not user_id:
+                raise HTTPException(
+                    status_code=401,
+                    detail="Invalid refresh token"
+                )
+
+            if token_type != "refresh":
                 raise HTTPException(
                     status_code=401,
                     detail="Invalid refresh token"
@@ -352,13 +371,11 @@ async def refresh_token(
                 data={"sub": str(user.id), "email": user.email, "role": user.role},
                 expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
             )
-            new_refresh_token = create_refresh_token()
+            new_refresh_token = create_refresh_token(data={"sub": str(user.id)})
             
             # Create response
             response = JSONResponse(
                 content={
-                    "access_token": new_access_token,
-                    "refresh_token": new_refresh_token,
                     "token_type": "bearer",
                     "expires_in": ACCESS_TOKEN_EXPIRE_MINUTES * 60
                 }
@@ -370,7 +387,7 @@ async def refresh_token(
                 value=new_access_token,
                 max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60,
                 httponly=True,
-                secure=True,
+                secure=IS_SECURE_COOKIE,
                 samesite="strict",
                 path="/"
             )
@@ -380,7 +397,7 @@ async def refresh_token(
                 value=new_refresh_token,
                 max_age=REFRESH_TOKEN_EXPIRE_DAYS * 24 * 3600,
                 httponly=True,
-                secure=True,
+                secure=IS_SECURE_COOKIE,
                 samesite="strict",
                 path="/"
             )

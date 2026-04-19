@@ -14,7 +14,8 @@ from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, B
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import text
 
-from app.core.database import get_db, redis_client
+from app.core.database import get_db
+from app.core.redis import get_redis
 from app.core.auth import get_current_user_optional
 from app.services.storage import storage_service
 from app.services.ai_client import ai_client
@@ -31,16 +32,18 @@ RATE_LIMIT_REQUESTS = 10  # 10 requests per hour per IP
 
 async def check_rate_limit(request: Request) -> bool:
     """Check if IP has exceeded rate limit using Redis sliding window"""
-    client_ip = request.client.host
     current_time = datetime.utcnow().timestamp()
     
-    # Clean up old entries and count current requests
-    pipeline = redis_client.pipeline()
-    pipeline.zremrangebyscore(f"rate_limit:{client_ip}", 0, current_time - RATE_LIMIT_WINDOW)
-    pipeline.zcard(f"rate_limit:{client_ip}")
-    pipeline.expire(f"rate_limit:{client_ip}", RATE_LIMIT_WINDOW)
-    
     try:
+        client_ip = request.client.host if request.client else "unknown"
+        redis_client = await get_redis()
+
+        # Clean up old entries and count current requests
+        pipeline = redis_client.pipeline()
+        pipeline.zremrangebyscore(f"rate_limit:{client_ip}", 0, current_time - RATE_LIMIT_WINDOW)
+        pipeline.zcard(f"rate_limit:{client_ip}")
+        pipeline.expire(f"rate_limit:{client_ip}", RATE_LIMIT_WINDOW)
+
         current_requests = await pipeline.execute()
         request_count = current_requests[1] if len(current_requests) > 1 else 0
         
@@ -53,8 +56,8 @@ async def check_rate_limit(request: Request) -> bool:
         return True
     except Exception as e:
         logger.error(f"Rate limit check failed: {e}")
-        # If Redis fails, allow the request (fail open)
-        return True
+        # Fail closed to prevent unlimited abuse during Redis outages.
+        return False
 
 def validate_image_file(file: UploadFile) -> bool:
     """Validate image file type and size"""
@@ -256,6 +259,8 @@ async def broadcast_incident_update(incident_id: str, event_type: str):
             "timestamp": datetime.utcnow().isoformat()
         }
         
+        redis_client = await get_redis()
+
         # Store event in Redis for SSE streaming
         await redis_client.lpush("incident_events", str(event_data))
         await redis_client.expire("incident_events", 3600)  # 1 hour

@@ -13,10 +13,6 @@ services:
       - NEXT_PUBLIC_MAP_DEFAULT_ZOOM=12
     depends_on:
       - backend
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules    # Anonymous volume prevents host sync
-      - /app/.next           # Anonymous volume prevents host sync
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000"]
@@ -82,7 +78,6 @@ services:
   # Database - PostgreSQL 15 + PostGIS 3.3
   db:
     image: postgis/postgis:15-3.3
-    container_name: cleangrid_db
     environment:
       - POSTGRES_DB=cleangrid
       - POSTGRES_USER=cleangrid
@@ -103,7 +98,6 @@ services:
   # Cache - Redis 7
   redis:
     image: redis:7-alpine
-    container_name: cleangrid_redis
     ports:
       - "6380:6379"
     volumes:
@@ -122,7 +116,3 @@ volumes:
     driver: local
   redisdata:
     driver: local
-
-networks:
-  default:
-    name: cleangrid_network

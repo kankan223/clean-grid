@@ -102,14 +102,6 @@ export default function IncidentMap({
     };
   };
 
-  if (!mapReady) {
-    return (
-      <div className={`${className} bg-gray-100 animate-pulse flex items-center justify-center`}>
-        <div className="text-gray-500">Loading map...</div>
-      </div>
-    );
-  }
-
   return (
     <div className={className} style={{ minHeight: '400px' }}>
       <MapContainer

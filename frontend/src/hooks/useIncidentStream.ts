@@ -68,6 +68,10 @@ export function useIncidentStream() {
         console.error('SSE connection error:', error);
         eventSource.close();
         eventSourceRef.current = null;
+
+        if (reconnectTimeoutRef.current) {
+          clearTimeout(reconnectTimeoutRef.current);
+        }
         
         // Attempt to reconnect after 5 seconds
         reconnectTimeoutRef.current = setTimeout(() => {
@@ -78,6 +82,10 @@ export function useIncidentStream() {
       
     } catch (error) {
       console.error('Failed to create SSE connection:', error);
+
+      if (reconnectTimeoutRef.current) {
+        clearTimeout(reconnectTimeoutRef.current);
+      }
       
       // Retry after 5 seconds
       reconnectTimeoutRef.current = setTimeout(() => {

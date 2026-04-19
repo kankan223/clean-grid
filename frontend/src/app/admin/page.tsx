@@ -29,7 +29,9 @@ export default function AdminDashboard() {
   
   // Initialize incident store
   useEffect(() => {
-    initializeIncidentStore();
+    void initializeIncidentStore().catch((error) => {
+      console.error('Failed to initialize incident store:', error);
+    });
   }, []);
 
   // TanStack Query for incidents
