@@ -109,15 +109,15 @@ export const IncidentTable: React.FC<IncidentTableProps> = ({
     selectedIncidentIds,
     filters,
     setFilters,
+    setSelectedIncidentIds,
     toggleIncidentSelection,
-    selectAllIncidents,
     clearSelection,
     refreshIncidents,
   } = useIncidentStore();
-  const [allSelected, setAllSelected] = useState(false);
   const [activeIncidentId, setActiveIncidentId] = useState<string | null>(null);
   const [sortField, setSortField] = useState<'created_at' | 'priority_score' | 'severity'>('created_at');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const allSelected = incidents.length > 0 && incidents.every((incident) => selectedIncidentIds.includes(incident.id));
 
   const handleSort = (column: 'created_at' | 'priority_score' | 'severity') => {
     const newOrder = sortOrder === 'desc' ? 'asc' : 'desc';
@@ -126,9 +126,8 @@ export const IncidentTable: React.FC<IncidentTableProps> = ({
   };
 
   const handleSelectAll = (checked: boolean) => {
-    setAllSelected(checked);
     if (checked) {
-      selectAllIncidents();
+      setSelectedIncidentIds(incidents.map((incident) => incident.id));
     } else {
       clearSelection();
     }

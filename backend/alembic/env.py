@@ -7,7 +7,7 @@ from logging.config import fileConfig
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
-from alembic import context
+from alembic import context  # pyright: ignore[reportAttributeAccessIssue]
 
 # Import the database configuration and models
 import sys

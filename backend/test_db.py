@@ -7,6 +7,7 @@ Verifies PostGIS connection and basic functionality
 import asyncio
 import sys
 import os
+from typing import Any
 
 # Add the app directory to Python path
 sys.path.append(os.path.join(os.path.dirname(__file__), 'app'))
@@ -96,7 +97,7 @@ async def test_redis_connection():
         from app.core.redis import get_redis, set_cache, get_cache
         
         # Test Redis connection
-        redis_client = await get_redis()
+        redis_client: Any = await get_redis()
         
         # Test basic operations
         await redis_client.ping()

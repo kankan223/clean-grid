@@ -13,7 +13,7 @@ import uvicorn
 
 from app.core.config import settings
 from app.core.database import init_db, close_db
-from app.core.redis import init_redis, redis_client
+import app.core.redis as redis_module
 from app.routers import auth, admin, leaderboard, events
 from app.routers import reports
 from app.routers import incidents
@@ -59,7 +59,7 @@ async def lifespan(app: FastAPI):
     
     # Initialize Redis connection (Phase 0 - simplified)
     try:
-        await init_redis()
+        await redis_module.init_redis()
         logger.info("Redis initialization started")
         # Skip ping test for Phase 0 validation
         logger.info("Redis connection established")
@@ -78,8 +78,8 @@ async def lifespan(app: FastAPI):
     logger.info("Database connections closed")
     
     # Close Redis connection
-    if redis_client:
-        await redis_client.close()
+    if redis_module.redis_client:
+        await redis_module.redis_client.close()
         logger.info("Redis connection closed")
 
 
@@ -95,9 +95,15 @@ app = FastAPI(
 )
 
 # Add CORS middleware
+cors_origins = [origin.strip() for origin in settings.CORS_ORIGINS.split(",") if origin.strip()]
+if "https://cleangrid.io" not in cors_origins:
+    cors_origins.append("https://cleangrid.io")
+if "https://www.cleangrid.io" not in cors_origins:
+    cors_origins.append("https://www.cleangrid.io")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[origin.strip() for origin in settings.CORS_ORIGINS.split(",")],
+    allow_origins=cors_origins,
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allow_headers=["*"],
@@ -106,7 +112,15 @@ app.add_middleware(
 # Add trusted host middleware for security
 app.add_middleware(
     TrustedHostMiddleware,
-    allowed_hosts=["localhost", "127.0.0.1", "*.cleangrid.vercel.app", "*.railway.app"]
+    allowed_hosts=[
+        "localhost",
+        "127.0.0.1",
+        "backend",
+        "cleangrid.io",
+        "www.cleangrid.io",
+        "*.cleangrid.vercel.app",
+        "*.railway.app",
+    ]
 )
 
 

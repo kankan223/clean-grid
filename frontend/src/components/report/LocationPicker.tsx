@@ -96,6 +96,12 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
     onLocationChange(lat, lng);
   };
 
+  const handleMarkerDragEnd = (e: any) => {
+    const { lat, lng } = e.target.getLatLng();
+    setPosition({ lat, lng });
+    onLocationChange(lat, lng);
+  };
+
   // Update position when props change
   useEffect(() => {
     if (initialLocation) {
@@ -153,7 +159,7 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
             position={[position.lat, position.lng]}
             draggable={true}
             eventHandlers={{
-              dragend: handleMapClick,
+              dragend: handleMarkerDragEnd,
             }}
           >
             <div className="custom-marker">
