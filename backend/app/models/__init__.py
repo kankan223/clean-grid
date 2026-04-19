@@ -1,5 +1,5 @@
 """
-Models package - CleanGrid Phase 1
+Models package - CleanGrid Phase 3
 Imports all database models for SQLAlchemy ORM
 """
 
@@ -15,6 +15,12 @@ from app.models.points import (
     User,
     PointTransaction
 )
+from app.models.route import (
+    Route,
+    RouteStop,
+    RouteStatus,
+    RouteStopStatus
+)
 
 # Export all models for easy importing
 __all__ = [
@@ -25,5 +31,9 @@ __all__ = [
     "PointTransaction",
     "UserRole",
     "BadgeTier", 
-    "PointReason"
+    "PointReason",
+    "Route",
+    "RouteStop",
+    "RouteStatus",
+    "RouteStopStatus"
 ]

@@ -31,6 +31,28 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 target_metadata = Base.metadata
 
+
+def include_object(object, name, type_, reflected, compare_to):
+    """
+    Filter out PostGIS spatial tables during autogeneration.
+    PostGIS creates many internal tables that should not be managed by Alembic.
+    """
+    # Skip PostGIS internal tables
+    spatial_tables = {
+        'spatial_ref_sys', 'zip_lookup', 'zip_state', 'edges', 'faces',
+        'county', 'place', 'roads', 'geography_columns', 'geometry_columns',
+        'raster_columns', 'raster_overviews', 'spatial_indexs'
+    }
+    
+    if type_ == "table" and name in spatial_tables:
+        return False
+    
+    # Skip PostGIS views and functions
+    if type_ in ("view", "function") and name.startswith("st_"):
+        return False
+        
+    return True
+
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
@@ -60,6 +82,7 @@ def run_migrations_offline() -> None:
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
+        include_object=include_object,
     )
 
     with context.begin_transaction():
@@ -67,8 +90,12 @@ def run_migrations_offline() -> None:
 
 
 def do_run_migrations(connection: Connection) -> None:
-    """Run migrations with the given connection"""
-    context.configure(connection=connection, target_metadata=target_metadata)
+    """Run migrations with given connection"""
+    context.configure(
+        connection=connection, 
+        target_metadata=target_metadata,
+        include_object=include_object,
+    )
 
     with context.begin_transaction():
         context.run_migrations()

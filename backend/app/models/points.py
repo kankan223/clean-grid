@@ -120,6 +120,11 @@ class User(Base):
         back_populates="assignee",
         cascade="all, delete-orphan"
     )
+    assigned_routes = relationship(
+        "Route",
+        back_populates="crew",
+        cascade="all, delete-orphan"
+    )
     point_transactions = relationship(
         "PointTransaction",
         back_populates="user",

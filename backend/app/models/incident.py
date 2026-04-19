@@ -154,6 +154,7 @@ class Incident(Base):
     reporter = relationship("User", foreign_keys=[reporter_id], back_populates="reported_incidents")
     assignee = relationship("User", foreign_keys=[assigned_to], back_populates="assigned_incidents")
     point_transactions = relationship("PointTransaction", back_populates="incident")
+    route_stop = relationship("RouteStop", back_populates="incident", uselist=False)
     
     def __repr__(self):
         return f"<Incident(id={self.id}, status={self.status}, severity={self.severity})>"

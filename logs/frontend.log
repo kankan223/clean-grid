@@ -1,0 +1,34 @@
+Debugger listening on ws://127.0.0.1:32933/f85be571-90e9-4d7c-81e1-eac1fe7d0a68
+For help, see: https://nodejs.org/en/docs/inspector
+Debugger attached.
+
+> frontend@0.1.0 dev
+> next dev
+
+Debugger listening on ws://127.0.0.1:43489/9a325041-f618-43b3-a5a6-2074bcee5540
+For help, see: https://nodejs.org/en/docs/inspector
+Debugger attached.
+Debugger listening on ws://127.0.0.1:43499/1743beba-aa32-481c-8c2c-8da2c52542a2
+For help, see: https://nodejs.org/en/docs/inspector
+Debugger attached.
+  ▲ Next.js 14.2.35
+  - Local:        http://localhost:3000
+  - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 5s
+ ○ Compiling / ...
+ ✓ Compiled /login in 27.7s (1001 modules)
+ GET / 200 in 29040ms
+ GET / 200 in 11588ms
+ ○ Compiling /report ...
+ ✓ Compiled /report in 909ms (1000 modules)
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 1008ms (1003 modules)
+ GET /marker-icon.png 404 in 1864ms
+ GET /marker-shadow.png 404 in 1851ms
+ ○ Compiling /leaderboard ...
+ ✓ Compiled /leaderboard in 1038ms (1015 modules)
+[?25h
+Waiting for the debugger to disconnect...
+Waiting for the debugger to disconnect...
