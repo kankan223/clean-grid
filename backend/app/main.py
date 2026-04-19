@@ -8,19 +8,19 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
+import os
 import structlog
 import uvicorn
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
-from slowapi.middleware import _rate_limit_exceeded_handler
+from slowapi.extension import _rate_limit_exceeded_handler
 
 from app.core.config import settings
 from app.core.database import init_db, close_db
 from app.core.rate_limit import limiter
 import app.core.redis as redis_module
-from app.routers import auth, admin, leaderboard, events
-from app.routers import reports
-from app.routers import incidents
+from app.routers import auth, admin, leaderboard, events, reports, incidents, users
 
 # Configure structured logging
 structlog.configure(
@@ -98,8 +98,11 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+os.makedirs("/app/uploads", exist_ok=True)
+app.mount("/uploads", StaticFiles(directory="/app/uploads"), name="uploads")
+
 app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)  # pyright: ignore[reportArgumentType]
 app.add_middleware(SlowAPIMiddleware)
 
 # Add CORS middleware
@@ -222,7 +225,17 @@ app.include_router(
     tags=["Events"]
 )
 
+app.include_router(
+    leaderboard.router,
+    prefix="/api",
+    tags=["Leaderboard"]
+)
 
+app.include_router(
+    users.router,
+    prefix="/api",
+    tags=["Users"]
+)
 
 
 # Development server configuration

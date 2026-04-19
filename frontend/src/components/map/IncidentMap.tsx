@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useMap } from 'react-leaflet';
+import L from 'leaflet';
 import { Skeleton } from '@/components/ui/skeleton';
 
 // Dynamic import with SSR disabled to prevent window object errors
@@ -92,6 +93,43 @@ export default function IncidentMap({
     );
   }, [isClient]);
 
+  // Create severity-colored marker icons
+  const getSeverityIcon = (severity: string) => {
+    const severityColors: Record<string, string> = {
+      'High': '#dc2626',     // Red
+      'Medium': '#ea580c',   // Orange
+      'Low': '#16a34a',      // Green
+      'None': '#6b7280',     // Gray
+    };
+
+    const color = severityColors[severity] || severityColors['None'];
+
+    return L.divIcon({
+      className: 'custom-severity-marker',
+      html: `
+        <div style="
+          background-color: ${color};
+          color: white;
+          border-radius: 50%;
+          width: 32px;
+          height: 32px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: bold;
+          font-size: 14px;
+          border: 3px solid white;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        ">
+          ●
+        </div>
+      `,
+      iconSize: [32, 32],
+      iconAnchor: [16, 16],
+      popupAnchor: [0, -16],
+    });
+  };
+
   return (
     <div className={className} style={{ minHeight: '400px' }}>
       {isClient ? (
@@ -111,6 +149,7 @@ export default function IncidentMap({
             <Marker
               key={incident.id}
               position={[incident.lat, incident.lng]}
+              icon={getSeverityIcon(incident.severity)}
               eventHandlers={{
                 click: () => onMarkerClick?.(incident),
               }}

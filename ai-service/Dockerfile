@@ -11,6 +11,8 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 RUN apt-get update && apt-get install -y \
     build-essential \
     curl \
+    libglib2.0-0 \
+    libgl1 \
     && rm -rf /var/lib/apt/lists/*
 
 # Create app user
@@ -27,6 +29,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 FROM base AS production
 # Create models directory
 RUN mkdir -p /app/models
+
+# Pre-download the default YOLO weights so the runtime user does not need write access
+RUN python -c "from ultralytics.utils.downloads import attempt_download_asset; attempt_download_asset('/app/models/yolov8n.pt')"
 
 # Copy application code
 COPY --chown=app:app . .

@@ -5,11 +5,14 @@
 
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import { useState, useCallback } from 'react';
+import dynamicImport from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 
 import ImageUploadZone from '@/components/report/ImageUploadZone';
-import LocationPicker from '@/components/report/LocationPicker';
+const LocationPicker = dynamicImport(() => import('@/components/report/LocationPicker'), { ssr: false });
 import AIResultCard from '@/components/report/AIResultCard';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/components/ui/toast';
@@ -71,6 +74,7 @@ const ReportPage: React.FC = () => {
       const response = await fetch(`${apiUrl}/api/reports`, {
         method: 'POST',
         body: formData,
+        credentials: 'include',
         // DO NOT set Content-Type header - let browser set it with correct boundary
       });
 
@@ -97,7 +101,9 @@ const ReportPage: React.FC = () => {
       // Poll for completion (simplified - in production would use SSE)
       const pollInterval = setInterval(async () => {
         try {
-          const checkResponse = await fetch(`${apiUrl}/api/reports/${result.report_id}`);
+          const checkResponse = await fetch(`${apiUrl}/api/reports/${result.report_id}`, {
+            credentials: 'include',
+          });
           const checkData = await checkResponse.json();
           
           if (checkData.status !== 'processing') {

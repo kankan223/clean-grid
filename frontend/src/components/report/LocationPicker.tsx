@@ -5,8 +5,10 @@
 
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
+import L from 'leaflet';
+import { useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/components/ui/toast';
@@ -22,8 +24,35 @@ const TileLayer = dynamic(
 );
 const Marker = dynamic(
   () => import('react-leaflet').then(mod => mod.Marker),
-  { ssr: false }
+  { ssr: false,loading: () => null }
 );
+
+// Create marker icon once to avoid recreation
+const createPickerIcon = () => {
+  return L.divIcon({
+    className: 'location-picker-marker',
+    html: '<div style="background-color: #3b82f6; width: 32px; height: 40px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); border: 3px solid white; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.3);"><div style="transform: rotate(45deg); font-size: 18px;">📍</div></div>',
+    iconSize: [32, 40],
+    iconAnchor: [16, 40],
+    popupAnchor: [0, -40],
+  });
+};
+
+const GEOLOCATION_OPTIONS = {
+  enableHighAccuracy: false,
+  timeout: 45000,
+  maximumAge: 5 * 60 * 1000,
+};
+
+function MapPositionUpdater({ position }: { position: [number, number] }) {
+  const map = useMap();
+
+  useEffect(() => {
+    map.setView(position, map.getZoom(), { animate: true });
+  }, [map, position]);
+
+  return null;
+}
 
 interface LocationPickerProps {
   onLocationChange: (lat: number, lng: number) => void;
@@ -41,7 +70,6 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
   const [isGeolocating, setIsGeolocating] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const [address, setAddress] = useState<string>('');
-  const mapRef = useRef<any>(null);
 
   useEffect(() => {
     setIsClient(true);
@@ -97,11 +125,7 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
       },
       
       // Options
-      {
-        enableHighAccuracy: true,
-        timeout: 5000,
-        maximumAge: 0
-      }
+      GEOLOCATION_OPTIONS
     );
   };
 
@@ -158,8 +182,8 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
             center={[position.lat, position.lng]}
             zoom={13}
             className="h-full"
-            ref={mapRef}
           >
+            <MapPositionUpdater position={[position.lat, position.lng]} />
             <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -168,14 +192,11 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
             <Marker
               position={[position.lat, position.lng]}
               draggable={true}
+              icon={createPickerIcon()}
               eventHandlers={{
                 dragend: handleMarkerDragEnd,
               }}
-            >
-              <div className="custom-marker">
-                📍
-              </div>
-            </Marker>
+            />
           </MapContainer>
         ) : (
           <div className="h-full p-4">

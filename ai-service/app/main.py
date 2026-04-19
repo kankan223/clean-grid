@@ -13,8 +13,9 @@ import httpx
 import structlog
 import uvicorn
 import os
+from urllib.parse import urlparse, urlunparse
 
-from app.inference_phase1 import initialize_inference_engine, get_inference_engine
+from app.inference import initialize_inference_engine, get_inference_engine
 from app.severity import calculate_severity, get_severity_description
 from app.config import settings
 
@@ -38,6 +39,34 @@ structlog.configure(
 )
 
 logger = structlog.get_logger()
+
+IMAGE_FETCH_HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+    "Accept": "image/avif,image/webp,image/apng,image/*,*/*;q=0.8",
+}
+
+
+def resolve_image_url(image_url: str) -> str:
+    """Resolve relative or localhost image URLs to the backend service URL."""
+    parsed = urlparse(image_url)
+
+    if not parsed.scheme:
+        return f"{settings.BACKEND_BASE_URL.rstrip('/')}/{image_url.lstrip('/')}"
+
+    if parsed.hostname in {"localhost", "127.0.0.1"}:
+        backend_parsed = urlparse(settings.BACKEND_BASE_URL)
+        return urlunparse(
+            (
+                backend_parsed.scheme or parsed.scheme,
+                backend_parsed.netloc or parsed.netloc,
+                parsed.path,
+                parsed.params,
+                parsed.query,
+                parsed.fragment,
+            )
+        )
+
+    return image_url
 
 
 # Pydantic schemas
@@ -189,9 +218,11 @@ async def infer_waste(request: InferenceRequest):
     logger.info("Starting inference", image_url=request.image_url)
     
     try:
+        resolved_image_url = resolve_image_url(request.image_url)
+
         # Download image from URL
-        async with httpx.AsyncClient(timeout=30.0) as client:
-            response = await client.get(request.image_url)
+        async with httpx.AsyncClient(timeout=30.0, follow_redirects=True, headers=IMAGE_FETCH_HEADERS) as client:
+            response = await client.get(resolved_image_url)
             response.raise_for_status()
             
             # Check content type
@@ -214,7 +245,7 @@ async def infer_waste(request: InferenceRequest):
             
             image_bytes = response.content
         
-        logger.info("Image downloaded successfully", size_bytes=content_length)
+        logger.info("Image downloaded successfully", size_bytes=content_length, resolved_image_url=resolved_image_url)
         
         # Run inference
         inference_engine = get_inference_engine()

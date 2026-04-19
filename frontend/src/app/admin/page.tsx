@@ -12,6 +12,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/components/ui/toast';
 import { RefreshCw, Filter } from 'lucide-react';
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 export default function AdminDashboard() {
   const { toast } = useToast();
   const [selectedIncident, setSelectedIncident] = useState<Incident | null>(null);
@@ -37,13 +39,15 @@ export default function AdminDashboard() {
   } = useQuery({
     queryKey: ['incidents'],
     queryFn: async () => {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-      const response = await fetch(`${apiUrl}/api/incidents?limit=100`, {
+      const response = await fetch(`${API_BASE_URL}/api/incidents?limit=100`, {
         credentials: 'include',
       });
       
       if (!response.ok) {
-        throw new Error('Failed to fetch incidents');
+        const errorText = await response.text();
+        throw new Error(
+          `Failed to fetch incidents (${response.status}): ${errorText || response.statusText}`
+        );
       }
       
       const data = await response.json();
@@ -60,13 +64,15 @@ export default function AdminDashboard() {
   } = useQuery({
     queryKey: ['admin-stats'],
     queryFn: async () => {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-      const response = await fetch(`${apiUrl}/api/incidents/stats`, {
+      const response = await fetch(`${API_BASE_URL}/api/incidents/stats`, {
         credentials: 'include',
       });
       
       if (!response.ok) {
-        throw new Error('Failed to fetch stats');
+        const errorText = await response.text();
+        throw new Error(
+          `Failed to fetch stats (${response.status}): ${errorText || response.statusText}`
+        );
       }
       
       const data = await response.json();
@@ -78,8 +84,7 @@ export default function AdminDashboard() {
   // Mutation for updating incident status
   const updateIncidentMutation = useMutation({
     mutationFn: async ({ incidentId, status }: { incidentId: string; status: string }) => {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-      const response = await fetch(`${apiUrl}/api/admin/incidents/${incidentId}/status`, {
+      const response = await fetch(`${API_BASE_URL}/api/admin/incidents/${incidentId}/status`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -89,7 +94,10 @@ export default function AdminDashboard() {
       });
       
       if (!response.ok) {
-        throw new Error('Failed to update incident status');
+        const errorText = await response.text();
+        throw new Error(
+          `Failed to update incident status (${response.status}): ${errorText || response.statusText}`
+        );
       }
       
       return response.json();

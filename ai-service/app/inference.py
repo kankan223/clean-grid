@@ -4,6 +4,7 @@ Handles model loading and inference operations
 """
 
 import io
+import os
 import cv2
 import numpy as np
 from PIL import Image
@@ -42,8 +43,13 @@ class YOLOInference:
             True if model loaded successfully, False otherwise
         """
         try:
-            logger.info("Loading YOLO model", model_path=self.model_path)
-            self.model = YOLO(self.model_path)
+            model_path = self.model_path
+            if model_path and model_path not in {"yolov8n.pt", "yolov8n"} and not os.path.exists(model_path):
+                logger.warning("Configured YOLO model path missing, falling back to default weights", model_path=model_path)
+                model_path = "yolov8n.pt"
+
+            logger.info("Loading YOLO model", model_path=model_path)
+            self.model = YOLO(model_path)
             self.model_loaded = True
             logger.info("YOLO model loaded successfully")
             return True
@@ -227,7 +233,8 @@ def initialize_inference_engine(model_path: str = "yolov8n.pt") -> bool:
     global inference_engine
     
     try:
-        inference_engine = YOLOInference(model_path)
+        resolved_model_path = model_path if os.path.isabs(model_path) else f"/app/models/{model_path}"
+        inference_engine = YOLOInference(resolved_model_path)
         return inference_engine.load_model()
     except Exception as e:
         logger.error("Failed to initialize inference engine", error=str(e))

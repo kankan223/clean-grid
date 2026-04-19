@@ -26,6 +26,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY --chown=app:app . .
 
+# Create uploads directory with proper permissions
+RUN mkdir -p /app/uploads && chown app:app /app/uploads
+
 # Change to app user
 USER app
 
