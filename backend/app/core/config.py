@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     
     # Database
     DATABASE_URL: str = Field(
-        default="postgresql+asyncpg://cleangrid:cleangrid@localhost:5432/cleangrid",
+        default="postgresql+asyncpg://cleangrid:cleangrid@localhost:5433/cleangrid",
         env="DATABASE_URL"
     )
     
@@ -52,6 +52,10 @@ class Settings(BaseSettings):
     )
     
     # CORS
+    ALLOWED_ORIGINS: str = Field(
+        default="",
+        env="ALLOWED_ORIGINS"
+    )
     CORS_ORIGINS: str = Field(
         default="http://localhost:3000",
         env="CORS_ORIGINS"

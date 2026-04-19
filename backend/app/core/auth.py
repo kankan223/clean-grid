@@ -94,6 +94,11 @@ def create_refresh_token(
     return encoded_jwt
 
 
+def get_user_token_version(user: User) -> int:
+    """Read the current token rotation version for a user."""
+    return int(getattr(user, "token_version", 0) or 0)
+
+
 def verify_token(token: str) -> dict:
     """
     Verify and decode JWT token
@@ -156,6 +161,10 @@ async def get_current_user(
         
         if user is None:
             raise credentials_exception
+
+        token_version = int(payload.get("token_version") or 0)
+        if token_version != get_user_token_version(user):
+            raise credentials_exception
             
         return user
         
@@ -169,7 +178,8 @@ async def get_current_active_user(
     """
     Get current active user
     """
-    if not current_user.is_active:
+    # Some User model revisions do not include an is_active field.
+    if hasattr(current_user, "is_active") and not current_user.is_active:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Inactive user"
@@ -212,6 +222,13 @@ async def get_current_user_optional(
         result = await db.execute(stmt)
         user = result.scalar_one_or_none()
         
+        if user is None:
+            return None
+
+        token_version = int(payload.get("token_version") or 0)
+        if token_version != get_user_token_version(user):
+            return None
+
         return user
         
     except (JWTError, Exception):
@@ -255,8 +272,9 @@ def create_tokens_for_user(user: User) -> dict:
     """
     Create access and refresh tokens for a user
     """
-    access_token_data = {"sub": user.id, "email": user.email, "role": user.role}
-    refresh_token_data = {"sub": user.id}
+    token_version = get_user_token_version(user)
+    access_token_data = {"sub": user.id, "email": user.email, "role": user.role, "token_version": token_version}
+    refresh_token_data = {"sub": user.id, "token_version": token_version}
     
     access_token = create_access_token(access_token_data)
     refresh_token = create_refresh_token(refresh_token_data)

@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useAuth } from '@/lib/stores/auth';
 import { useIncidentStore, initializeIncidentStore, Incident } from '@/lib/stores/incident';
 import { IncidentTable } from '@/components/admin/IncidentTable';
 import { DetailDrawer } from '@/components/admin/DetailDrawer';
@@ -10,16 +9,11 @@ import { AdminMapPanel } from '@/components/admin/AdminMapPanel';
 import { useIncidentStream } from '@/hooks/useIncidentStream';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useToast } from '@/components/ui/toast';
 import { RefreshCw, Filter } from 'lucide-react';
 
-interface AdminStats {
-  active: number;
-  inProgress: number;
-  verifiedToday: number;
-}
-
 export default function AdminDashboard() {
-  const { user } = useAuth();
+  const { toast } = useToast();
   const [selectedIncident, setSelectedIncident] = useState<Incident | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const queryClient = useQueryClient();
@@ -43,7 +37,7 @@ export default function AdminDashboard() {
   } = useQuery({
     queryKey: ['incidents'],
     queryFn: async () => {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8004';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
       const response = await fetch(`${apiUrl}/api/incidents?limit=100`, {
         credentials: 'include',
       });
@@ -62,12 +56,11 @@ export default function AdminDashboard() {
   const {
     data: stats,
     isLoading: statsLoading,
-    error: statsError,
     refetch: refetchStats
   } = useQuery({
     queryKey: ['admin-stats'],
     queryFn: async () => {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8004';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
       const response = await fetch(`${apiUrl}/api/incidents/stats`, {
         credentials: 'include',
       });
@@ -85,7 +78,7 @@ export default function AdminDashboard() {
   // Mutation for updating incident status
   const updateIncidentMutation = useMutation({
     mutationFn: async ({ incidentId, status }: { incidentId: string; status: string }) => {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8004';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
       const response = await fetch(`${apiUrl}/api/admin/incidents/${incidentId}/status`, {
         method: 'PATCH',
         headers: {
@@ -106,11 +99,17 @@ export default function AdminDashboard() {
       queryClient.invalidateQueries({ queryKey: ['incidents'] });
       queryClient.invalidateQueries({ queryKey: ['admin-stats'] });
     },
+    onError: (error) => {
+      toast({
+        title: 'Update failed',
+        description: (error as Error).message,
+        variant: 'error',
+      });
+    },
   });
   
   const {
     setActiveIncidentId,
-    activeIncidentId,
   } = useIncidentStore();
 
   const handleRowClick = (incident: Incident) => {
@@ -157,12 +156,12 @@ export default function AdminDashboard() {
               </div>
               
               <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
-                <div className="text-2xl font-bold text-yellow-600">{stats.inProgress || 0}</div>
+                <div className="text-2xl font-bold text-yellow-600">{stats.inProgress ?? stats.in_progress ?? 0}</div>
                 <div className="text-sm text-gray-600">In Progress</div>
               </div>
               
               <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                <div className="text-2xl font-bold text-green-600">{stats.verified || 0}</div>
+                <div className="text-2xl font-bold text-green-600">{(stats.verifiedToday ?? stats.verified_today ?? stats.verified) || 0}</div>
                 <div className="text-sm text-gray-600">Verified Today</div>
               </div>
             </div>
@@ -195,6 +194,15 @@ export default function AdminDashboard() {
                 >
                   Retry
                 </Button>
+              </CardContent>
+            </Card>
+          )}
+
+          {!incidentsLoading && incidents.length === 0 && !incidentsError && (
+            <Card className="relative z-40 border-dashed mb-4">
+              <CardContent className="pt-6 text-center">
+                <p className="text-gray-800 font-semibold">No incidents to review</p>
+                <p className="text-sm text-gray-600 mt-1">New reports will appear here automatically.</p>
               </CardContent>
             </Card>
           )}

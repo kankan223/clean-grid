@@ -17,6 +17,7 @@ from sqlalchemy import text
 from app.core.database import get_db
 from app.core.redis import get_redis
 from app.core.auth import get_current_user_optional
+from app.core.rate_limit import limiter
 from app.services.storage import storage_service
 from app.services.ai_client import ai_client
 from app.services.geocoding import geocoding_service
@@ -25,39 +26,6 @@ from app.models.incident import Incident
 logger = structlog.get_logger(__name__)
 
 router = APIRouter(tags=["Reports"])
-
-# Rate limiting configuration
-RATE_LIMIT_WINDOW = 3600  # 1 hour in seconds
-RATE_LIMIT_REQUESTS = 10  # 10 requests per hour per IP
-
-async def check_rate_limit(request: Request) -> bool:
-    """Check if IP has exceeded rate limit using Redis sliding window"""
-    current_time = datetime.utcnow().timestamp()
-    
-    try:
-        client_ip = request.client.host if request.client else "unknown"
-        redis_client = await get_redis()
-
-        # Clean up old entries and count current requests
-        pipeline = redis_client.pipeline()
-        pipeline.zremrangebyscore(f"rate_limit:{client_ip}", 0, current_time - RATE_LIMIT_WINDOW)
-        pipeline.zcard(f"rate_limit:{client_ip}")
-        pipeline.expire(f"rate_limit:{client_ip}", RATE_LIMIT_WINDOW)
-
-        current_requests = await pipeline.execute()
-        request_count = current_requests[1] if len(current_requests) > 1 else 0
-        
-        if request_count >= RATE_LIMIT_REQUESTS:
-            logger.warning(f"Rate limit exceeded for IP: {client_ip}")
-            return False
-        
-        # Add current request
-        await redis_client.zadd(f"rate_limit:{client_ip}", {str(current_time): current_time})
-        return True
-    except Exception as e:
-        logger.error(f"Rate limit check failed: {e}")
-        # Fail closed to prevent unlimited abuse during Redis outages.
-        return False
 
 def validate_image_file(file: UploadFile) -> bool:
     """Validate image file type and size"""
@@ -128,6 +96,7 @@ async def get_report_status(
         )
 
 @router.post("/")
+@limiter.limit("10/hour")
 async def create_report(
     background_tasks: BackgroundTasks,
     request: Request,
@@ -139,13 +108,6 @@ async def create_report(
     note: Optional[str] = Form(None, max_length=200)
 ):
     """Create a new waste report with AI analysis"""
-    
-    # Rate limiting check
-    if not await check_rate_limit(request):
-        raise HTTPException(
-            status_code=429,
-            detail="Rate limit exceeded. Maximum 10 reports per hour."
-        )
     
     # Validate image file
     validate_image_file(image)

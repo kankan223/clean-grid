@@ -35,7 +35,7 @@ export interface AuthState {
 }
 
 // API functions
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8004';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 interface LoginResponse {
   user: User;
@@ -63,8 +63,15 @@ const apiLogin = async (email: string, password: string): Promise<LoginResponse>
   });
 
   if (!response.ok) {
-    const error = await response.text();
-    throw new Error(error || 'Login failed');
+    let message = 'Login failed';
+    try {
+      const payload = await response.json();
+      message = payload.detail || payload.message || message;
+    } catch {
+      const fallback = await response.text();
+      if (fallback) message = fallback;
+    }
+    throw new Error(message);
   }
 
   return response.json();
@@ -81,8 +88,15 @@ const apiRefreshToken = async (): Promise<RefreshResponse> => {
   });
 
   if (!response.ok) {
-    const error = await response.text();
-    throw new Error(error || 'Token refresh failed');
+    let message = 'Token refresh failed';
+    try {
+      const payload = await response.json();
+      message = payload.detail || payload.message || message;
+    } catch {
+      const fallback = await response.text();
+      if (fallback) message = fallback;
+    }
+    throw new Error(message);
   }
 
   return response.json();
@@ -125,14 +139,16 @@ export const useAuthStore = create<AuthState>()(
           // Tokens are stored as HttpOnly cookies by the backend
           
         } catch (err) {
+          const message = err instanceof Error ? err.message : 'Login failed';
           set({
             user: null,
             accessToken: null,
             refreshToken: null,
             isAuthenticated: false,
             isLoading: false,
-            error: err instanceof Error ? err.message : 'Login failed',
+            error: message,
           });
+          throw new Error(message);
         }
       },
 

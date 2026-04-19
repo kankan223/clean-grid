@@ -13,12 +13,13 @@ from sqlalchemy import select, func, text
 
 from app.core.auth import get_current_user, require_admin
 from app.core.database import get_db
+from app.core.redis import get_redis
 from app.models.incident import Incident
 from app.models.user import User
 
 logger = __import__('structlog').get_logger(__name__)
 
-router = APIRouter(prefix="/admin", tags=["admin"])
+router = APIRouter(tags=["admin"])
 
 @router.get("/stats")
 async def get_admin_stats(
@@ -300,3 +301,35 @@ async def assign_incident(
 async def health():
     """Admin router health check"""
     return {"status": "admin router healthy"}
+
+
+@router.get("/status")
+async def status(
+    current_user: User = Depends(require_admin),
+    db: AsyncSession = Depends(get_db)
+):
+    """Admin readiness endpoint used for operational health checks."""
+    db_status = "healthy"
+    redis_status = "healthy"
+
+    try:
+        await db.execute(text("SELECT 1"))
+    except Exception as exc:
+        logger.error(f"Admin status database check failed: {exc}")
+        db_status = "unhealthy"
+
+    try:
+        redis_client = await get_redis()
+        await redis_client.ping()
+    except Exception as exc:
+        logger.error(f"Admin status Redis check failed: {exc}")
+        redis_status = "unhealthy"
+
+    overall_status = "healthy" if db_status == "healthy" and redis_status == "healthy" else "degraded"
+
+    return {
+        "status": overall_status,
+        "database": db_status,
+        "redis": redis_status,
+        "timestamp": datetime.utcnow().isoformat(),
+    }

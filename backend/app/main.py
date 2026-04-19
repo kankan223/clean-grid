@@ -10,9 +10,13 @@ from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import JSONResponse
 import structlog
 import uvicorn
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
+from slowapi.middleware import _rate_limit_exceeded_handler
 
 from app.core.config import settings
 from app.core.database import init_db, close_db
+from app.core.rate_limit import limiter
 import app.core.redis as redis_module
 from app.routers import auth, admin, leaderboard, events
 from app.routers import reports
@@ -94,12 +98,23 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_middleware(SlowAPIMiddleware)
+
 # Add CORS middleware
-cors_origins = [origin.strip() for origin in settings.CORS_ORIGINS.split(",") if origin.strip()]
-if "https://cleangrid.io" not in cors_origins:
-    cors_origins.append("https://cleangrid.io")
-if "https://www.cleangrid.io" not in cors_origins:
-    cors_origins.append("https://www.cleangrid.io")
+if settings.ENVIRONMENT == "production" and settings.ALLOWED_ORIGINS.strip():
+    cors_origins = [origin.strip() for origin in settings.ALLOWED_ORIGINS.split(",") if origin.strip()]
+else:
+    cors_origins = [origin.strip() for origin in settings.CORS_ORIGINS.split(",") if origin.strip()]
+    for origin in [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost:3001",
+        "http://localhost:3002",
+    ]:
+        if origin not in cors_origins:
+            cors_origins.append(origin)
 
 app.add_middleware(
     CORSMiddleware,

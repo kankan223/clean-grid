@@ -11,10 +11,13 @@ import { useRouter } from 'next/navigation';
 import ImageUploadZone from '@/components/report/ImageUploadZone';
 import LocationPicker from '@/components/report/LocationPicker';
 import AIResultCard from '@/components/report/AIResultCard';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useToast } from '@/components/ui/toast';
 import { ReportCreate, Location } from '@/types/report';
 
 const ReportPage: React.FC = () => {
   const router = useRouter();
+  const { toast } = useToast();
   
   // Form state
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -64,7 +67,7 @@ const ReportPage: React.FC = () => {
       }
 
       // Submit to API
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8004';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
       const response = await fetch(`${apiUrl}/api/reports`, {
         method: 'POST',
         body: formData,
@@ -108,7 +111,11 @@ const ReportPage: React.FC = () => {
 
     } catch (error) {
       console.error('Submission error:', error);
-      alert(`Failed to submit report: ${(error as Error).message}`);
+      toast({
+        title: 'Report submission failed',
+        description: (error as Error).message,
+        variant: 'error',
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -210,6 +217,14 @@ const ReportPage: React.FC = () => {
               </button>
             </div>
           </form>
+
+          {isSubmitting && !analysisResult ? (
+            <div className="space-y-3 border-t px-6 pb-6 pt-4">
+              <Skeleton className="h-5 w-48" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-11/12" />
+            </div>
+          ) : null}
 
           {/* AI Analysis Result */}
           {analysisResult && (

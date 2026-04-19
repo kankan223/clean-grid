@@ -21,11 +21,12 @@ from sqlalchemy import select
 from app.core.config import settings
 from app.core.database import get_db
 from app.core.redis import get_redis
+from app.core.rate_limit import limiter
 from app.models.user import User
 
 logger = __import__('structlog').get_logger(__name__)
 
-router = APIRouter(prefix="/auth", tags=["authentication"])
+router = APIRouter(tags=["authentication"])
 
 # JWT Configuration
 SECRET_KEY = settings.JWT_SECRET_KEY
@@ -99,6 +100,11 @@ def create_refresh_token(
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
+
+def get_user_token_version(user: User) -> int:
+    """Read the current token rotation version for a user."""
+    return int(getattr(user, "token_version", 0) or 0)
+
 async def invalidate_refresh_token(refresh_token: str):
     """Invalidate refresh token by adding to Redis blacklist"""
     try:
@@ -161,10 +167,11 @@ async def register(
         
         # Create tokens for immediate login
         access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-        refresh_token = create_refresh_token(data={"sub": str(user.id)})
+        token_version = get_user_token_version(user)
+        refresh_token = create_refresh_token(data={"sub": str(user.id), "token_version": token_version})
         
         access_token = create_access_token(
-            data={"sub": str(user.id), "email": user.email, "role": user.role},
+            data={"sub": str(user.id), "email": user.email, "role": user.role, "token_version": token_version},
             expires_delta=access_token_expires
         )
         
@@ -221,6 +228,7 @@ async def register(
         )
 
 @router.post("/login")
+@limiter.limit("5/15minute")
 async def login(
     request: Request,
     login_data: LoginRequest,
@@ -242,12 +250,13 @@ async def login(
                 headers={"WWW-Authenticate": "Bearer"}
             )
         
-        # Create tokens
+        # Create tokens with token version for replay protection.
         access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-        refresh_token = create_refresh_token(data={"sub": str(user.id)})
+        token_version = get_user_token_version(user)
+        refresh_token = create_refresh_token(data={"sub": str(user.id), "token_version": token_version})
         
         access_token = create_access_token(
-            data={"sub": str(user.id), "email": user.email, "role": user.role},
+            data={"sub": str(user.id), "email": user.email, "role": user.role, "token_version": token_version},
             expires_delta=access_token_expires
         )
         
@@ -280,16 +289,15 @@ async def login(
             path="/"
         )
         
-        if login_data.remember_me:
-            response.set_cookie(
-                key="refresh_token",
-                value=refresh_token,
-                max_age=REFRESH_TOKEN_EXPIRE_DAYS * 24 * 3600,
-                httponly=True,
-                secure=IS_SECURE_COOKIE,
-                samesite="strict",
-                path="/"
-            )
+        response.set_cookie(
+            key="refresh_token",
+            value=refresh_token,
+            max_age=REFRESH_TOKEN_EXPIRE_DAYS * 24 * 3600,
+            httponly=True,
+            secure=IS_SECURE_COOKIE,
+            samesite="strict",
+            path="/"
+        )
         
         logger.info(f"User logged in: {user.email}")
         return response
@@ -353,7 +361,7 @@ async def refresh_token(
             
             # Get user from database
             result = await db.execute(
-                select(User).where(User.id == int(user_id))
+                select(User).where(User.id == user_id)
             )
             user = result.scalar_one_or_none()
             
@@ -362,16 +370,30 @@ async def refresh_token(
                     status_code=401,
                     detail="User not found"
                 )
+
+            token_version = int(payload.get("token_version") or 0)
+            current_token_version = get_user_token_version(user)
+            if token_version != current_token_version:
+                raise HTTPException(
+                    status_code=401,
+                    detail="Invalid refresh token"
+                )
             
             # Invalidate old refresh token
             await invalidate_refresh_token(refresh_token)
+
+            # Rotate token version so older access/refresh tokens stop working.
+            user.token_version = current_token_version + 1
+            await db.commit()
+            await db.refresh(user)
             
             # Create new tokens
+            new_token_version = get_user_token_version(user)
             new_access_token = create_access_token(
-                data={"sub": str(user.id), "email": user.email, "role": user.role},
+                data={"sub": str(user.id), "email": user.email, "role": user.role, "token_version": new_token_version},
                 expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
             )
-            new_refresh_token = create_refresh_token(data={"sub": str(user.id)})
+            new_refresh_token = create_refresh_token(data={"sub": str(user.id), "token_version": new_token_version})
             
             # Create response
             response = JSONResponse(
@@ -422,7 +444,7 @@ async def refresh_token(
         )
 
 @router.post("/logout")
-async def logout(request: Request):
+async def logout(request: Request, db: AsyncSession = Depends(get_db)):
     """Logout user and invalidate tokens"""
     
     try:
@@ -430,6 +452,21 @@ async def logout(request: Request):
         refresh_token = request.cookies.get("refresh_token")
         
         if refresh_token:
+            # Rotate token version if the token is still current.
+            try:
+                payload = jwt.decode(refresh_token, SECRET_KEY, algorithms=[ALGORITHM])
+                user_id = payload.get("sub")
+                token_version = int(payload.get("token_version") or 0)
+
+                if user_id:
+                    result = await db.execute(select(User).where(User.id == user_id))
+                    user = result.scalar_one_or_none()
+                    if user and get_user_token_version(user) == token_version:
+                        user.token_version = get_user_token_version(user) + 1
+                        await db.commit()
+            except JWTError:
+                pass
+
             # Invalidate refresh token
             await invalidate_refresh_token(refresh_token)
         
