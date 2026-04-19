@@ -77,6 +77,13 @@ class User(Base):
         index=True,
         comment="User role: citizen, crew, or admin"
     )
+
+    token_version = Column(
+        Integer,
+        default=0,
+        nullable=False,
+        comment="JWT token rotation version"
+    )
     
     # Gamification
     total_points = Column(
@@ -141,6 +148,7 @@ class User(Base):
             "email": self.email,
             "display_name": self.display_name,
             "role": self.role,
+            "token_version": self.token_version,
             "total_points": self.total_points,
             "badge_tier": self.badge_tier,
             "created_at": self.created_at.isoformat() if self.created_at else None,

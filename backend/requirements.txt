@@ -27,7 +27,9 @@ httpx>=0.25.2
 aiofiles>=23.2.1
 
 # Binary compatibility for geospatial stack
-numpy<2.0.0
+# Python 3.14 needs NumPy 2.x wheels; NumPy 1.x triggers a source build (GCC >= 8.4 required on Windows).
+numpy<2.0.0; python_version < "3.14"
+numpy>=2.1.0; python_version >= "3.14"
 
 # Redis
 redis>=5.0.1

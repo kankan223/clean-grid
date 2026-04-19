@@ -8,6 +8,7 @@ Create Date: 2026-04-17 21:00:00.000000
 from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
+from geoalchemy2 import Geography
 
 # revision identifiers, used by Alembic.
 revision = '001'
@@ -43,7 +44,7 @@ def upgrade() -> None:
         sa.Column('id', postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column('reporter_id', postgresql.UUID(as_uuid=True), nullable=True),
         sa.Column('assigned_to', postgresql.UUID(as_uuid=True), nullable=True),
-        sa.Column('location', postgresql.GEOGRAPHY(geometry_type='POINT', srid=4326), nullable=True, comment='Geographic point location (lat/lng)'),
+        sa.Column('location', Geography(geometry_type='POINT', srid=4326), nullable=True, comment='Geographic point location (lat/lng)'),
         sa.Column('image_url', sa.Text(), nullable=False, comment='URL to before-photo in object storage'),
         sa.Column('after_image_url', sa.Text(), nullable=True, comment='URL to after-photo'),
         sa.Column('address_text', sa.Text(), nullable=True, comment='Reverse-geocoded or user-provided address'),

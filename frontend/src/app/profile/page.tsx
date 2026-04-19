@@ -78,7 +78,7 @@ export default function ProfilePage() {
   } = useQuery<UserProfile>({
     queryKey: ['user-profile'],
     queryFn: async () => {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8004';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
       const response = await fetch(`${apiUrl}/api/users/me`, {
         credentials: 'include',
       });
@@ -98,7 +98,7 @@ export default function ProfilePage() {
   } = useQuery<UserReport[]>({
     queryKey: ['user-reports'],
     queryFn: async () => {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8004';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
       const response = await fetch(`${apiUrl}/api/users/me/reports`, {
         credentials: 'include',
       });

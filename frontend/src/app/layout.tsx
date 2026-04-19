@@ -5,6 +5,7 @@ import "leaflet/dist/leaflet.css";
 import { cn } from "@/lib/utils";
 import { AppHeaderClient } from "@/components/layout/AppHeaderClient";
 import { QueryProvider } from "@/providers/QueryProvider";
+import { ToastViewport } from "@/components/ui/toast";
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
@@ -27,6 +28,7 @@ export default function RootLayout({
               {children}
             </main>
           </AppHeaderClient>
+          <ToastViewport />
         </QueryProvider>
       </body>
     </html>

@@ -1,15 +1,10 @@
-# Cl### Setup Docker Compose
-- [x] Create docker-compose.yml with 5 services: frontend, backend, ai-service, db, redis
-- [x] Configure PostgreSQL 15 + PostGIS 3.3 container
-- [x] Set up Redis 7 container
-- [x] Create .env.example files for all services
-- [x] Add health checks and proper dependenciesd Implementation Roadmap
+# Implementation Roadmap
 
 ## Phase 0: Environment & Scaffolding (The Foundation)
 
 ### Setup Docker Compose
 - [x] Create docker-compose.yml with 5 services: frontend, backend, ai-service, db, redis
-- [x] Configure PostgreSQL 15 + PostGIS 3.3 cont## Phase 4: Route Optimization (Next)iner
+- [x] Configure PostgreSQL 15 + PostGIS 3.3 container
 - [x] Set up Redis 7 container
 - [x] Create .env.example files for all services
 - [x] Add health checks and proper dependencies
@@ -186,34 +181,34 @@
 
 ---
 
-## Phase 2.5: Security Hardening (Co-Developer Tasks) 🔄 IN PROGRESS
+## Phase 2.5: Security Hardening (Co-Developer Tasks) ✅ COMPLETE
 
 ### Rate Limiting & Abuse Prevention
-- [ ] Implement `slowapi` middleware for rate limiting
-- [ ] Add 10 reports/IP/hour on POST /api/reports
-- [ ] Add 5 login attempts/IP/15min on POST /auth/login
-- [ ] Add `X-RateLimit-*` response headers
-- [ ] Create `/api/admin/status` health endpoint
+- [x] Implement `slowapi` middleware for rate limiting
+- [x] Add 10 reports/IP/hour on POST /api/reports
+- [x] Add 5 login attempts/IP/15min on POST /auth/login
+- [x] Add `X-RateLimit-*` response headers
+- [x] Create `/api/admin/status` health endpoint
 
 ### JWT Refresh Token Rotation
-- [ ] Implement token rotation logic on refresh
-- [ ] Add refresh token invalidation (Redis blacklist)
-- [ ] Implement `token_version` in JWT payload
-- [ ] Create POST /auth/logout endpoint
-- [ ] Add replay attack prevention
+- [x] Implement token rotation logic on refresh
+- [x] Add refresh token invalidation (Redis blacklist)
+- [x] Implement `token_version` in JWT payload
+- [x] Create POST /auth/logout endpoint
+- [x] Add replay attack prevention
 
 ### CORS & Production Origin
-- [ ] Make CORS restrictive in production
-- [ ] Whitelist Vercel domain only in prod
-- [ ] Keep localhost/* for development
-- [ ] Add `ALLOWED_ORIGINS` to .env
+- [x] Make CORS restrictive in production
+- [x] Whitelist Vercel domain only in prod
+- [x] Keep localhost/* for development
+- [x] Add `ALLOWED_ORIGINS` to .env
 
 ### Frontend Hydration & UX Polish
-- [ ] Audit Leaflet dynamic imports (ssr: false)
-- [ ] Fix Next.js hydration warnings
-- [ ] Add loading skeletons to report page
-- [ ] Add empty states to admin page
-- [ ] Implement toast error notifications
+- [x] Audit Leaflet dynamic imports (ssr: false)
+- [x] Fix Next.js hydration warnings
+- [x] Add loading skeletons to report page
+- [x] Add empty states to admin page
+- [x] Implement toast error notifications
 
 ---
 

@@ -46,6 +46,8 @@ interface DashboardStats {
   verified: number;
 }
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 export default function Home() {
   const [incidents, setIncidents] = useState<Incident[]>([]);
   const [stats, setStats] = useState<DashboardStats | null>(null);
@@ -67,7 +69,7 @@ export default function Home() {
 
   const fetchIncidents = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8004'}/api/incidents?status=active&limit=100`, {
+      const response = await fetch(`${API_BASE_URL}/api/incidents?status=active&limit=100`, {
         credentials: 'include',
       });
       
@@ -75,10 +77,13 @@ export default function Home() {
         const data = await response.json();
         setIncidents(data.incidents || []);
       } else if (response.status !== 401) {
-        setError('Failed to load incidents');
+        const errorText = await response.text();
+        throw new Error(
+          `Failed to load incidents (${response.status}): ${errorText || response.statusText}`
+        );
       }
     } catch (err) {
-      setError('Failed to load incidents');
+      setError(err instanceof Error ? err.message : 'Failed to load incidents');
     } finally {
       setLoading(false);
     }
@@ -86,16 +91,24 @@ export default function Home() {
 
   const fetchStats = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8004'}/api/incidents/stats`, {
+      const response = await fetch(`${API_BASE_URL}/api/incidents/stats`, {
         credentials: 'include',
       });
       
       if (response.ok) {
         const data = await response.json();
         setStats(data);
+      } else if (response.status !== 401) {
+        console.warn(
+          `Failed to fetch stats (${response.status}). Stats panel may not display.`
+        );
+        // Stats are optional; panel won't render but don't block user
       }
     } catch (err) {
-      // Stats are optional, don't show error
+      console.warn(
+        `Stats fetch error (${err instanceof Error ? err.message : 'unknown'}). Panel may not display.`
+      );
+      // Stats are optional, don't show error to user
     }
   };
 
@@ -145,10 +158,10 @@ export default function Home() {
       {/* Report Waste FAB */}
       <ReportWasteFAB />
 
-      {/* Stats Overlay */}
+      {/* Stats Overlay - positioned above Leaflet layers (z-1000) */}
       {stats && (
-        <div className="absolute top-4 left-4 z-30">
-          <Card className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="absolute top-4 left-4 z-[1001] pointer-events-auto">
+          <Card className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-lg">
             <CardHeader className="pb-3">
               <CardTitle className="text-lg flex items-center gap-2">
                 <TrendingUp className="h-5 w-5" />
@@ -189,9 +202,9 @@ export default function Home() {
         </div>
       )}
 
-      {/* Error State */}
+      {/* Error State - positioned above Leaflet layers */}
       {error && (
-        <div className="absolute top-4 right-4 z-30">
+        <div className="absolute top-4 right-4 z-[1001] pointer-events-auto">
           <Card className="bg-destructive/10 border-destructive/20">
             <CardContent className="pt-4">
               <div className="flex items-center gap-2 text-destructive">
@@ -211,10 +224,10 @@ export default function Home() {
         </div>
       )}
 
-      {/* Empty State */}
+      {/* Empty State - positioned above Leaflet layers */}
       {!loading && incidents.length === 0 && !error && (
-        <div className="absolute inset-0 flex items-center justify-center z-30">
-          <Card className="max-w-md mx-4">
+        <div className="absolute inset-0 flex items-center justify-center z-[1001] pointer-events-none">
+          <Card className="max-w-md mx-4 pointer-events-auto">
             <CardHeader className="text-center">
               <CardTitle className="flex items-center justify-center gap-2">
                 <MapPin className="h-6 w-6" />

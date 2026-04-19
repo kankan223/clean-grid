@@ -58,7 +58,7 @@ class AISettings(BaseSettings):
     
     # Detection Classes - store as string from .env
     RELEVANT_CLASSES_STR: str = Field(
-        default="bottle,cup,bag,banana,can,backpack,suitcase",
+        default="bottle,cup,handbag,banana,can,backpack,suitcase,book,cell phone,remote,mouse,keyboard,wine glass",
         env="RELEVANT_CLASSES"
     )
     
@@ -106,6 +106,12 @@ class AISettings(BaseSettings):
         default="https://github.com/ultralytics/assets/releases/download/v0.0.0/yolov8n.pt",
         env="MODEL_DOWNLOAD_URL"
     )
+
+    # Backend image access
+    BACKEND_BASE_URL: str = Field(
+        default="http://backend:8000",
+        env="BACKEND_BASE_URL"
+    )
     
     # Logging
     LOG_LEVEL: str = Field(
@@ -143,7 +149,7 @@ class AISettings(BaseSettings):
         """Parse RELEVANT_CLASSES from string format"""
         if isinstance(self.RELEVANT_CLASSES_STR, str):
             return set(item.strip() for item in self.RELEVANT_CLASSES_STR.split(',') if item.strip())
-        return {"bottle", "cup", "bag", "banana", "can", "backpack", "suitcase"}
+        return {"bottle", "cup", "handbag", "banana", "can", "backpack", "suitcase", "book", "cell phone", "remote", "mouse", "keyboard", "wine glass"}
     
     @property
     def ALLOWED_EXTENSIONS(self) -> list:

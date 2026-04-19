@@ -10,6 +10,8 @@ from datetime import datetime
 from typing import Optional
 import structlog
 
+from app.core.config import settings
+
 logger = structlog.get_logger()
 
 
@@ -58,8 +60,8 @@ async def save_upload_file(file) -> str:
         async with aiofiles.open(file_path, 'wb') as f:
             await f.write(content)
         
-        # Return URL path (in production, this would be a CDN URL)
-        file_url = f"/uploads/{unique_filename}"
+        # Return a browser-accessible URL served by the backend
+        file_url = f"{settings.BACKEND_PUBLIC_URL.rstrip('/')}/uploads/{unique_filename}"
         
         logger.info(
             "File saved successfully",

@@ -28,7 +28,7 @@ export default function RegisterPage() {
       password: string; 
       displayName: string;
     }) => {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8004';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
       const response = await fetch(`${apiUrl}/api/auth/register`, {
         method: 'POST',
         headers: {
@@ -50,7 +50,7 @@ export default function RegisterPage() {
       return response.json();
     },
     onSuccess: (data) => {
-      router.push('/login?message=Registration successful! Please sign in.');
+      router.push(`/login?message=${encodeURIComponent('Registration successful. Please sign in.')}`);
     },
     onError: (error: Error) => {
       // Error is handled by the UI state

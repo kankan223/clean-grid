@@ -8,15 +8,19 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
+import os
 import structlog
 import uvicorn
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
+from slowapi.extension import _rate_limit_exceeded_handler
 
 from app.core.config import settings
 from app.core.database import init_db, close_db
+from app.core.rate_limit import limiter
 import app.core.redis as redis_module
-from app.routers import auth, admin, leaderboard, events
-from app.routers import reports
-from app.routers import incidents, routes, users
+from app.routers import auth, admin, leaderboard, events, reports, incidents, routes, users
 
 # Configure structured logging
 structlog.configure(
@@ -94,13 +98,26 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+os.makedirs("/app/uploads", exist_ok=True)
+app.mount("/uploads", StaticFiles(directory="/app/uploads"), name="uploads")
+
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)  # pyright: ignore[reportArgumentType]
+app.add_middleware(SlowAPIMiddleware)
 
 # Add CORS middleware
-cors_origins = [origin.strip() for origin in settings.CORS_ORIGINS.split(",") if origin.strip()]
-if "https://cleangrid.io" not in cors_origins:
-    cors_origins.append("https://cleangrid.io")
-if "https://www.cleangrid.io" not in cors_origins:
-    cors_origins.append("https://www.cleangrid.io")
+if settings.ENVIRONMENT == "production" and settings.ALLOWED_ORIGINS.strip():
+    cors_origins = [origin.strip() for origin in settings.ALLOWED_ORIGINS.split(",") if origin.strip()]
+else:
+    cors_origins = [origin.strip() for origin in settings.CORS_ORIGINS.split(",") if origin.strip()]
+    for origin in [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost:3001",
+        "http://localhost:3002",
+    ]:
+        if origin not in cors_origins:
+            cors_origins.append(origin)
 
 app.add_middleware(
     CORSMiddleware,
@@ -205,13 +222,12 @@ app.include_router(
 
 app.include_router(
     routes.router,
-    prefix="/api/routes",
     tags=["Routes"]
 )
 
 app.include_router(
     users.router,
-    prefix="/api/users",
+    prefix="/api",
     tags=["Users"]
 )
 
@@ -220,7 +236,11 @@ app.include_router(
     tags=["Events"]
 )
 
-
+app.include_router(
+    leaderboard.router,
+    prefix="/api",
+    tags=["Leaderboard"]
+)
 
 
 # Development server configuration

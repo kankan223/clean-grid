@@ -55,7 +55,7 @@ export default function LeaderboardPage() {
   } = useQuery<LeaderboardEntry[]>({
     queryKey: ['leaderboard'],
     queryFn: async () => {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8004';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
       const response = await fetch(`${apiUrl}/api/leaderboard`, {
         credentials: 'include',
       });

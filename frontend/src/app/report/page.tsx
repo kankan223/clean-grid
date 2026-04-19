@@ -5,16 +5,22 @@
 
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import { useState, useCallback } from 'react';
+import dynamicImport from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 
 import ImageUploadZone from '@/components/report/ImageUploadZone';
-import LocationPicker from '@/components/report/LocationPicker';
+const LocationPicker = dynamicImport(() => import('@/components/report/LocationPicker'), { ssr: false });
 import AIResultCard from '@/components/report/AIResultCard';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useToast } from '@/components/ui/toast';
 import { ReportCreate, Location } from '@/types/report';
 
 const ReportPage: React.FC = () => {
   const router = useRouter();
+  const { toast } = useToast();
   
   // Form state
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -64,10 +70,11 @@ const ReportPage: React.FC = () => {
       }
 
       // Submit to API
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8004';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
       const response = await fetch(`${apiUrl}/api/reports`, {
         method: 'POST',
         body: formData,
+        credentials: 'include',
         // DO NOT set Content-Type header - let browser set it with correct boundary
       });
 
@@ -94,7 +101,9 @@ const ReportPage: React.FC = () => {
       // Poll for completion (simplified - in production would use SSE)
       const pollInterval = setInterval(async () => {
         try {
-          const checkResponse = await fetch(`${apiUrl}/api/reports/${result.report_id}`);
+          const checkResponse = await fetch(`${apiUrl}/api/reports/${result.report_id}`, {
+            credentials: 'include',
+          });
           const checkData = await checkResponse.json();
           
           if (checkData.status !== 'processing') {
@@ -108,7 +117,11 @@ const ReportPage: React.FC = () => {
 
     } catch (error) {
       console.error('Submission error:', error);
-      alert(`Failed to submit report: ${(error as Error).message}`);
+      toast({
+        title: 'Report submission failed',
+        description: (error as Error).message,
+        variant: 'error',
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -210,6 +223,14 @@ const ReportPage: React.FC = () => {
               </button>
             </div>
           </form>
+
+          {isSubmitting && !analysisResult ? (
+            <div className="space-y-3 border-t px-6 pb-6 pt-4">
+              <Skeleton className="h-5 w-48" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-11/12" />
+            </div>
+          ) : null}
 
           {/* AI Analysis Result */}
           {analysisResult && (

@@ -17,6 +17,8 @@ interface IncidentEvent {
   timestamp: number;
 }
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 export function useIncidentStream() {
   const queryClient = useQueryClient();
   const eventSourceRef = useRef<EventSource | null>(null);
@@ -29,8 +31,9 @@ export function useIncidentStream() {
     }
     
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8004';
-      const eventSource = new EventSource(`${apiUrl}/api/events/incidents`);
+      const eventSource = new EventSource(`${API_BASE_URL}/api/events/incidents`, {
+        withCredentials: true,
+      });
       eventSourceRef.current = eventSource;
       
       eventSource.onopen = () => {

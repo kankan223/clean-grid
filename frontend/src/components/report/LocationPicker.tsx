@@ -5,9 +5,13 @@
 
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
+import L from 'leaflet';
+import { useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useToast } from '@/components/ui/toast';
 
 // Dynamic imports to avoid SSR issues
 const MapContainer = dynamic(
@@ -20,8 +24,35 @@ const TileLayer = dynamic(
 );
 const Marker = dynamic(
   () => import('react-leaflet').then(mod => mod.Marker),
-  { ssr: false }
+  { ssr: false,loading: () => null }
 );
+
+// Create marker icon once to avoid recreation
+const createPickerIcon = () => {
+  return L.divIcon({
+    className: 'location-picker-marker',
+    html: '<div style="background-color: #3b82f6; width: 32px; height: 40px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); border: 3px solid white; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.3);"><div style="transform: rotate(45deg); font-size: 18px;">📍</div></div>',
+    iconSize: [32, 40],
+    iconAnchor: [16, 40],
+    popupAnchor: [0, -40],
+  });
+};
+
+const GEOLOCATION_OPTIONS = {
+  enableHighAccuracy: false,
+  timeout: 45000,
+  maximumAge: 5 * 60 * 1000,
+};
+
+function MapPositionUpdater({ position }: { position: [number, number] }) {
+  const map = useMap();
+
+  useEffect(() => {
+    map.setView(position, map.getZoom(), { animate: true });
+  }, [map, position]);
+
+  return null;
+}
 
 interface LocationPickerProps {
   onLocationChange: (lat: number, lng: number) => void;
@@ -34,15 +65,24 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
   initialLocation,
   className = ''
 }) => {
+  const { toast } = useToast();
   const [position, setPosition] = useState(initialLocation || { lat: 40.7128, lng: -74.0060 }); // NYC default
   const [isGeolocating, setIsGeolocating] = useState(false);
+  const [isClient, setIsClient] = useState(false);
   const [address, setAddress] = useState<string>('');
-  const mapRef = useRef<any>(null);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   // Handle GPS geolocation
   const handleUseMyLocation = () => {
     if (!navigator.geolocation) {
-      alert('Geolocation is not supported by your browser');
+      toast({
+        title: 'Geolocation unavailable',
+        description: 'Your browser does not support geolocation.',
+        variant: 'error',
+      });
       return;
     }
 
@@ -77,23 +117,16 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
             break;
         }
         
-        alert(errorMessage);
+        toast({
+          title: 'Unable to get your location',
+          description: errorMessage,
+          variant: 'error',
+        });
       },
       
       // Options
-      {
-        enableHighAccuracy: true,
-        timeout: 5000,
-        maximumAge: 0
-      }
+      GEOLOCATION_OPTIONS
     );
-  };
-
-  // Handle manual pin placement
-  const handleMapClick = (e: any) => {
-    const { lat, lng } = e.latlng;
-    setPosition({ lat, lng });
-    onLocationChange(lat, lng);
   };
 
   const handleMarkerDragEnd = (e: any) => {
@@ -144,29 +177,32 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
       </div>
 
       <div className="h-64 bg-gray-100 rounded-lg overflow-hidden border-2 border-gray-300">
-        <MapContainer
-          center={[position.lat, position.lng]}
-          zoom={13}
-          className="h-full"
-          ref={mapRef}
-        >
-          <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          />
-          
-          <Marker
-            position={[position.lat, position.lng]}
-            draggable={true}
-            eventHandlers={{
-              dragend: handleMarkerDragEnd,
-            }}
+        {isClient ? (
+          <MapContainer
+            center={[position.lat, position.lng]}
+            zoom={13}
+            className="h-full"
           >
-            <div className="custom-marker">
-              📍
-            </div>
-          </Marker>
-        </MapContainer>
+            <MapPositionUpdater position={[position.lat, position.lng]} />
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            />
+            
+            <Marker
+              position={[position.lat, position.lng]}
+              draggable={true}
+              icon={createPickerIcon()}
+              eventHandlers={{
+                dragend: handleMarkerDragEnd,
+              }}
+            />
+          </MapContainer>
+        ) : (
+          <div className="h-full p-4">
+            <Skeleton className="h-full w-full" />
+          </div>
+        )}
       </div>
 
       <div className="mt-2 text-sm text-gray-600">

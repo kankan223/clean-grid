@@ -7,6 +7,7 @@
 # Core FastAPI
 fastapi>=0.104.1
 uvicorn[standard]>=0.24.0
+ultralytics>=8.2.0
 
 # Computer Vision & Image Processing (mock implementation)
 # ultralytics and torch excluded for Python 3.14 compatibility

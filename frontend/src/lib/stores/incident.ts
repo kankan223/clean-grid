@@ -75,7 +75,7 @@ export interface IncidentState {
 }
 
 // API Functions
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8004';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 async function fetchIncidents(
   filters: IncidentFilters,
@@ -100,7 +100,10 @@ async function fetchIncidents(
   });
 
   if (!response.ok) {
-    throw new Error(`Failed to fetch incidents: ${response.statusText}`);
+    const errorText = await response.text();
+    throw new Error(
+      `Failed to fetch incidents (${response.status}): ${errorText || response.statusText}`
+    );
   }
 
   return response.json();
@@ -115,7 +118,10 @@ async function fetchCrewMembers(): Promise<CrewMember[]> {
   });
 
   if (!response.ok) {
-    throw new Error(`Failed to fetch crew members: ${response.statusText}`);
+    const errorText = await response.text();
+    throw new Error(
+      `Failed to fetch crew members (${response.status}): ${errorText || response.statusText}`
+    );
   }
 
   const data = await response.json();
@@ -133,7 +139,10 @@ async function assignIncident(incidentId: string, crewId: string): Promise<void>
   });
 
   if (!response.ok) {
-    throw new Error(`Failed to assign incident: ${response.statusText}`);
+    const errorText = await response.text();
+    throw new Error(
+      `Failed to assign incident (${response.status}): ${errorText || response.statusText}`
+    );
   }
 }
 

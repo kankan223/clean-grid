@@ -10,13 +10,14 @@ from datetime import datetime, timedelta
 from typing import Optional
 
 import httpx
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, BackgroundTasks, Request
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, BackgroundTasks, Request, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import text
 
 from app.core.database import get_db
 from app.core.redis import get_redis
 from app.core.auth import get_current_user_optional
+from app.core.rate_limit import limiter
 from app.services.storage import storage_service
 from app.services.ai_client import ai_client
 from app.services.geocoding import geocoding_service
@@ -25,39 +26,6 @@ from app.models.incident import Incident
 logger = structlog.get_logger(__name__)
 
 router = APIRouter(tags=["Reports"])
-
-# Rate limiting configuration
-RATE_LIMIT_WINDOW = 3600  # 1 hour in seconds
-RATE_LIMIT_REQUESTS = 10  # 10 requests per hour per IP
-
-async def check_rate_limit(request: Request) -> bool:
-    """Check if IP has exceeded rate limit using Redis sliding window"""
-    current_time = datetime.utcnow().timestamp()
-    
-    try:
-        client_ip = request.client.host if request.client else "unknown"
-        redis_client = await get_redis()
-
-        # Clean up old entries and count current requests
-        pipeline = redis_client.pipeline()
-        pipeline.zremrangebyscore(f"rate_limit:{client_ip}", 0, current_time - RATE_LIMIT_WINDOW)
-        pipeline.zcard(f"rate_limit:{client_ip}")
-        pipeline.expire(f"rate_limit:{client_ip}", RATE_LIMIT_WINDOW)
-
-        current_requests = await pipeline.execute()
-        request_count = current_requests[1] if len(current_requests) > 1 else 0
-        
-        if request_count >= RATE_LIMIT_REQUESTS:
-            logger.warning(f"Rate limit exceeded for IP: {client_ip}")
-            return False
-        
-        # Add current request
-        await redis_client.zadd(f"rate_limit:{client_ip}", {str(current_time): current_time})
-        return True
-    except Exception as e:
-        logger.error(f"Rate limit check failed: {e}")
-        # Fail closed to prevent unlimited abuse during Redis outages.
-        return False
 
 def validate_image_file(file: UploadFile) -> bool:
     """Validate image file type and size"""
@@ -128,7 +96,9 @@ async def get_report_status(
         )
 
 @router.post("/")
+@limiter.limit("10/hour")
 async def create_report(
+    response: Response,
     background_tasks: BackgroundTasks,
     request: Request,
     db: AsyncSession = Depends(get_db),
@@ -140,13 +110,6 @@ async def create_report(
 ):
     """Create a new waste report with AI analysis"""
     
-    # Rate limiting check
-    if not await check_rate_limit(request):
-        raise HTTPException(
-            status_code=429,
-            detail="Rate limit exceeded. Maximum 10 reports per hour."
-        )
-    
     # Validate image file
     validate_image_file(image)
     
@@ -154,34 +117,48 @@ async def create_report(
         # Save uploaded image
         image_path = await storage_service.save_image(image)
         
-        # Create initial incident record
-        incident = Incident(
-            latitude=lat,
-            longitude=lng,
-            note=note,
-            image_url=image_path,
-            status="pending_ai",
-            severity=None,
-            confidence=None,
-            waste_detected=None,
-            created_at=datetime.utcnow()
+        # Insert incident with PostGIS location using ST_GeomFromText
+        result = await db.execute(
+            text("""
+                INSERT INTO incidents 
+                (id, reporter_id, image_url, location, address_text, note, status, waste_detected, confidence, severity, is_hotspot)
+                VALUES 
+                (gen_random_uuid(), :reporter_id, :image_url, ST_GeomFromText(:location_wkt, 4326), :address_text, :note, :status, :waste_detected, :confidence, :severity, :is_hotspot)
+                RETURNING id, status
+            """),
+            {
+                "reporter_id": str(current_user.id) if current_user else None,
+                "image_url": image_path,
+                "location_wkt": f"POINT({lng} {lat})",  # PostGIS WKT format: longitude latitude
+                "address_text": None,
+                "note": note,
+                "status": "Pending",
+                "waste_detected": None,
+                "confidence": None,
+                "severity": None,
+                "is_hotspot": False,
+            }
         )
         
-        db.add(incident)
+        report_row = result.fetchone()
+        if not report_row:
+            raise Exception("Failed to create incident in database")
+        
+        incident_id = str(report_row[0])
+        
         await db.commit()
-        await db.refresh(incident)
         
         # Schedule AI analysis in background
         background_tasks.add_task(
             process_ai_analysis, 
-            incident.id, 
+            incident_id, 
             image_path
         )
         
-        logger.info(f"Created incident {incident.id} for user {current_user}")
+        logger.info(f"Created incident {incident_id} for user {current_user}")
         
         return {
-            "report_id": str(incident.id),
+            "report_id": incident_id,
             "status": "processing",
             "message": "Report submitted successfully. AI analysis in progress."
         }
@@ -189,7 +166,7 @@ async def create_report(
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Error creating report: {e}")
+        logger.error(f"Error creating report: {e}", exc_info=True)
         await db.rollback()
         raise HTTPException(
             status_code=500,
@@ -198,39 +175,50 @@ async def create_report(
 
 async def process_ai_analysis(incident_id: str, image_path: str):
     """Background task to process AI analysis"""
-    async with get_db() as db:
+    from app.core.database import AsyncSessionLocal
+    
+    async with AsyncSessionLocal() as db:
         try:
             # Get incident
-            incident = await db.get(Incident, incident_id)
-            if not incident:
+            result = await db.execute(
+                text("SELECT * FROM incidents WHERE id = :id"),
+                {"id": incident_id}
+            )
+            incident_row = result.fetchone()
+            
+            if not incident_row:
                 logger.error(f"Incident {incident_id} not found for AI analysis")
                 return
+            
+            incident = incident_row
             
             # Call AI service
             try:
                 ai_result = await ai_client.analyze_image(image_path)
                 
                 # Update incident with AI results
-                incident.severity = ai_result.get('severity')
-                incident.confidence = ai_result.get('confidence')
-                incident.waste_detected = ai_result.get('waste_detected', False)
-                incident.ai_metadata = ai_result
-                incident.status = "active" if ai_result.get('waste_detected') else "verified_clean"
-                
-                # Add reverse geocoding
-                try:
-                    address = await geocoding_service.reverse_geocode(
-                        incident.latitude, 
-                        incident.longitude
-                    )
-                    incident.address = address
-                except Exception as e:
-                    logger.warning(f"Geocoding failed for incident {incident_id}: {e}")
+                await db.execute(
+                    text("""
+                        UPDATE incidents 
+                        SET severity = :severity,
+                            confidence = :confidence,
+                            waste_detected = :waste_detected,
+                            status = :status
+                        WHERE id = :id
+                    """),
+                    {
+                        "severity": ai_result.get('severity'),
+                        "confidence": ai_result.get('confidence'),
+                        "waste_detected": ai_result.get('waste_detected', False),
+                        "status": "Verified" if ai_result.get('waste_detected') else "Cleaned",
+                        "id": incident_id
+                    }
+                )
                 
                 await db.commit()
                 
                 # Broadcast update event
-                await broadcast_incident_update(incident.id, "ai_analysis_complete")
+                await broadcast_incident_update(incident_id, "ai_analysis_complete")
                 
                 logger.info(f"AI analysis completed for incident {incident_id}")
                 
@@ -238,11 +226,20 @@ async def process_ai_analysis(incident_id: str, image_path: str):
                 logger.error(f"AI service unavailable for incident {incident_id}: {e}")
                 
                 # Save with pending status if AI service fails
-                incident.status = "pending_ai_review"
-                incident.ai_error = str(e)
+                await db.execute(
+                    text("""
+                        UPDATE incidents 
+                        SET status = :status
+                        WHERE id = :id
+                    """),
+                    {
+                        "status": "NeedsReview",
+                        "id": incident_id
+                    }
+                )
                 await db.commit()
                 
-                await broadcast_incident_update(incident.id, "ai_analysis_failed")
+                await broadcast_incident_update(incident_id, "ai_analysis_failed")
                 
         except Exception as e:
             logger.error(f"Error in AI analysis for incident {incident_id}: {e}")
