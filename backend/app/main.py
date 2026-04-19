@@ -16,7 +16,10 @@ from app.core.database import init_db, close_db
 import app.core.redis as redis_module
 from app.routers import auth, admin, leaderboard, events
 from app.routers import reports
-from app.routers import incidents
+from app.routers import incidents, routes, users
+from app.core.limiter import limiter
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
 
 # Configure structured logging
 structlog.configure(
@@ -93,6 +96,10 @@ app = FastAPI(
     openapi_url="/openapi.json",
     lifespan=lifespan,
 )
+
+# Add rate limiting
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # Add CORS middleware
 cors_origins = [origin.strip() for origin in settings.CORS_ORIGINS.split(",") if origin.strip()]
@@ -200,6 +207,18 @@ app.include_router(
     incidents.router,
     prefix="/api",
     tags=["Incidents"]
+)
+
+app.include_router(
+    routes.router,
+    prefix="/api/routes",
+    tags=["Routes"]
+)
+
+app.include_router(
+    users.router,
+    prefix="/api/users",
+    tags=["Users"]
 )
 
 app.include_router(
